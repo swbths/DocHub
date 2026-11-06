@@ -1,0 +1,21 @@
+# 构建输出
+bin/
+obj/
+dist/
+installer/bin/
+installer/obj/
+installer/launcher/bin/
+installer/launcher/obj/
+
+# 打包中间产物
+build/
+installer/payload.zip
+
+# 编辑器 / VS
+.vs/
+*.user
+*.suo
+*.pdb
+
+# 本地工作区数据
+.workbuddy/

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>DocHubSetup</AssemblyName>
+    <RootNamespace>DocHubSetup</RootNamespace>
+    <AssemblyTitle>文枢 DocHub 安装程序</AssemblyTitle>
+    <Product>文枢</Product>
+    <Authors>AI</Authors>
+    <Copyright>© 2026 AI</Copyright>
+    <Version>4.5.6</Version>
+    <ApplicationIcon>..\app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- 安装程序也自包含：目标电脑未安装 .NET 时可正常运行 -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <DebugType>none</DebugType>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="payload.zip" Condition="Exists('payload.zip')" />
+    <!-- 精简启动器由 tools\package.ps1 单独编译，不属于安装程序项目 -->
+    <Compile Remove="launcher\**" />
+    <None Remove="launcher\**" />
+  </ItemGroup>
+</Project>
