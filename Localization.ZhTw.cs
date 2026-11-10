@@ -256,12 +256,12 @@ namespace DocHub
             [Txt.MergeNoDocs] = "請先加入要合併的文件。",
             [Txt.MergeFileMissing] = "檔案不存在或已被移動：\n{0}",
             [Txt.MergeWordMissing] =
-                "未偵測到 Microsoft Word 或 LibreOffice，無法轉換 Word 文件。\n\n" +
-                "請安裝 Microsoft Word 或 LibreOffice 後再合併 Word 檔案；純 PDF 與圖片可直接合併。",
-            [Txt.MergeWordStartFail] = "無法啟動 Microsoft Word。請確認 Word 已正確安裝並可正常開啟。",
-            [Txt.MergeWordNotInstalled] = "未偵測到 Microsoft Word 或 LibreOffice，請安裝後再試。",
+                "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，無法轉換 Word 文件。\n\n" +
+                "請安裝 Microsoft Word、WPS Office 或 LibreOffice 後再合併 Word 檔案；純 PDF 與圖片可直接合併。",
+            [Txt.MergeWordStartFail] = "無法啟動 Word / WPS 轉換引擎。請確認對應軟體已正確安裝並可正常開啟。",
+            [Txt.MergeWordNotInstalled] = "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，請安裝後再試。",
             [Txt.MergeProcessing] = "正在處理（{0}/{1}）：{2}",
-            [Txt.MergeStartingWord] = "正在啟動 Word 轉換引擎…",
+            [Txt.MergeStartingWord] = "正在啟動 Word / WPS 轉換引擎…",
             [Txt.MergeMergingPages] = "正在合併頁面…",
             [Txt.MergeMerging] = "正在合併（{0}/{1}）：{2}",
             [Txt.MergePdfUnreadable] = "無法讀取 PDF「{0}」：檔案可能已損壞、加密或格式不受支援。",
@@ -276,8 +276,8 @@ namespace DocHub
             [Txt.MergeWordOpenFail] = "無法開啟「{0}」。",
             [Txt.MergeWordConvertEmpty] = "「{0}」轉換後沒有取得有效頁面。",
             [Txt.MergeWordConvertFail] =
-                "無法轉換 Word 文件「{0}」。\n\n" +
-                "請確認該檔案沒有加密、沒有損壞，並且本機 Microsoft Word 可以正常開啟它。\n\n技術資訊：{1}",
+                "無法轉換 Word / WPS 文件「{0}」。\n\n" +
+                "請確認該檔案沒有加密、沒有損壞，並且本機 Microsoft Word 或 WPS Office 可以正常開啟它。\n\n技術資訊：{1}",
             [Txt.MergePasswordTitle] = "檔案已加密",
             [Txt.MergePasswordHint] = "請輸入開啟此檔案的密碼，僅在本次合併中使用。",
             [Txt.MergePasswordPlaceholder] = "開啟密碼",
@@ -289,9 +289,9 @@ namespace DocHub
 
             [Txt.MsgSkipWordTitle] = "Word 檔案無法轉換",
             [Txt.MsgSkipWordText] =
-                "未偵測到 Microsoft Word 或 LibreOffice，{0} 個 Word 檔案無法轉換。\n\n" +
+                "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，{0} 個 Word 檔案無法轉換。\n\n" +
                 "是否跳過這些 Word 檔案，繼續合併其餘 PDF 與圖片？",
-            [Txt.StatusSkippedWord] = "已跳過 {0} 個 Word 檔案（未安裝 Word / LibreOffice）",
+            [Txt.StatusSkippedWord] = "已跳過 {0} 個 Word 檔案（未安裝 Word / WPS / LibreOffice）",
 
             [Txt.ViewResult] = "檢視合併文件",
             [Txt.PdfViewerTitle] = "PDF 閱讀器",
@@ -566,17 +566,17 @@ namespace DocHub
                 "#修復\n" +
                 "· PDF 轉圖片全程唯讀來源檔，轉換前後原 PDF 的文字、圖像與頁面保持一致\n",
             [Txt.NavWordPdfTitle] = "Word 轉 PDF",
-            [Txt.NavWordPdfSubtitle] = "Word 批次轉 PDF",
+            [Txt.NavWordPdfSubtitle] = "Word / WPS 批次轉 PDF",
             [Txt.WordPdfPageTitle] = "Word 轉 PDF",
-            [Txt.WordPdfPageSubtitle] = "Word 逐份或合併轉 PDF · 本機處理",
-            [Txt.WordPdfFilesTitle] = "Word 文件",
+            [Txt.WordPdfPageSubtitle] = "Word / WPS 逐份或合併轉 PDF · 本機處理",
+            [Txt.WordPdfFilesTitle] = "Word / WPS 文件",
             [Txt.WordPdfCountFormat] = "{0} 個文件",
             [Txt.WordPdfListHint] = "空白處拖曳可框選 · 依列表順序轉換",
             [Txt.WordPdfAdd] = "新增 Word",
-            [Txt.WordPdfDialogTitle] = "選擇要轉換的 Word 文件",
-            [Txt.WordPdfEmptyTitle] = "拖曳 Word 到這裡",
+            [Txt.WordPdfDialogTitle] = "選擇要轉換的 Word / WPS 文件",
+            [Txt.WordPdfEmptyTitle] = "拖曳 Word / WPS 到這裡",
             [Txt.WordPdfEmptySubtitle] = "或點擊「新增 Word」批次選擇",
-            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt .wps .wpt",
             [Txt.WordPdfSettingsTitle] = "轉換設定",
             [Txt.WordPdfMergeOption] = "合併成一個檔案",
             [Txt.WordPdfMergeHint] = "關閉時每個 Word 單獨輸出同名 PDF",
@@ -593,6 +593,7 @@ namespace DocHub
             [Txt.WordPdfReady] = "準備就緒 · 每份 Word 單獨輸出 PDF",
             [Txt.WordPdfReadyMerge] = "準備就緒 · 依列表順序合併為一個 PDF",
             [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineWps] = "WPS Office",
             [Txt.WordPdfEngineLibre] = "LibreOffice",
             [Txt.WordPdfProcessing] = "正在轉換（{0}/{1}）：{2}",
             [Txt.WordPdfMerging] = "正在合併 PDF 頁面…",
@@ -603,8 +604,8 @@ namespace DocHub
             [Txt.WordPdfFailTitle] = "轉換失敗",
             [Txt.WordPdfNoFiles] = "請先新增要轉換的 Word 文件。",
             [Txt.WordPdfNeedFolder] = "請選擇儲存位置。",
-            [Txt.WordPdfNoEngine] = "未偵測到 Microsoft Word 或 LibreOffice，無法轉換 Word。",
-            [Txt.WordPdfNonWord] = "不是支援的 Word 文件：{0}",
+            [Txt.WordPdfNoEngine] = "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，無法轉換 Word / WPS。",
+            [Txt.WordPdfNonWord] = "不是支援的 Word / WPS 文件：{0}",
             [Txt.WordPdfWriteError] = "無法寫入 PDF：{0}",
             [Txt.WordPdfFailGeneric] = "轉換 Word 失敗：{0}",
             [Txt.WordPdfAdded] = "已新增 {0} 個文件",
@@ -612,8 +613,13 @@ namespace DocHub
             [Txt.WordPdfNothingAdded] = "沒有新增檔案：檔案重複、不存在或不是 Word",
             [Txt.WordPdfOutputCount] = "{0} 個 PDF",
             [Txt.MsgWordPdfBusy] = "正在轉換 Word，請等待完成後再關閉視窗。",
-            [Txt.TipNavWordPdf] = "Word 轉 PDF：每份單獨輸出，或合併為一個檔案",
-            [Txt.Feature7] = "Word 批次轉 PDF：預設依原檔名逐份輸出，可合併為一個檔案，並可為輸出加上浮水印",
+            [Txt.TipNavWordPdf] = "Word / WPS 轉 PDF：每份單獨輸出，或合併為一個檔案",
+            [Txt.Feature7] = "Word / WPS 批次轉 PDF：預設依原檔名逐份輸出，可合併為一個檔案，並可為輸出加上浮水印",
+            [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
+            [Txt.ChangelogItems4522] =
+                "#新增\n" +
+                "· Word 轉 PDF 新增支援 WPS 文字格式（.wps、.wpt）\n" +
+                "· 偵測到 WPS Office 時優先由其轉換 WPS 檔案，Word 文件仍使用 Microsoft Word\n",
             [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
             [Txt.ChangelogItems4521] =
                 "#維護\n" +

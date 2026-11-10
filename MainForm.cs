@@ -1353,7 +1353,7 @@ namespace DocHub
 
         private static string BuildOpenDialogFilter()
         {
-            const string wordPattern = "*.doc;*.docx;*.docm;*.dot;*.dotx;*.dotm;*.rtf;*.odt";
+            const string wordPattern = "*.doc;*.docx;*.docm;*.dot;*.dotx;*.dotm;*.rtf;*.odt;*.wps;*.wpt";
             const string imagePattern = "*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.bmp;*.dib;*.tif;*.tiff;*.gif;*.webp;*.heic;*.heif;*.avif";
             return $"{Loc.T(Txt.FilterSupport)}|{wordPattern};*.pdf;{imagePattern}|" +
                    $"{Loc.T(Txt.FilterWord)}|{wordPattern}|" +

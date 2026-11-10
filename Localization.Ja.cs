@@ -261,12 +261,12 @@ namespace DocHub
             [Txt.MergeNoDocs] = "先に結合する文書を追加してください。",
             [Txt.MergeFileMissing] = "ファイルが存在しないか、移動されています：\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word または LibreOffice が見つからないため、Word 文書を変換できません。\n\n" +
-                "Microsoft Word または LibreOffice をインストールしてください。PDF と画像のみの結合には影響しません。",
-            [Txt.MergeWordStartFail] = "Microsoft Word を起動できません。正しくインストールされ、正常に開けることを確認してください。",
-            [Txt.MergeWordNotInstalled] = "Microsoft Word または LibreOffice が見つかりません。インストールしてから再試行してください。",
+                "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、Word 文書を変換できません。\n\n" +
+                "いずれかをインストールしてください。PDF と画像のみの結合には影響しません。",
+            [Txt.MergeWordStartFail] = "Word / WPS 変換エンジンを起動できません。該当ソフトが正しくインストールされ、正常に開けることを確認してください。",
+            [Txt.MergeWordNotInstalled] = "Microsoft Word、WPS Office、LibreOffice のいずれも見つかりません。インストールしてから再試行してください。",
             [Txt.MergeProcessing] = "処理中（{0}/{1}）：{2}",
-            [Txt.MergeStartingWord] = "Word 変換エンジンを起動中…",
+            [Txt.MergeStartingWord] = "Word / WPS 変換エンジンを起動中…",
             [Txt.MergeMergingPages] = "ページを結合中…",
             [Txt.MergeMerging] = "結合中（{0}/{1}）：{2}",
             [Txt.MergePdfUnreadable] = "PDF「{0}」を読み取れません：破損、暗号化、または未対応の形式の可能性があります。",
@@ -281,8 +281,8 @@ namespace DocHub
             [Txt.MergeWordOpenFail] = "「{0}」を開けません。",
             [Txt.MergeWordConvertEmpty] = "「{0}」の変換後、有効なページがありませんでした。",
             [Txt.MergeWordConvertFail] =
-                "Word 文書「{0}」を変換できません。\n\n" +
-                "暗号化や破損がないこと、本機の Microsoft Word で正常に開けることを確認してください。\n\n技術情報：{1}",
+                "Word / WPS 文書「{0}」を変換できません。\n\n" +
+                "暗号化や破損がないこと、本機の Microsoft Word または WPS Office で正常に開けることを確認してください。\n\n技術情報：{1}",
             [Txt.MergePasswordTitle] = "ファイルは暗号化されています",
             [Txt.MergePasswordHint] = "このファイルを開くパスワードを入力してください。今回の結合でのみ使用します。",
             [Txt.MergePasswordPlaceholder] = "パスワード",
@@ -293,9 +293,9 @@ namespace DocHub
 
             [Txt.MsgSkipWordTitle] = "Word ファイルを変換できません",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word または LibreOffice が見つからないため、{0} 個の Word ファイルを変換できません。\n\n" +
+                "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、{0} 個の Word ファイルを変換できません。\n\n" +
                 "これらの Word ファイルを飛ばして、残りの PDF と画像の結合を続行しますか？",
-            [Txt.StatusSkippedWord] = "{0} 個の Word ファイルをスキップしました（Word / LibreOffice 未導入）",
+            [Txt.StatusSkippedWord] = "{0} 個の Word ファイルをスキップしました（Word / WPS / LibreOffice 未導入）",
 
             [Txt.ViewResult] = "結合結果を表示",
             [Txt.PdfViewerTitle] = "PDF ビューアー",
@@ -568,17 +568,17 @@ namespace DocHub
                 "#修正\n" +
                 "· PDF→画像は元 PDF を読み取り専用で扱い、文字・画像・ページを変更しません\n",
             [Txt.NavWordPdfTitle] = "Word → PDF",
-            [Txt.NavWordPdfSubtitle] = "Word を一括で PDF に変換",
+            [Txt.NavWordPdfSubtitle] = "Word / WPS を一括で PDF に変換",
             [Txt.WordPdfPageTitle] = "Word → PDF",
-            [Txt.WordPdfPageSubtitle] = "Word を個別または 1 つの PDF に変換 · ローカル処理",
-            [Txt.WordPdfFilesTitle] = "Word 文書",
+            [Txt.WordPdfPageSubtitle] = "Word / WPS を個別または 1 つの PDF に変換 · ローカル処理",
+            [Txt.WordPdfFilesTitle] = "Word / WPS 文書",
             [Txt.WordPdfCountFormat] = "{0} 個の文書",
             [Txt.WordPdfListHint] = "空白をドラッグで範囲選択 · リスト順に変換",
             [Txt.WordPdfAdd] = "Word を追加",
-            [Txt.WordPdfDialogTitle] = "変換する Word 文書を選択",
-            [Txt.WordPdfEmptyTitle] = "Word をここにドロップ",
+            [Txt.WordPdfDialogTitle] = "変換する Word / WPS 文書を選択",
+            [Txt.WordPdfEmptyTitle] = "Word / WPS をここにドロップ",
             [Txt.WordPdfEmptySubtitle] = "または「Word を追加」で複数選択",
-            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt .wps .wpt",
             [Txt.WordPdfSettingsTitle] = "変換設定",
             [Txt.WordPdfMergeOption] = "1 つのファイルに結合",
             [Txt.WordPdfMergeHint] = "オフの場合は各 Word を同名の PDF として個別に出力",
@@ -595,6 +595,7 @@ namespace DocHub
             [Txt.WordPdfReady] = "準備完了 · 各 Word を個別に PDF 出力",
             [Txt.WordPdfReadyMerge] = "準備完了 · リスト順に 1 つの PDF に結合",
             [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineWps] = "WPS Office",
             [Txt.WordPdfEngineLibre] = "LibreOffice",
             [Txt.WordPdfProcessing] = "変換中（{0}/{1}）：{2}",
             [Txt.WordPdfMerging] = "PDF ページを結合中…",
@@ -605,8 +606,8 @@ namespace DocHub
             [Txt.WordPdfFailTitle] = "変換失敗",
             [Txt.WordPdfNoFiles] = "変換する Word 文書を追加してください。",
             [Txt.WordPdfNeedFolder] = "保存先を選択してください。",
-            [Txt.WordPdfNoEngine] = "Microsoft Word または LibreOffice が見つからないため、Word を変換できません。",
-            [Txt.WordPdfNonWord] = "対応していない Word 文書です：{0}",
+            [Txt.WordPdfNoEngine] = "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、Word / WPS を変換できません。",
+            [Txt.WordPdfNonWord] = "対応していない Word / WPS 文書です：{0}",
             [Txt.WordPdfWriteError] = "PDF を書き込めません：{0}",
             [Txt.WordPdfFailGeneric] = "Word の変換に失敗しました：{0}",
             [Txt.WordPdfAdded] = "{0} 個の文書を追加しました",
@@ -614,8 +615,13 @@ namespace DocHub
             [Txt.WordPdfNothingAdded] = "追加されたファイルはありません：重複、存在しない、または Word 以外",
             [Txt.WordPdfOutputCount] = "{0} 個の PDF",
             [Txt.MsgWordPdfBusy] = "Word を変換中です。完了するまでウィンドウを閉じないでください。",
-            [Txt.TipNavWordPdf] = "Word → PDF：個別に出力、または 1 つのファイルに結合",
-            [Txt.Feature7] = "Word を一括で PDF に変換。既定では元のファイル名で個別出力し、1 ファイルへの結合や出力への透かしも可能",
+            [Txt.TipNavWordPdf] = "Word / WPS → PDF：個別に出力、または 1 つのファイルに結合",
+            [Txt.Feature7] = "Word / WPS を一括で PDF に変換。既定では元のファイル名で個別出力し、1 ファイルへの結合や出力への透かしも可能",
+            [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
+            [Txt.ChangelogItems4522] =
+                "#追加\n" +
+                "· Word → PDF が WPS 文書形式（.wps、.wpt）に対応\n" +
+                "· WPS Office が検出された場合は WPS ファイルを優先して変換し、Word 文書は引き続き Microsoft Word を使用\n",
             [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
             [Txt.ChangelogItems4521] =
                 "#メンテナンス\n" +

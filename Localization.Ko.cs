@@ -260,12 +260,12 @@ namespace DocHub
             [Txt.MergeNoDocs] = "먼저 병합할 문서를 추가하세요.",
             [Txt.MergeFileMissing] = "파일이 없거나 이동되었습니다:\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word 또는 LibreOffice를 찾을 수 없어 Word 문서를 변환할 수 없습니다.\n\n" +
-                "Microsoft Word 또는 LibreOffice를 설치하세요. PDF와 이미지만 병합하는 것은 영향이 없습니다.",
-            [Txt.MergeWordStartFail] = "Microsoft Word를 시작할 수 없습니다. Word가 올바르게 설치되어 정상적으로 열리는지 확인하세요.",
-            [Txt.MergeWordNotInstalled] = "Microsoft Word 또는 LibreOffice를 찾을 수 없습니다. 설치한 후 다시 시도하세요.",
+                "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없어 Word 문서를 변환할 수 없습니다.\n\n" +
+                "이 중 하나를 설치하세요. PDF와 이미지만 병합하는 것은 영향이 없습니다.",
+            [Txt.MergeWordStartFail] = "Word / WPS 변환 엔진을 시작할 수 없습니다. 해당 소프트웨어가 올바르게 설치되어 정상적으로 열리는지 확인하세요.",
+            [Txt.MergeWordNotInstalled] = "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없습니다. 설치한 후 다시 시도하세요.",
             [Txt.MergeProcessing] = "처리 중 ({0}/{1}): {2}",
-            [Txt.MergeStartingWord] = "Word 변환 엔진 시작 중…",
+            [Txt.MergeStartingWord] = "Word / WPS 변환 엔진 시작 중…",
             [Txt.MergeMergingPages] = "페이지 병합 중…",
             [Txt.MergeMerging] = "병합 중 ({0}/{1}): {2}",
             [Txt.MergePdfUnreadable] = "PDF「{0}」을 읽을 수 없습니다: 파일이 손상되었거나 암호화되었거나 지원되지 않는 형식일 수 있습니다.",
@@ -280,8 +280,8 @@ namespace DocHub
             [Txt.MergeWordOpenFail] = "「{0}」을 열 수 없습니다.",
             [Txt.MergeWordConvertEmpty] = "「{0}」 변환 후 유효한 페이지가 없습니다.",
             [Txt.MergeWordConvertFail] =
-                "Word 문서「{0}」을 변환할 수 없습니다.\n\n" +
-                "파일이 암호화되지 않았고 손상되지 않았으며 PC의 Microsoft Word에서 정상적으로 열리는지 확인하세요.\n\n기술 정보: {1}",
+                "Word / WPS 문서「{0}」을 변환할 수 없습니다.\n\n" +
+                "파일이 암호화되지 않았고 손상되지 않았으며 PC의 Microsoft Word 또는 WPS Office에서 정상적으로 열리는지 확인하세요.\n\n기술 정보: {1}",
             [Txt.MergePasswordTitle] = "암호로 보호된 파일",
             [Txt.MergePasswordHint] = "이 파일을 여는 암호를 입력하세요. 이번 병합에서만 사용됩니다.",
             [Txt.MergePasswordPlaceholder] = "암호",
@@ -292,9 +292,9 @@ namespace DocHub
 
             [Txt.MsgSkipWordTitle] = "Word 파일을 변환할 수 없습니다",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word 또는 LibreOffice를 찾을 수 없어 {0}개의 Word 파일을 변환할 수 없습니다.\n\n" +
+                "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없어 {0}개의 Word 파일을 변환할 수 없습니다.\n\n" +
                 "이 Word 파일을 건너뛰고 나머지 PDF와 이미지 병합을 계속하시겠습니까?",
-            [Txt.StatusSkippedWord] = "Word 파일 {0}개를 건너뛰었습니다 (Word / LibreOffice 미설치)",
+            [Txt.StatusSkippedWord] = "Word 파일 {0}개를 건너뛰었습니다 (Word / WPS / LibreOffice 미설치)",
 
             [Txt.ViewResult] = "병합 결과 보기",
             [Txt.PdfViewerTitle] = "PDF 뷰어",
@@ -567,17 +567,17 @@ namespace DocHub
                 "#수정\n" +
                 "· PDF → 이미지는 원본 PDF를 읽기 전용으로만 사용하며 텍스트·이미지·페이지를 변경하지 않음\n",
             [Txt.NavWordPdfTitle] = "Word → PDF",
-            [Txt.NavWordPdfSubtitle] = "Word 일괄 PDF 변환",
+            [Txt.NavWordPdfSubtitle] = "Word / WPS 일괄 PDF 변환",
             [Txt.WordPdfPageTitle] = "Word → PDF",
-            [Txt.WordPdfPageSubtitle] = "Word를 개별 또는 하나의 PDF로 변환 · 로컬 처리",
-            [Txt.WordPdfFilesTitle] = "Word 문서",
+            [Txt.WordPdfPageSubtitle] = "Word / WPS를 개별 또는 하나의 PDF로 변환 · 로컬 처리",
+            [Txt.WordPdfFilesTitle] = "Word / WPS 문서",
             [Txt.WordPdfCountFormat] = "{0}개 문서",
             [Txt.WordPdfListHint] = "빈 영역을 드래그하여 선택 · 목록 순서대로 변환",
             [Txt.WordPdfAdd] = "Word 추가",
-            [Txt.WordPdfDialogTitle] = "변환할 Word 문서 선택",
-            [Txt.WordPdfEmptyTitle] = "Word를 여기에 끌어다 놓으세요",
+            [Txt.WordPdfDialogTitle] = "변환할 Word / WPS 문서 선택",
+            [Txt.WordPdfEmptyTitle] = "Word / WPS를 여기에 끌어다 놓으세요",
             [Txt.WordPdfEmptySubtitle] = "또는 「Word 추가」를 클릭하여 여러 개 선택",
-            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt .wps .wpt",
             [Txt.WordPdfSettingsTitle] = "변환 설정",
             [Txt.WordPdfMergeOption] = "하나의 파일로 병합",
             [Txt.WordPdfMergeHint] = "끄면 각 Word가 같은 이름의 PDF로 개별 출력됩니다",
@@ -594,6 +594,7 @@ namespace DocHub
             [Txt.WordPdfReady] = "준비됨 · 각 Word를 개별 PDF로 출력",
             [Txt.WordPdfReadyMerge] = "준비됨 · 목록 순서대로 하나의 PDF로 병합",
             [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineWps] = "WPS Office",
             [Txt.WordPdfEngineLibre] = "LibreOffice",
             [Txt.WordPdfProcessing] = "변환 중 ({0}/{1}): {2}",
             [Txt.WordPdfMerging] = "PDF 페이지 병합 중…",
@@ -604,8 +605,8 @@ namespace DocHub
             [Txt.WordPdfFailTitle] = "변환 실패",
             [Txt.WordPdfNoFiles] = "먼저 변환할 Word 문서를 추가하세요.",
             [Txt.WordPdfNeedFolder] = "저장 위치를 선택하세요.",
-            [Txt.WordPdfNoEngine] = "Microsoft Word 또는 LibreOffice가 없어 Word를 변환할 수 없습니다.",
-            [Txt.WordPdfNonWord] = "지원하지 않는 Word 문서입니다: {0}",
+            [Txt.WordPdfNoEngine] = "Microsoft Word, WPS Office 또는 LibreOffice가 없어 Word / WPS를 변환할 수 없습니다.",
+            [Txt.WordPdfNonWord] = "지원하지 않는 Word / WPS 문서입니다: {0}",
             [Txt.WordPdfWriteError] = "PDF를 쓸 수 없습니다: {0}",
             [Txt.WordPdfFailGeneric] = "Word 변환 실패: {0}",
             [Txt.WordPdfAdded] = "문서 {0}개 추가됨",
@@ -613,8 +614,13 @@ namespace DocHub
             [Txt.WordPdfNothingAdded] = "추가된 파일이 없습니다: 중복, 없음 또는 Word 아님",
             [Txt.WordPdfOutputCount] = "PDF {0}개",
             [Txt.MsgWordPdfBusy] = "Word 변환 중입니다. 완료될 때까지 창을 닫지 마세요.",
-            [Txt.TipNavWordPdf] = "Word → PDF: 개별 출력 또는 하나의 파일로 병합",
-            [Txt.Feature7] = "Word 일괄 PDF 변환: 기본적으로 원본 파일 이름으로 개별 출력, 하나의 파일 병합과 출력 워터마크 지원",
+            [Txt.TipNavWordPdf] = "Word / WPS → PDF: 개별 출력 또는 하나의 파일로 병합",
+            [Txt.Feature7] = "Word / WPS 일괄 PDF 변환: 기본적으로 원본 파일 이름으로 개별 출력, 하나의 파일 병합과 출력 워터마크 지원",
+            [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
+            [Txt.ChangelogItems4522] =
+                "#추가\n" +
+                "· Word → PDF가 WPS 문서 형식(.wps, .wpt)을 지원\n" +
+                "· WPS Office가 감지되면 WPS 파일은 우선 해당 엔진으로 변환하고, Word 문서는 계속 Microsoft Word를 사용\n",
             [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
             [Txt.ChangelogItems4521] =
                 "#유지보수\n" +

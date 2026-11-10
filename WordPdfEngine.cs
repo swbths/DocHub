@@ -69,7 +69,7 @@ namespace DocHub
                     throw new WordPdfException(Loc.T(Txt.WordPdfNonWord, Path.GetFileName(file)));
             }
 
-            WordConverter converter = MergeEngine.DetectedConverter;
+            WordConverter converter = MergeEngine.SelectConverter(inputFiles);
             if (converter == WordConverter.None)
                 throw new WordPdfException(Loc.T(Txt.WordPdfNoEngine));
 
@@ -226,9 +226,9 @@ namespace DocHub
             ref object? word, ref object? documents, WordConverter converter,
             string source, string target, string? password)
         {
-            if (converter == WordConverter.MicrosoftWord)
+            if (converter == WordConverter.MicrosoftWord || converter == WordConverter.WpsOffice)
             {
-                MergeEngine.EnsureWord(ref word, ref documents);
+                MergeEngine.EnsureOffice(ref word, ref documents, converter);
                 MergeEngine.ExportWordToPdf(word!, documents!, source, target, password);
             }
             else

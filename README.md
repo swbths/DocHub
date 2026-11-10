@@ -6,7 +6,7 @@
 
 全程本地处理，文件不上传、不外传。
 
-- 当前版本：`4.5.21`（2026-11-10）
+- 当前版本：`4.5.22`（2026-11-10）
 - 运行平台：Windows 10 2004（10.0.19041）及以上 / x64
 - 技术栈：.NET 10 + WinForms + [PDFsharp](https://github.com/empira/PDFsharp) 6.2.4
 
@@ -19,7 +19,7 @@
 | 类型 | 支持格式 | 处理方式 |
 | --- | --- | --- |
 | PDF | `.pdf` | 逐页原样复制，不重新排版、不转图片、不压缩画质 |
-| Word | `.doc` `.docx` `.docm` `.dot` `.dotx` `.dotm` `.rtf` `.odt` | 由本机 Word 或 LibreOffice 导出 PDF 后合并，保留原始版面 |
+| Word / WPS | `.doc` `.docx` `.docm` `.dot` `.dotx` `.dotm` `.rtf` `.odt` `.wps` `.wpt` | 由本机 Word、WPS Office 或 LibreOffice 导出 PDF 后合并，保留原始版面；原生 WPS 文件优先交给 WPS Office |
 | 图片 | `.jpg` `.jpeg` `.jfif` `.png` `.bmp` `.tif` `.tiff` `.gif` `.webp` `.heic` 等 | 按原始尺寸排成单页 PDF，不缩放、不裁剪；HEIC / AVIF 需系统已装对应解码扩展 |
 
 图片转换按 CPU 核心并行执行；合并过程实时显示进度与状态。
@@ -66,10 +66,10 @@
 
 | 项目 | 说明 |
 | --- | --- |
-| 输入 | `.doc` `.docx` `.docm` `.dot` `.dotx` `.dotm` `.rtf` `.odt`，支持多选、拖入文件夹（递归收集）、拖拽排序与移除 |
+| 输入 | `.doc` `.docx` `.docm` `.dot` `.dotx` `.dotm` `.rtf` `.odt` `.wps` `.wpt`，支持多选、拖入文件夹（递归收集）、拖拽排序与移除 |
 | 输出 | 默认每个 Word 单独生成同名 PDF，重名自动追加 `-1`、`-2`；开启「合并成一个文件」后按列表顺序合成一个 PDF |
 | 文件命名 | 逐份输出使用 Word 原文件名；合并时可自定义文件名，默认取第一个 Word 的文件名，留空自动回退 |
-| 转换引擎 | 自动使用本机 Microsoft Word 或 LibreOffice；两者都未安装时给出明确提示并禁用开始按钮 |
+| 转换引擎 | 自动使用本机 Microsoft Word、WPS Office 或 LibreOffice；`.wps` / `.wpt` 由 WPS Office 或 LibreOffice 转换，三者都未安装时给出明确提示并禁用开始按钮 |
 | 输出位置 | 默认第一个 Word 所在目录；可浏览选择并记住上次位置 |
 | 水印 | 在「水印」设置页单独开启「Word 转 PDF」后，水印只叠加在输出 PDF 上，源 Word 不会被修改 |
 
@@ -124,7 +124,7 @@
 
 ### 安装版（推荐）
 
-运行 `文枢_安装程序_v4.5.21.exe`：
+运行 `文枢_安装程序_v4.5.22.exe`：
 
 - 默认安装到 `%LOCALAPPDATA%\Programs\DocHub`（当前用户目录），**不需要管理员权限**，也不写 `C:\Program Files`，不会触发 UAC，可自定义目录：输入或浏览选择的任意位置都会原样生效（若选到 `C:\Program Files` 下，界面会提示普通用户通常没有写入权限，建议改到用户目录或其它磁盘）
 - 创建开始菜单「文枢」及桌面快捷方式，开始菜单内附「卸载 文枢」
@@ -137,13 +137,13 @@
 
 ```bat
 :: 完整静默安装（当前用户，默认目录 %LOCALAPPDATA%\Programs\DocHub）
-文枢_安装程序_v4.5.21.exe --silent
+文枢_安装程序_v4.5.22.exe --silent
 
 :: 指定安装目录（位于 Program Files 下时同样会自动改回当前用户目录）
-文枢_安装程序_v4.5.21.exe --silent --dir D:\Apps\DocHub
+文枢_安装程序_v4.5.22.exe --silent --dir D:\Apps\DocHub
 
 :: 仅解压载荷：不写注册表、不建快捷方式，可用于核对安装内容
-文枢_安装程序_v4.5.21.exe --extract D:\temp\dochub_payload
+文枢_安装程序_v4.5.22.exe --extract D:\temp\dochub_payload
 
 :: 静默卸载
 "%LOCALAPPDATA%\Programs\DocHub\app\DocHub.exe" --uninstall --yes
@@ -153,7 +153,7 @@
 
 ### 绿色版
 
-解压 `文枢_绿色版_v4.5.21.zip` 后运行根目录的 `DocHub.exe` 即可，不写注册表、不创建快捷方式。程序为自包含发布，**无需安装 .NET 运行时**。
+解压 `文枢_绿色版_v4.5.22.zip` 后运行根目录的 `DocHub.exe` 即可，不写注册表、不创建快捷方式。程序为自包含发布，**无需安装 .NET 运行时**。
 
 ---
 
@@ -204,8 +204,8 @@ powershell -ExecutionPolicy Bypass -File tools\package.ps1
 
 产物输出到 `dist\`：
 
-- `文枢_安装程序_v4.5.21.exe`
-- `文枢_绿色版_v4.5.21.zip`
+- `文枢_安装程序_v4.5.22.exe`
+- `文枢_绿色版_v4.5.22.zip`
 
 只编译主程序：
 

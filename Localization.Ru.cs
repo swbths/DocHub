@@ -262,12 +262,12 @@ namespace DocHub
             [Txt.MergeNoDocs] = "Сначала добавьте документы для объединения.",
             [Txt.MergeFileMissing] = "Файл отсутствует или перемещён:\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word или LibreOffice не найден, поэтому документы Word нельзя преобразовать.\n\n" +
-                "Установите Microsoft Word или LibreOffice; объединение PDF и изображений не затрагивается.",
-            [Txt.MergeWordStartFail] = "Не удалось запустить Microsoft Word. Убедитесь, что он установлен и открывается.",
-            [Txt.MergeWordNotInstalled] = "Microsoft Word или LibreOffice не найден. Установите одну из программ и повторите попытку.",
+                "Microsoft Word, WPS Office или LibreOffice не найден, поэтому документы Word нельзя преобразовать.\n\n" +
+                "Установите одну из программ; объединение PDF и изображений не затрагивается.",
+            [Txt.MergeWordStartFail] = "Не удалось запустить движок преобразования Word / WPS. Убедитесь, что программа установлена и открывается.",
+            [Txt.MergeWordNotInstalled] = "Microsoft Word, WPS Office или LibreOffice не найден. Установите одну из программ и повторите попытку.",
             [Txt.MergeProcessing] = "Обработка ({0}/{1}): {2}",
-            [Txt.MergeStartingWord] = "Запуск движка преобразования Word…",
+            [Txt.MergeStartingWord] = "Запуск движка преобразования Word / WPS…",
             [Txt.MergeMergingPages] = "Объединение страниц…",
             [Txt.MergeMerging] = "Объединение ({0}/{1}): {2}",
             [Txt.MergePdfUnreadable] = "Не удалось прочитать PDF «{0}»: файл повреждён, зашифрован или не поддерживается.",
@@ -282,8 +282,8 @@ namespace DocHub
             [Txt.MergeWordOpenFail] = "Не удалось открыть «{0}».",
             [Txt.MergeWordConvertEmpty] = "«{0}» не дал допустимых страниц после преобразования.",
             [Txt.MergeWordConvertFail] =
-                "Не удалось преобразовать документ Word «{0}».\n\n" +
-                "Убедитесь, что он не зашифрован и не повреждён, и Microsoft Word открывает его нормально.\n\nТехническая информация: {1}",
+                "Не удалось преобразовать документ Word / WPS «{0}».\n\n" +
+                "Убедитесь, что он не зашифрован и не повреждён, и Microsoft Word или WPS Office открывает его нормально.\n\nТехническая информация: {1}",
             [Txt.MergePasswordTitle] = "Файл защищён паролем",
             [Txt.MergePasswordHint] = "Введите пароль для открытия этого файла. Он используется только для этого объединения.",
             [Txt.MergePasswordPlaceholder] = "Пароль",
@@ -294,9 +294,9 @@ namespace DocHub
 
             [Txt.MsgSkipWordTitle] = "Не удаётся преобразовать файлы Word",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word или LibreOffice не найден, {0} файл(ов) Word нельзя преобразовать.\n\n" +
+                "Microsoft Word, WPS Office или LibreOffice не найден, {0} файл(ов) Word нельзя преобразовать.\n\n" +
                 "Пропустить эти файлы Word и продолжить объединение остальных PDF и изображений?",
-            [Txt.StatusSkippedWord] = "Пропущено файлов Word: {0} (Word / LibreOffice не установлены)",
+            [Txt.StatusSkippedWord] = "Пропущено файлов Word: {0} (Word / WPS / LibreOffice не установлены)",
 
             [Txt.ViewResult] = "Открыть результат",
             [Txt.PdfViewerTitle] = "Просмотр PDF",
@@ -569,17 +569,17 @@ namespace DocHub
                 "#Исправлено\n" +
                 "· PDF → изображения только читает исходный PDF; текст, изображения и страницы не изменяются\n",
             [Txt.NavWordPdfTitle] = "Word в PDF",
-            [Txt.NavWordPdfSubtitle] = "Пакетный Word в PDF",
+            [Txt.NavWordPdfSubtitle] = "Пакетный Word / WPS в PDF",
             [Txt.WordPdfPageTitle] = "Word в PDF",
-            [Txt.WordPdfPageSubtitle] = "Word по отдельности или в один PDF · локальная обработка",
-            [Txt.WordPdfFilesTitle] = "Документы",
+            [Txt.WordPdfPageSubtitle] = "Word / WPS по отдельности или в один PDF · локальная обработка",
+            [Txt.WordPdfFilesTitle] = "Документы Word / WPS",
             [Txt.WordPdfCountFormat] = "Файлы: {0}",
             [Txt.WordPdfListHint] = "Проведите по пустому месту для выделения · порядок списка сохраняется",
             [Txt.WordPdfAdd] = "Добавить Word",
-            [Txt.WordPdfDialogTitle] = "Выберите документы Word для конвертации",
-            [Txt.WordPdfEmptyTitle] = "Перетащите Word сюда",
+            [Txt.WordPdfDialogTitle] = "Выберите документы Word / WPS для конвертации",
+            [Txt.WordPdfEmptyTitle] = "Перетащите Word / WPS сюда",
             [Txt.WordPdfEmptySubtitle] = "или нажмите «Добавить Word» для выбора нескольких файлов",
-            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt .wps .wpt",
             [Txt.WordPdfSettingsTitle] = "Настройки конвертации",
             [Txt.WordPdfMergeOption] = "Объединить в один файл",
             [Txt.WordPdfMergeHint] = "Если выключено, каждый Word сохраняется отдельным PDF с тем же именем",
@@ -596,6 +596,7 @@ namespace DocHub
             [Txt.WordPdfReady] = "Готово · каждый Word сохраняется отдельным PDF",
             [Txt.WordPdfReadyMerge] = "Готово · объединение в один PDF в порядке списка",
             [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineWps] = "WPS Office",
             [Txt.WordPdfEngineLibre] = "LibreOffice",
             [Txt.WordPdfProcessing] = "Конвертация ({0}/{1}): {2}",
             [Txt.WordPdfMerging] = "Объединение страниц PDF…",
@@ -606,8 +607,8 @@ namespace DocHub
             [Txt.WordPdfFailTitle] = "Ошибка конвертации",
             [Txt.WordPdfNoFiles] = "Сначала добавьте документы Word.",
             [Txt.WordPdfNeedFolder] = "Выберите папку сохранения.",
-            [Txt.WordPdfNoEngine] = "Для конвертации Word нужен Microsoft Word или LibreOffice.",
-            [Txt.WordPdfNonWord] = "Неподдерживаемый документ Word: {0}",
+            [Txt.WordPdfNoEngine] = "Для конвертации Word / WPS нужен Microsoft Word, WPS Office или LibreOffice.",
+            [Txt.WordPdfNonWord] = "Неподдерживаемый документ Word / WPS: {0}",
             [Txt.WordPdfWriteError] = "Не удалось записать PDF: {0}",
             [Txt.WordPdfFailGeneric] = "Не удалось конвертировать Word: {0}",
             [Txt.WordPdfAdded] = "Добавлено документов: {0}",
@@ -615,8 +616,13 @@ namespace DocHub
             [Txt.WordPdfNothingAdded] = "Ничего не добавлено: файлы повторяются, отсутствуют или не являются Word",
             [Txt.WordPdfOutputCount] = "PDF: {0}",
             [Txt.MsgWordPdfBusy] = "Идёт конвертация Word. Дождитесь завершения, прежде чем закрывать окно.",
-            [Txt.TipNavWordPdf] = "Word в PDF: каждый файл отдельно или объединение в один",
-            [Txt.Feature7] = "Пакетная конвертация Word в PDF: по умолчанию с исходными именами, можно объединить в один файл и добавить водяной знак",
+            [Txt.TipNavWordPdf] = "Word / WPS в PDF: каждый файл отдельно или объединение в один",
+            [Txt.Feature7] = "Пакетная конвертация Word / WPS в PDF: по умолчанию с исходными именами, можно объединить в один файл и добавить водяной знак",
+            [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
+            [Txt.ChangelogItems4522] =
+                "#Добавлено\n" +
+                "· Конвертация Word в PDF теперь поддерживает форматы WPS Writer (.wps, .wpt)\n" +
+                "· Если найден WPS Office, файлы WPS преобразуются им; документы Word по-прежнему используют Microsoft Word\n",
             [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
             [Txt.ChangelogItems4521] =
                 "#Обслуживание\n" +

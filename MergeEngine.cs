@@ -16,11 +16,12 @@ namespace DocHub
         string OutputPath, int PageCount, TimeSpan Elapsed,
         int WordCount, int PdfCount, int ImageCount, int SkippedWordCount);
 
-    /// <summary>Word 转 PDF 可用的转换引擎。</summary>
+    /// <summary>Word / WPS 转 PDF 可用的转换引擎。</summary>
     public enum WordConverter
     {
         None,
         MicrosoftWord,
+        WpsOffice,
         LibreOffice
     }
 
@@ -36,7 +37,7 @@ namespace DocHub
     public static class MergeEngine
     {
         public static readonly string[] WordExtensions =
-            { ".doc", ".docx", ".docm", ".dot", ".dotx", ".dotm", ".rtf", ".odt" };
+            { ".doc", ".docx", ".docm", ".dot", ".dotx", ".dotm", ".rtf", ".odt", ".wps", ".wpt" };
 
         public static readonly string[] ImageExtensions =
         {
@@ -53,6 +54,14 @@ namespace DocHub
         public static bool IsWordFile(string path)
         {
             return WordSet.Contains(Path.GetExtension(path));
+        }
+
+        /// <summary>是否为 WPS 文字原生格式；这类文件必须由 WPS Office 或 LibreOffice 转换。</summary>
+        public static bool IsWpsFile(string path)
+        {
+            string extension = Path.GetExtension(path);
+            return string.Equals(extension, ".wps", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(extension, ".wpt", StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool IsPdfFile(string path)
@@ -128,6 +137,7 @@ namespace DocHub
             get
             {
                 if (HasWordCom()) return WordConverter.MicrosoftWord;
+                if (HasWpsCom()) return WordConverter.WpsOffice;
                 if (FindLibreOffice() != null) return WordConverter.LibreOffice;
                 return WordConverter.None;
             }
@@ -137,6 +147,55 @@ namespace DocHub
         {
             try { return Type.GetTypeFromProgID("Word.Application") != null; }
             catch { return false; }
+        }
+
+        /// <summary>
+        /// 选择本批 Word / WPS 文件使用的转换引擎。
+        /// 原生 WPS 文件优先交给 WPS Office；Word 无法可靠打开 .wps/.wpt，
+        /// 因此没有 WPS Office 时改用 LibreOffice，避免 Word 弹出格式转换提示后卡住。
+        /// </summary>
+        public static WordConverter SelectConverter(IEnumerable<string> files)
+        {
+            bool hasWps = false;
+            bool hasWord = false;
+            foreach (string file in files)
+            {
+                if (IsWpsFile(file)) hasWps = true;
+                else if (IsWordFile(file)) hasWord = true;
+            }
+
+            if (hasWps)
+            {
+                if (HasWpsCom()) return WordConverter.WpsOffice;
+                if (FindLibreOffice() != null) return WordConverter.LibreOffice;
+                return WordConverter.None;
+            }
+
+            if (!hasWord) return DetectedConverter;
+            if (HasWordCom()) return WordConverter.MicrosoftWord;
+            if (HasWpsCom()) return WordConverter.WpsOffice;
+            if (FindLibreOffice() != null) return WordConverter.LibreOffice;
+            return WordConverter.None;
+        }
+
+        public static bool HasWpsCom()
+        {
+            return GetWpsProgId() != null;
+        }
+
+        internal static string? GetWpsProgId()
+        {
+            try
+            {
+                if (Type.GetTypeFromProgID("KWps.Application") != null) return "KWps.Application";
+                if (Type.GetTypeFromProgID("WPS.Application") != null) return "WPS.Application";
+            }
+            catch
+            {
+                // 注册表不可访问时按未安装处理
+            }
+
+            return null;
         }
 
         private static string? _sofficePath;
@@ -213,7 +272,7 @@ namespace DocHub
                     throw new MergeException(Loc.T(Txt.MergeFileMissing, file));
             }
 
-            WordConverter converter = DetectedConverter;
+            WordConverter converter = SelectConverter(inputFiles);
             int wordCount = inputFiles.Count(IsWordFile);
             int pdfCount = inputFiles.Count(IsPdfFile);
             int imageCount = inputFiles.Count(IsImageFile);
@@ -285,14 +344,14 @@ namespace DocHub
                     if (!IsWordFile(inputFiles[i]) || converter == WordConverter.None) continue;
 
                     string source = inputFiles[i];
-                    if (word == null && converter == WordConverter.MicrosoftWord)
+                    if (word == null && converter != WordConverter.LibreOffice)
                         Report(progress, (int)(processed * 76.0 / Math.Max(1, convertible)),
                             Loc.T(Txt.MergeStartingWord));
 
                     string tempPdf = Path.Combine(tempDir!, $"word_{i:D4}.pdf");
-                    if (converter == WordConverter.MicrosoftWord)
+                    if (converter == WordConverter.MicrosoftWord || converter == WordConverter.WpsOffice)
                     {
-                        EnsureWord(ref word, ref documents);
+                        EnsureOffice(ref word, ref documents, converter);
                         ExportWordToPdf(word!, documents!, source, tempPdf,
                             passwords != null && passwords.TryGetValue(source, out string? wordPassword)
                                 ? wordPassword
@@ -647,11 +706,15 @@ namespace DocHub
             progress?.Report(new MergeProgress(Math.Clamp(percent, 0, 100), status));
         }
 
-        internal static void EnsureWord(ref object? word, ref object? documents)
+        internal static void EnsureOffice(
+            ref object? word, ref object? documents, WordConverter converter)
         {
             if (word != null && documents != null) return;
 
-            Type? type = Type.GetTypeFromProgID("Word.Application");
+            string? progId = converter == WordConverter.WpsOffice
+                ? GetWpsProgId()
+                : "Word.Application";
+            Type? type = progId != null ? Type.GetTypeFromProgID(progId) : null;
             if (type == null)
                 throw new MergeException(Loc.T(Txt.MergeWordNotInstalled));
 

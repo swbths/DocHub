@@ -261,14 +261,14 @@ namespace DocHub
             [Txt.MergeNoDocs] = "Please add documents to merge first.",
             [Txt.MergeFileMissing] = "File missing or moved:\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word or LibreOffice was not found, so Word documents cannot be converted.\n\n" +
-                "Install Microsoft Word or LibreOffice first; PDF and image merges are unaffected.",
+                "Microsoft Word, WPS Office or LibreOffice was not found, so Word documents cannot be converted.\n\n" +
+                "Install one of them first; PDF and image merges are unaffected.",
             [Txt.MergeWordStartFail] =
-                "Could not start Microsoft Word. Make sure it is installed and opens normally.",
+                "Could not start the Word / WPS conversion engine. Make sure it is installed and opens normally.",
             [Txt.MergeWordNotInstalled] =
-                "Microsoft Word or LibreOffice was not found. Please install one of them and try again.",
+                "Microsoft Word, WPS Office or LibreOffice was not found. Please install one of them and try again.",
             [Txt.MergeProcessing] = "Processing ({0}/{1}): {2}",
-            [Txt.MergeStartingWord] = "Starting the Word conversion engine…",
+            [Txt.MergeStartingWord] = "Starting the Word / WPS conversion engine…",
             [Txt.MergeMergingPages] = "Merging pages…",
             [Txt.MergeMerging] = "Merging ({0}/{1}): {2}",
             [Txt.MergePdfUnreadable] =
@@ -286,8 +286,8 @@ namespace DocHub
             [Txt.MergeWordOpenFail] = "Cannot open \"{0}\".",
             [Txt.MergeWordConvertEmpty] = "\"{0}\" produced no valid pages after conversion.",
             [Txt.MergeWordConvertFail] =
-                "Cannot convert Word document \"{0}\".\n\nMake sure it is not encrypted or damaged and that " +
-                "Microsoft Word can open it normally.\n\nTechnical details: {1}",
+                "Cannot convert Word / WPS document \"{0}\".\n\nMake sure it is not encrypted or damaged and that " +
+                "Microsoft Word or WPS Office can open it normally.\n\nTechnical details: {1}",
             [Txt.MergePasswordTitle] = "Protected file",
             [Txt.MergePasswordHint] = "Enter the password that opens this file. It is used for this merge only.",
             [Txt.MergePasswordPlaceholder] = "Password",
@@ -300,9 +300,9 @@ namespace DocHub
 
             [Txt.MsgSkipWordTitle] = "Word files cannot be converted",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word or LibreOffice was not found, so {0} Word file(s) cannot be converted.\n\n" +
+                "Microsoft Word, WPS Office or LibreOffice was not found, so {0} Word file(s) cannot be converted.\n\n" +
                 "Skip these Word files and merge the remaining PDF and image files?",
-            [Txt.StatusSkippedWord] = "Skipped {0} Word file(s) — Word / LibreOffice not installed",
+            [Txt.StatusSkippedWord] = "Skipped {0} Word file(s) — Word / WPS / LibreOffice not installed",
 
             [Txt.ViewResult] = "View merged PDF",
             [Txt.PdfViewerTitle] = "PDF viewer",
@@ -575,17 +575,17 @@ namespace DocHub
                 "#Fixed\n" +
                 "· PDF to Images now reads the source PDF only; its text, images and pages stay unchanged\n",
             [Txt.NavWordPdfTitle] = "Word to PDF",
-            [Txt.NavWordPdfSubtitle] = "Batch convert Word to PDF",
+            [Txt.NavWordPdfSubtitle] = "Batch convert Word / WPS to PDF",
             [Txt.WordPdfPageTitle] = "Word to PDF",
-            [Txt.WordPdfPageSubtitle] = "Convert Word separately or merge into one PDF · Local processing",
-            [Txt.WordPdfFilesTitle] = "Word files",
+            [Txt.WordPdfPageSubtitle] = "Convert Word / WPS separately or merge into one PDF · Local processing",
+            [Txt.WordPdfFilesTitle] = "Word / WPS files",
             [Txt.WordPdfCountFormat] = "{0} files",
             [Txt.WordPdfListHint] = "Drag on empty space to marquee · converted in list order",
             [Txt.WordPdfAdd] = "Add Word",
-            [Txt.WordPdfDialogTitle] = "Select Word documents to convert",
-            [Txt.WordPdfEmptyTitle] = "Drop Word files here",
+            [Txt.WordPdfDialogTitle] = "Select Word / WPS documents to convert",
+            [Txt.WordPdfEmptyTitle] = "Drop Word / WPS files here",
             [Txt.WordPdfEmptySubtitle] = "or click Add Word to select multiple files",
-            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt .wps .wpt",
             [Txt.WordPdfSettingsTitle] = "Conversion settings",
             [Txt.WordPdfMergeOption] = "Merge into one file",
             [Txt.WordPdfMergeHint] = "When off, each Word file is saved as a PDF with the same name",
@@ -602,6 +602,7 @@ namespace DocHub
             [Txt.WordPdfReady] = "Ready · each Word file becomes its own PDF",
             [Txt.WordPdfReadyMerge] = "Ready · merged into one PDF in list order",
             [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineWps] = "WPS Office",
             [Txt.WordPdfEngineLibre] = "LibreOffice",
             [Txt.WordPdfProcessing] = "Converting ({0}/{1}): {2}",
             [Txt.WordPdfMerging] = "Merging PDF pages…",
@@ -612,8 +613,8 @@ namespace DocHub
             [Txt.WordPdfFailTitle] = "Conversion failed",
             [Txt.WordPdfNoFiles] = "Add Word documents to convert first.",
             [Txt.WordPdfNeedFolder] = "Choose a save location.",
-            [Txt.WordPdfNoEngine] = "Microsoft Word or LibreOffice is required to convert Word files.",
-            [Txt.WordPdfNonWord] = "Not a supported Word document: {0}",
+            [Txt.WordPdfNoEngine] = "Microsoft Word, WPS Office or LibreOffice is required to convert Word / WPS files.",
+            [Txt.WordPdfNonWord] = "Not a supported Word / WPS document: {0}",
             [Txt.WordPdfWriteError] = "Could not write the PDF: {0}",
             [Txt.WordPdfFailGeneric] = "Could not convert the Word document: {0}",
             [Txt.WordPdfAdded] = "Added {0} document(s)",
@@ -621,8 +622,13 @@ namespace DocHub
             [Txt.WordPdfNothingAdded] = "Nothing added: files are duplicates, missing, or not Word documents",
             [Txt.WordPdfOutputCount] = "{0} PDFs",
             [Txt.MsgWordPdfBusy] = "Word conversion is running. Please wait before closing the window.",
-            [Txt.TipNavWordPdf] = "Word to PDF: save each file separately or merge into one",
-            [Txt.Feature7] = "Batch Word to PDF with original file names by default, optional single-file merge and output watermark",
+            [Txt.TipNavWordPdf] = "Word / WPS to PDF: save each file separately or merge into one",
+            [Txt.Feature7] = "Batch Word / WPS to PDF with original file names by default, optional single-file merge and output watermark",
+            [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
+            [Txt.ChangelogItems4522] =
+                "# Added\n" +
+                "· Word to PDF now supports WPS Writer formats (.wps, .wpt)\n" +
+                "· WPS files are converted by WPS Office when available; Word documents still use Microsoft Word\n",
             [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
             [Txt.ChangelogItems4521] =
                 "# Maintenance\n" +

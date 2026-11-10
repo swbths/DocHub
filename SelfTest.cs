@@ -239,6 +239,19 @@ namespace DocHub
             report.AppendLine(
                 $"  [{(wordNameOk ? "OK" : "FAIL")}] Word 输出名清理：\"{sanitized}\"");
 
+            bool wpsOk = MergeEngine.IsWordFile("示例.WPS") &&
+                         MergeEngine.IsWordFile("模板.wpt") &&
+                         MergeEngine.IsWpsFile("模板.wpt") &&
+                         !MergeEngine.IsWpsFile("示例.docx") &&
+                         MergeEngine.IsWordFile("示例.docx");
+            WordConverter wpsConverter = MergeEngine.SelectConverter(new[] { "示例.wps" });
+            bool wpsRouteOk = wpsConverter != WordConverter.MicrosoftWord &&
+                              (!MergeEngine.HasWpsCom() || wpsConverter == WordConverter.WpsOffice);
+            report.AppendLine(
+                $"  [{(wpsOk ? "OK" : "FAIL")}] WPS 格式识别：.wps/.wpt 纳入 Word 支持且不误判 Word 文档");
+            report.AppendLine(
+                $"  [{(wpsRouteOk ? "OK" : "FAIL")}] WPS 文件转换引擎：{wpsConverter}（WPS COM={MergeEngine.HasWpsCom()}）");
+
             bool quotesOk = defaults.ShowQuotes && defaults.Clone().ShowQuotes;
             report.AppendLine(
                 $"  [{(quotesOk ? "OK" : "FAIL")}] 名言卡片默认显示且可随设置克隆：ShowQuotes={defaults.ShowQuotes}");

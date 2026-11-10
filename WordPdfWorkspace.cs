@@ -762,16 +762,22 @@ namespace DocHub
 
         private string ReadyText()
         {
-            if (!WordPdfEngine.IsAvailable)
+            WordConverter converter = _documents.Count > 0
+                ? MergeEngine.SelectConverter(_documents.Select(d => d.Path))
+                : MergeEngine.DetectedConverter;
+            if (converter == WordConverter.None)
                 return Loc.T(Txt.WordPdfNoEngine);
 
-            string engine = Loc.T(MergeEngine.DetectedConverter == WordConverter.MicrosoftWord
-                ? Txt.WordPdfEngineWord
-                : Txt.WordPdfEngineLibre);
+            Txt engineKey = converter switch
+            {
+                WordConverter.MicrosoftWord => Txt.WordPdfEngineWord,
+                WordConverter.WpsOffice => Txt.WordPdfEngineWps,
+                _ => Txt.WordPdfEngineLibre
+            };
             string mode = Loc.T(_settings.WordPdfMergeIntoOne
                 ? Txt.WordPdfReadyMerge
                 : Txt.WordPdfReady);
-            return mode + "  ·  " + engine;
+            return mode + "  ·  " + Loc.T(engineKey);
         }
 
         private void UpdateReadyStatus()
