@@ -231,7 +231,7 @@ namespace DocHub
             [Txt.ChangelogItems100] =
                 "#New\n" +
                 "· First release: any Word format + PDF merge, batch import, drag reorder, progress",
-            [Txt.ContactAuthor] = "Author: AI · Concept: chao",
+            [Txt.ContactAuthor] = "Author: AI",
             [Txt.Copyright] = "© 2026 AI · Local processing, peace of mind",
             [Txt.EulaButton] = "User Agreement",
             [Txt.EulaTitle] = "User Agreement",
@@ -623,6 +623,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word conversion is running. Please wait before closing the window.",
             [Txt.TipNavWordPdf] = "Word to PDF: save each file separately or merge into one",
             [Txt.Feature7] = "Batch Word to PDF with original file names by default, optional single-file merge and output watermark",
+            [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
+            [Txt.ChangelogItems4521] =
+                "# Maintenance\n" +
+                "· Removed the extra credit from the About page and program metadata; the author is AI\n" +
+                "· Updated the repository address to GitHub (github.com/swbths/DocHub)\n",
             [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
             [Txt.ChangelogItems4520] =
                 "# Improved\n" +

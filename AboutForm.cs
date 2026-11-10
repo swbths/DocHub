@@ -191,6 +191,7 @@ namespace DocHub
             rtf.Append('}');
             rtf.Append(@"\viewkind4\uc1\pard\f0\fs").Append(HalfPoints(Theme.SmallFont)).Append(' ');
 
+            AppendEntry(rtf, Loc.T(Txt.Changelog4521), Loc.T(Txt.ChangelogItems4521));
             AppendEntry(rtf, Loc.T(Txt.Changelog4520), Loc.T(Txt.ChangelogItems4520));
             AppendEntry(rtf, Loc.T(Txt.Changelog4519), Loc.T(Txt.ChangelogItems4519));
             AppendEntry(rtf, Loc.T(Txt.Changelog4518), Loc.T(Txt.ChangelogItems4518));

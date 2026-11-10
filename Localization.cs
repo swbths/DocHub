@@ -157,7 +157,7 @@ namespace DocHub
         WordPdfAdded, WordPdfSkippedNonWord, WordPdfNothingAdded, WordPdfOutputCount,
         MsgWordPdfBusy, TipNavWordPdf, Feature7,
         Changelog4518, ChangelogItems4518,
-        Changelog4520, ChangelogItems4520, Changelog4519, ChangelogItems4519,
+        Changelog4521, ChangelogItems4521, Changelog4520, ChangelogItems4520, Changelog4519, ChangelogItems4519,
 
         Changelog452, ChangelogItems452,
         Changelog453, ChangelogItems453,

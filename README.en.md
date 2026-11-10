@@ -6,7 +6,7 @@ A Windows desktop tool that merges **Word, PDF and image** files into a **single
 
 Everything runs locally — no uploads, no telemetry.
 
-- Version: `4.5.20` (2026-11-10)
+- Version: `4.5.21` (2026-11-10)
 - Platform: Windows 10 2004 (10.0.19041) or later, x64
 - Stack: .NET 10 + WinForms + [PDFsharp](https://github.com/empira/PDFsharp) 6.2.4
 
@@ -124,7 +124,7 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 
 ### Installer (recommended)
 
-Run `文枢_安装程序_v4.5.20.exe`:
+Run `文枢_安装程序_v4.5.21.exe`:
 
 - Installs to `%LOCALAPPDATA%\Programs\DocHub` (per-user) by default — **no administrator rights needed**, nothing written to `C:\Program Files`, no UAC prompt; the folder can be changed and the path you enter is used as-is (picking a path under `C:\Program Files` shows a warning that normal users usually cannot write there)
 - Creates Start-menu and desktop shortcuts, plus an **Uninstall DocHub** entry in the Start-menu folder
@@ -137,13 +137,13 @@ Silent mode (deployment and automated tests; the installer is built in this repo
 
 ```bat
 :: Full silent install (per-user, default folder %LOCALAPPDATA%\Programs\DocHub)
-文枢_安装程序_v4.5.20.exe --silent
+文枢_安装程序_v4.5.21.exe --silent
 
 :: Custom folder (a path under Program Files falls back to the per-user folder)
-文枢_安装程序_v4.5.20.exe --silent --dir D:\Apps\DocHub
+文枢_安装程序_v4.5.21.exe --silent --dir D:\Apps\DocHub
 
 :: Extract the payload only: no registry, no shortcuts — handy for verifying contents
-文枢_安装程序_v4.5.20.exe --extract D:\temp\dochub_payload
+文枢_安装程序_v4.5.21.exe --extract D:\temp\dochub_payload
 
 :: Silent uninstall
 "%LOCALAPPDATA%\Programs\DocHub\app\DocHub.exe" --uninstall --yes
@@ -153,7 +153,7 @@ Exit codes: `0` success, `1` failure, `2` bad arguments, `3` some files could no
 
 ### Portable
 
-Extract `文枢_绿色版_v4.5.20.zip` and run `DocHub.exe` from its root. Nothing is written to the registry and no shortcuts are created. The build is self-contained — **no .NET runtime is required**.
+Extract `文枢_绿色版_v4.5.21.zip` and run `DocHub.exe` from its root. Nothing is written to the registry and no shortcuts are created. The build is self-contained — **no .NET runtime is required**.
 
 ---
 
@@ -204,8 +204,8 @@ powershell -ExecutionPolicy Bypass -File tools\package.ps1
 
 Outputs in `dist\`:
 
-- `文枢_安装程序_v4.5.20.exe`
-- `文枢_绿色版_v4.5.20.zip`
+- `文枢_安装程序_v4.5.21.exe`
+- `文枢_绿色版_v4.5.21.zip`
 
 Build the app only:
 
@@ -304,9 +304,9 @@ A normal uninstall removes the folder, registry entry and shortcuts. If files we
 
 ## Feedback
 
-- Author: AI (software concept: chao)
+- Author: AI
 - Third-party components and licenses: see [NOTICE.md](NOTICE.md)
-- Repository: <https://gitee.com/yisoooo/hlm>
+- Repository: <https://github.com/swbths/DocHub>
 - This is a personal learning and utility project; issues and suggestions are welcome.
 
 ## Acknowledgements

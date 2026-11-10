@@ -231,7 +231,7 @@ namespace DocHub
             [Txt.ChangelogItems100] =
                 "#新增\n" +
                 "· 首个版本：Word 全格式与 PDF 混搭合并、批量导入、拖拽排序、进度显示",
-            [Txt.ContactAuthor] = "作者：AI · 构思：chao",
+            [Txt.ContactAuthor] = "作者：AI",
             [Txt.Copyright] = "© 2026 AI · 本地处理更安心",
             [Txt.EulaButton] = "用户协议",
             [Txt.EulaTitle] = "用户协议",
@@ -614,6 +614,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "正在转换 Word，请等待完成后再关闭窗口。",
             [Txt.TipNavWordPdf] = "Word 转 PDF：每份单独输出，或合并为一个文件",
             [Txt.Feature7] = "Word 批量转 PDF：默认按原文件名逐份输出，可合并为一个文件，并可为输出加水印",
+            [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
+            [Txt.ChangelogItems4521] =
+                "#维护\n" +
+                "· 移除关于页与程序元数据中的额外署名，仅保留作者 AI\n" +
+                "· 软件仓库地址更新为 GitHub（github.com/swbths/DocHub）\n",
             [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
             [Txt.ChangelogItems4520] =
                 "#优化\n" +

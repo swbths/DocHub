@@ -231,7 +231,7 @@ namespace DocHub
             [Txt.ChangelogItems100] =
                 "#새 기능\n" +
                 "· 첫 버전: Word 모든 형식 + PDF 병합, 한 번에 불러오기, 끌어서 정렬, 진행률 표시",
-            [Txt.ContactAuthor] = "제작자: AI · 기획: chao",
+            [Txt.ContactAuthor] = "제작자: AI",
             [Txt.Copyright] = "© 2026 AI · 로컬 처리로 더 안전하게",
             [Txt.EulaButton] = "사용자 약관",
             [Txt.EulaTitle] = "사용자 약관",
@@ -615,6 +615,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word 변환 중입니다. 완료될 때까지 창을 닫지 마세요.",
             [Txt.TipNavWordPdf] = "Word → PDF: 개별 출력 또는 하나의 파일로 병합",
             [Txt.Feature7] = "Word 일괄 PDF 변환: 기본적으로 원본 파일 이름으로 개별 출력, 하나의 파일 병합과 출력 워터마크 지원",
+            [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
+            [Txt.ChangelogItems4521] =
+                "#유지보수\n" +
+                "· 정보 화면과 프로그램 메타데이터에서 추가 표기를 제거하고 제작자를 AI로 통일\n" +
+                "· 저장소 주소를 GitHub(github.com/swbths/DocHub)로 변경\n",
             [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
             [Txt.ChangelogItems4520] =
                 "#개선\n" +

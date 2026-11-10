@@ -231,7 +231,7 @@ namespace DocHub
             [Txt.ChangelogItems100] =
                 "#新機能\n" +
                 "· 初回リリース：Word 全形式 + PDF 結合、一括読み込み、ドラッグ並べ替え、進捗表示",
-            [Txt.ContactAuthor] = "作者：AI · 企画：chao",
+            [Txt.ContactAuthor] = "作者：AI",
             [Txt.Copyright] = "© 2026 AI · ローカル処理で安心",
             [Txt.EulaButton] = "利用規約",
             [Txt.EulaTitle] = "利用規約",
@@ -616,6 +616,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word を変換中です。完了するまでウィンドウを閉じないでください。",
             [Txt.TipNavWordPdf] = "Word → PDF：個別に出力、または 1 つのファイルに結合",
             [Txt.Feature7] = "Word を一括で PDF に変換。既定では元のファイル名で個別出力し、1 ファイルへの結合や出力への透かしも可能",
+            [Txt.Changelog4521] = "4.5.21 · 2026-11-10",
+            [Txt.ChangelogItems4521] =
+                "#メンテナンス\n" +
+                "· アプリ情報とプログラムのメタデータから追加のクレジットを削除し、作者を AI に統一\n" +
+                "· リポジトリのアドレスを GitHub（github.com/swbths/DocHub）に更新\n",
             [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
             [Txt.ChangelogItems4520] =
                 "#改善\n" +
