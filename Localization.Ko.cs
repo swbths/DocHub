@@ -13,17 +13,20 @@ namespace DocHub
             [Txt.Ok] = "확인",
             [Txt.Close] = "닫기",
             [Txt.Cancel] = "취소",
+            [Txt.Yes] = "예",
+            [Txt.No] = "아니요",
             [Txt.Save] = "저장",
             [Txt.Reset] = "기본값 복원",
             [Txt.Browse] = "찾아보기",
             [Txt.PreviewWord] = "미리 듣기",
             [Txt.Settings] = "설정",
             [Txt.About] = "정보",
+            [Txt.Skin] = "스킨",
             [Txt.RailMerge] = "병합",
 
             [Txt.DocsTitle] = "파일 목록",
             [Txt.DocCountFormat] = "{0}개 파일",
-            [Txt.ListHint] = "목록 항목을 끌어서 순서를 바꿀 수 있습니다 · Word / PDF / 이미지를 한 번에 끌어다 놓으세요",
+            [Txt.ListHint] = "끌어서 순서 변경 · 빈 곳을 드래그해 범위 선택 · 여러 파일을 한 번에 놓기",
             [Txt.AddDocs] = "파일 추가",
             [Txt.MoveUp] = "위로",
             [Txt.MoveDown] = "아래로",
@@ -55,6 +58,7 @@ namespace DocHub
             [Txt.TipStart] = "목록 순서대로 병합하여 PDF 생성",
             [Txt.TipSettings] = "이름 방식, 테마, 완료음, 언어",
             [Txt.TipAbout] = "버전, 업데이트 기록, 사용자 약관",
+            [Txt.TipCancelBox] = "박스 선택을 취소하고 선택 전 상태로 되돌립니다(Esc)",
             [Txt.TrayOpen] = "주 창 열기",
             [Txt.TrayExit] = "종료",
 
@@ -132,6 +136,14 @@ namespace DocHub
             [Txt.SoundHint] = "완료음을 먼저 켠 뒤 효과음을 선택하세요. 선택하면 바로 재생됩니다",
             [Txt.LanguageSection] = "인터페이스 언어",
             [Txt.LanguageHint] = "전환 즉시 적용됩니다",
+            [Txt.QuoteSection] = "오늘의 한마디",
+            [Txt.QuoteHint] = "UI 언어에 맞춰 바뀝니다",
+            [Txt.QuoteToggle] = "병합 페이지에 명언이나 영화 대사 표시",
+            [Txt.QuoteAutoRefresh] = "명언 자동 전환",
+            [Txt.QuoteRefreshInterval] = "전환 간격",
+            [Txt.QuoteRefreshSeconds] = "초",
+            [Txt.QuoteRefreshHint] = "켜면 설정한 간격마다 자동으로 다음 문장으로 바뀝니다. 끄면 카드를 클릭해 바꿀 수 있습니다",
+            [Txt.TipQuote] = "클릭하여 다른 문장 보기",
             [Txt.OutputSection] = "저장 위치",
             [Txt.OutputHint] = "병합된 PDF를 저장할 위치",
             [Txt.OutputFirst] = "맨 위 파일의 폴더",
@@ -140,12 +152,14 @@ namespace DocHub
             [Txt.OutputCustomPlaceholder] = "폴더를 선택하거나 경로 입력",
             [Txt.SkinBlueName] = "클래식 블루",
             [Txt.SkinBlueDesc] = "산뜻하고 맑음",
-            [Txt.SkinRedName] = "NetEase 레드",
-            [Txt.SkinRedDesc] = "클래식 Cloud Music",
             [Txt.SkinNightName] = "야간 모드",
             [Txt.SkinNightDesc] = "몰입형 다크",
             [Txt.SkinCloudName] = "클라우드 화이트",
             [Txt.SkinCloudDesc] = "따뜻한 종이 질감",
+            [Txt.SkinSkeuoName] = "스큐어모피즘",
+            [Txt.SkinSkeuoDesc] = "가죽과 종이 질감",
+            [Txt.SkinNeumorphName] = "뉴모피즘",
+            [Txt.SkinNeumorphDesc] = "부드러운 입체감",
             [Txt.SettingsLiveHint] = "모든 변경 사항이 즉시 적용됩니다",
 
             [Txt.AboutTitle] = "정보",
@@ -302,6 +316,7 @@ namespace DocHub
             [Txt.WatermarkForMerge] = "문서 병합",
             [Txt.WatermarkForPdfImage] = "PDF → 이미지",
             [Txt.WatermarkForImagePdf] = "이미지 → PDF",
+            [Txt.WatermarkForWordPdf] = "Word → PDF",
             [Txt.WatermarkPresets] = "기본 문구",
             [Txt.WatermarkCustom] = "사용자 지정",
             [Txt.WatermarkPreset1] = "원본",
@@ -405,7 +420,7 @@ namespace DocHub
             [Txt.ConvertPageSubtitle] = "PDF의 모든 페이지를 이미지로 내보내기 · 원본 PDF는 읽기 전용",
             [Txt.ConvertFilesTitle] = "PDF 파일",
             [Txt.ConvertCountFormat] = "{0}개 파일",
-            [Txt.ConvertListHint] = "PDF를 추가하면 페이지 수를 자동으로 읽습니다 · 일괄 변환 지원",
+            [Txt.ConvertListHint] = "빈 곳을 드래그해 범위 선택 · PDF 추가 시 페이지 수 자동",
             [Txt.ConvertAdd] = "PDF 추가",
             [Txt.ConvertDialogTitle] = "변환할 PDF 선택",
             [Txt.ConvertEmptyTitle] = "PDF를 여기에 끌어다 놓으세요",
@@ -481,14 +496,14 @@ namespace DocHub
             [Txt.TipNavConvert] = "PDF → 이미지: PDF의 각 페이지를 이미지로 내보내기",
             [Txt.TipAppearance] = "모양 설정 열기",
             [Txt.TipNotifications] = "완료 알림 설정 열기",
-            [Txt.TipWatermark] = "워터마크 설정 열기 (문서 병합에만 적용)",
+            [Txt.TipWatermark] = "워터마크 설정 열기",
             [Txt.NavImagePdfTitle] = "이미지 → PDF",
             [Txt.NavImagePdfSubtitle] = "이미지를 개별 또는 하나의 PDF로",
             [Txt.ImagePdfPageTitle] = "이미지 → PDF",
             [Txt.ImagePdfPageSubtitle] = "이미지를 개별 출력하거나 하나의 PDF로 병합 · 로컬 처리",
             [Txt.ImagePdfFilesTitle] = "이미지 파일",
             [Txt.ImagePdfCountFormat] = "{0}개 파일",
-            [Txt.ImagePdfListHint] = "목록 순서대로 변환 · 기본은 이미지마다 개별 출력",
+            [Txt.ImagePdfListHint] = "빈 곳을 드래그해 범위 선택 · 목록 순서대로 변환",
             [Txt.ImagePdfAdd] = "이미지 추가",
             [Txt.ImagePdfDialogTitle] = "변환할 이미지 선택",
             [Txt.ImagePdfEmptyTitle] = "이미지를 여기에 끌어다 놓으세요",
@@ -551,6 +566,146 @@ namespace DocHub
                 "· 개별 출력 시 한 장이 실패해도 나머지를 계속 처리하고 성공/실패 수를 요약\n" +
                 "#수정\n" +
                 "· PDF → 이미지는 원본 PDF를 읽기 전용으로만 사용하며 텍스트·이미지·페이지를 변경하지 않음\n",
+            [Txt.NavWordPdfTitle] = "Word → PDF",
+            [Txt.NavWordPdfSubtitle] = "Word 일괄 PDF 변환",
+            [Txt.WordPdfPageTitle] = "Word → PDF",
+            [Txt.WordPdfPageSubtitle] = "Word를 개별 또는 하나의 PDF로 변환 · 로컬 처리",
+            [Txt.WordPdfFilesTitle] = "Word 문서",
+            [Txt.WordPdfCountFormat] = "{0}개 문서",
+            [Txt.WordPdfListHint] = "빈 영역을 드래그하여 선택 · 목록 순서대로 변환",
+            [Txt.WordPdfAdd] = "Word 추가",
+            [Txt.WordPdfDialogTitle] = "변환할 Word 문서 선택",
+            [Txt.WordPdfEmptyTitle] = "Word를 여기에 끌어다 놓으세요",
+            [Txt.WordPdfEmptySubtitle] = "또는 「Word 추가」를 클릭하여 여러 개 선택",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfSettingsTitle] = "변환 설정",
+            [Txt.WordPdfMergeOption] = "하나의 파일로 병합",
+            [Txt.WordPdfMergeHint] = "끄면 각 Word가 같은 이름의 PDF로 개별 출력됩니다",
+            [Txt.WordPdfNameLabel] = "파일 이름",
+            [Txt.WordPdfNamePlaceholder] = "비워 두면 첫 Word 파일 이름 사용",
+            [Txt.WordPdfSeparateHint] = "PDF 이름은 Word와 같으며 중복 시 번호가 붙습니다",
+            [Txt.WordPdfOutput] = "저장 위치",
+            [Txt.WordPdfNamePreview] = "출력: {0}",
+            [Txt.WordPdfNamePreviewMulti] = "Word와 같은 이름의 PDF {0}개",
+            [Txt.WordPdfStart] = "변환 시작",
+            [Txt.WordPdfRunning] = "변환 중…",
+            [Txt.WordPdfCancel] = "취소",
+            [Txt.WordPdfCancelling] = "취소 중…",
+            [Txt.WordPdfReady] = "준비됨 · 각 Word를 개별 PDF로 출력",
+            [Txt.WordPdfReadyMerge] = "준비됨 · 목록 순서대로 하나의 PDF로 병합",
+            [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineLibre] = "LibreOffice",
+            [Txt.WordPdfProcessing] = "변환 중 ({0}/{1}): {2}",
+            [Txt.WordPdfMerging] = "PDF 페이지 병합 중…",
+            [Txt.WordPdfDone] = "변환 완료 · {0}페이지 · {1}",
+            [Txt.WordPdfDoneFiles] = "변환 완료 · PDF {0}개 · {1}",
+            [Txt.WordPdfCancelled] = "취소됨 · {0}개 완료",
+            [Txt.WordPdfFailStatus] = "변환에 실패했습니다. 문서를 확인 후 다시 시도하세요",
+            [Txt.WordPdfFailTitle] = "변환 실패",
+            [Txt.WordPdfNoFiles] = "먼저 변환할 Word 문서를 추가하세요.",
+            [Txt.WordPdfNeedFolder] = "저장 위치를 선택하세요.",
+            [Txt.WordPdfNoEngine] = "Microsoft Word 또는 LibreOffice가 없어 Word를 변환할 수 없습니다.",
+            [Txt.WordPdfNonWord] = "지원하지 않는 Word 문서입니다: {0}",
+            [Txt.WordPdfWriteError] = "PDF를 쓸 수 없습니다: {0}",
+            [Txt.WordPdfFailGeneric] = "Word 변환 실패: {0}",
+            [Txt.WordPdfAdded] = "문서 {0}개 추가됨",
+            [Txt.WordPdfSkippedNonWord] = "Word가 아닌 파일 {0}개 무시됨",
+            [Txt.WordPdfNothingAdded] = "추가된 파일이 없습니다: 중복, 없음 또는 Word 아님",
+            [Txt.WordPdfOutputCount] = "PDF {0}개",
+            [Txt.MsgWordPdfBusy] = "Word 변환 중입니다. 완료될 때까지 창을 닫지 마세요.",
+            [Txt.TipNavWordPdf] = "Word → PDF: 개별 출력 또는 하나의 파일로 병합",
+            [Txt.Feature7] = "Word 일괄 PDF 변환: 기본적으로 원본 파일 이름으로 개별 출력, 하나의 파일 병합과 출력 워터마크 지원",
+            [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
+            [Txt.ChangelogItems4520] =
+                "#개선\n" +
+                "· 오늘의 한마디가 시작 시와 실행 중에 무작위로 표시되며, 순서대로 넘어가지 않고 연속으로 같은 문장이 나오지 않습니다\n" +
+                "· 자동 전환 간격이 초 단위로 바뀌어 기본 30초이며, 설정에서 5~86400초로 지정할 수 있습니다\n",
+            [Txt.Changelog4519] = "4.5.19 · 2026-11-10",
+            [Txt.ChangelogItems4519] =
+                "#개선\n" +
+                "· 앱의 모든 대화 상자가 현재 스킨을 따릅니다. 확인, 경고, 오류, 질문 창이 스킨의 색상, 글꼴, 모서리, 버튼 스타일을 사용합니다\n" +
+                "· 비밀번호 입력 창도 같은 테두리 없는 스킨 창으로 바뀌어 어두운 스킨에서 흰색 시스템 제목 표시줄이 나타나지 않습니다\n",
+            [Txt.Changelog4518] = "4.5.18 · 2026-11-10",
+            [Txt.ChangelogItems4518] =
+                "#추가\n" +
+                "· 왼쪽에 「Word → PDF」 작업 공간 추가. .doc/.docx/.docm/.dot/.dotx/.dotm/.rtf/.odt 일괄 변환 지원\n" +
+                "· 기본적으로 원본 파일 이름으로 PDF를 개별 출력하고 중복 시 번호 부여. 「하나의 파일로 병합」 선택 가능\n" +
+                "· 워터마크 설정에 「Word → PDF」 대상 추가. 출력 PDF에만 적용되며 원본 문서는 변경되지 않음\n" +
+                "· Microsoft Word 또는 LibreOffice를 자동으로 사용하며 둘 다 없으면 명확히 안내\n",
+            [Txt.Changelog4517] = "4.5.17 · 2026-11-06",
+            [Txt.ChangelogItems4517] =
+                "#개선\n" +
+                "· 명언 라이브러리에서 고전 시가와 한문을 삭제하고 모두 현대 명언으로 교체\n" +
+                "#추가\n" +
+                "· 국내외 명작 영화 대사와 유명인 명언 추가. UI 언어별 66개, 6개 언어 합계 396개\n" +
+                "· 《포레스트 검프》《쇼생크 탈출》《대부》《타이타닉》《나타지마동강세》《일대종사》 등의 영화 대사 수록\n" +
+                "· 스티브 잡스, 넬슨 만델라, 간디, 마틴 루터 킹, 베이컨, 체호프 등의 명언 추가\n",
+            [Txt.Changelog4516] = "4.5.16 · 2026-11-06",
+            [Txt.ChangelogItems4516] =
+                "#개선\n" +
+                "· '오늘의 한마디' 카드를 반투명 유리(프로스트 글라스) 스타일로 개편: 반투명 배경, 상단 하이라이트, 둥근 테두리로 유리 테마와 통일\n" +
+                "· 카드 왼쪽의 빨간 세로선을 제거하여 야간 테마에서도 붉은 장식이 나타나지 않도록 수정\n" +
+                "· 긴 문장은 글자 크기를 자동으로 줄여 잘리지 않고 전체가 표시\n" +
+                "#추가\n" +
+                "· 명언 라이브러리를 348개로 확장(UI 언어별 58개), 세계 명사와 명작 영화 대사를 수록\n",
+            [Txt.Changelog4515] = "4.5.15 · 2026-11-06",
+            [Txt.ChangelogItems4515] =
+                "#추가\n" +
+                "· \"오늘의 한마디\"에 자동 전환을 추가하여 모양 설정에서 전환 간격(기본 5분)을 지정할 수 있습니다\n" +
+                "· 자동 전환을 끄더라도 카드를 클릭하면 즉시 다음 문장으로 바뀝니다\n",
+            [Txt.Changelog4514] = "4.5.14 · 2026-11-06",
+            [Txt.ChangelogItems4514] =
+                "#수정\n" +
+                "· UI 언어를 전환한 뒤 설정 창이 빨간 X로 가득 차거나 처리되지 않은 예외가 발생하던 문제를 수정했습니다\n" +
+                "· 유리 배경 캐시가 실수로 해제되면 자동으로 다시 생성되어 같은 문제가 재발하지 않습니다\n",
+            [Txt.Changelog4513] = "4.5.13 · 2026-11-06",
+            [Txt.ChangelogItems4513] =
+                "#추가\n" +
+                "· 병합 페이지 오른쪽에 \"오늘의 한마디\" 카드를 추가하여 세계 명언과 영화 대사를 출처와 함께 표시합니다\n" +
+                "· 간체 중국어, 번체 중국어, English, 日本語, 한국어, Русский 6개 언어 문장을 내장하고 UI 언어 전환에 맞춰 교체합니다\n" +
+                "· 모양 설정에 \"병합 페이지에 명언이나 영화 대사 표시\" 스위치를 추가했습니다. 카드를 클릭하면 다음 문장으로 바뀝니다\n",
+            [Txt.Changelog4512] = "4.5.12 · 2026-11-06",
+            [Txt.ChangelogItems4512] =
+                "#변경\n" +
+                "· 워터마크 설정과 완료 알림 항목을 왼쪽 아래로 옮겨 스킨 / 설정 / 정보와 함께 배치했습니다\n" +
+                "· 병합 페이지 오른쪽 안내 문구를 진행 표시줄 바로 아래로 올렸습니다\n" +
+                "#수정\n" +
+                "· 워터마크 항목 안내에서 오래된 \"문서 병합에만 적용\" 문구를 삭제했습니다\n",
+            [Txt.Changelog4511] = "4.5.11 · 2026-11-06",
+            [Txt.ChangelogItems4511] =
+                "#변경\n" +
+                "· 터미널 스킨을 제거했습니다. 사용 중이던 설정은 자동으로 클래식 블루로 돌아갑니다\n" +
+                "#수정\n" +
+                "· 오른쪽 위 워터마크 버튼 아이콘이 19px에서 잘려 보이던 문제를 수정했습니다\n",
+            [Txt.Changelog4510] = "4.5.10 · 2026-11-06",
+            [Txt.ChangelogItems4510] =
+                "#수정\n" +
+                "· 일반 왼쪽 클릭(Ctrl+클릭 포함)은 현재 파일만 선택되며 이전 행의 선택은 즉시 사라집니다\n" +
+                "· 범위 선택과 Shift+클릭만 다중 선택을 유지합니다\n",
+            [Txt.Changelog459] = "4.5.9 · 2026-11-06",
+            [Txt.ChangelogItems459] =
+                "#수정\n" +
+                "· 일반 왼쪽 클릭 시 클릭한 파일만 선택되고 이전 행의 선택이 남지 않습니다. 행 안의 위로 / 아래로 / 삭제 버튼도 동일합니다\n" +
+                "· Ctrl / Shift 다중 선택은 그대로 유지됩니다\n",
+            [Txt.Changelog458] = "4.5.8 · 2026-11-06",
+            [Txt.ChangelogItems458] =
+                "#추가\n" +
+                "· 스킨 입구를 왼쪽 아래 설정 위로 옮기고 스킨 / 설정 / 정보를 플랫 라인 아이콘으로 통일\n" +
+                "· 파일 목록에 「선택 취소」 버튼을 추가. 박스 선택 전 상태로 되돌리며 Esc도 동작합니다\n" +
+                "· 삭제, 모두 지우기, 선택 취소 등 목록 버튼에 마우스 오버 팁 추가\n" +
+                "#개선\n" +
+                "· 마우스 왼쪽 버튼으로 범위 선택할 때 목록이 튀는 문제를 수정\n" +
+                "#변경\n" +
+                "· HUD SF 스킨을 제거했으며 저장된 설정은 클래식 블루로 자동 전환\n",
+            [Txt.Changelog457] = "4.5.7 · 2026-11-06",
+            [Txt.ChangelogItems457] =
+                "#추가\n" +
+                "· 파일 목록에서 빈 곳을 드래그해 범위 선택할 수 있으며 세 작업 공간 모두 지원\n" +
+                "· Ctrl을 누른 채 범위 선택하면 기존 선택에 추가\n" +
+                "· 새로운 스킨 4종: 스큐어모피즘, 뉴모피즘, 터미널, HUD SF\n" +
+                "#개선\n" +
+                "· 범위 선택한 파일은 Delete로 한 번에 삭제\n" +
+                "· NetEase Red 스킨을 제거했으며 저장된 설정은 클래식 블루로 자동 전환\n",
             [Txt.Changelog456] = "4.5.6 · 2026-11-06",
             [Txt.ChangelogItems456] =
                 "#개선\n" +

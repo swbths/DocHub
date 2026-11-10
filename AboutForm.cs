@@ -36,7 +36,8 @@ namespace DocHub
                 Loc.T(Txt.Feature3),
                 Loc.T(Txt.Feature4),
                 Loc.T(Txt.Feature5),
-                Loc.T(Txt.Feature6)
+                Loc.T(Txt.Feature6),
+                Loc.T(Txt.Feature7)
             };
 
             _changelogHeaderFont = new Font(Theme.BaseFont.FontFamily, 9.5f, FontStyle.Bold);
@@ -190,6 +191,20 @@ namespace DocHub
             rtf.Append('}');
             rtf.Append(@"\viewkind4\uc1\pard\f0\fs").Append(HalfPoints(Theme.SmallFont)).Append(' ');
 
+            AppendEntry(rtf, Loc.T(Txt.Changelog4520), Loc.T(Txt.ChangelogItems4520));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4519), Loc.T(Txt.ChangelogItems4519));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4518), Loc.T(Txt.ChangelogItems4518));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4517), Loc.T(Txt.ChangelogItems4517));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4516), Loc.T(Txt.ChangelogItems4516));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4515), Loc.T(Txt.ChangelogItems4515));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4514), Loc.T(Txt.ChangelogItems4514));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4513), Loc.T(Txt.ChangelogItems4513));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4512), Loc.T(Txt.ChangelogItems4512));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4511), Loc.T(Txt.ChangelogItems4511));
+            AppendEntry(rtf, Loc.T(Txt.Changelog4510), Loc.T(Txt.ChangelogItems4510));
+            AppendEntry(rtf, Loc.T(Txt.Changelog459), Loc.T(Txt.ChangelogItems459));
+            AppendEntry(rtf, Loc.T(Txt.Changelog458), Loc.T(Txt.ChangelogItems458));
+            AppendEntry(rtf, Loc.T(Txt.Changelog457), Loc.T(Txt.ChangelogItems457));
             AppendEntry(rtf, Loc.T(Txt.Changelog456), Loc.T(Txt.ChangelogItems456));
             AppendEntry(rtf, Loc.T(Txt.Changelog455), Loc.T(Txt.ChangelogItems455));
             AppendEntry(rtf, Loc.T(Txt.Changelog454), Loc.T(Txt.ChangelogItems454));

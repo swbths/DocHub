@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -33,7 +34,10 @@ namespace DocHub
             {
                 Directory.CreateDirectory(root);
                 failures += CheckSkinContrast(report);
+                failures += CheckSkinCatalog(report);
+                failures += CheckMarqueeHitTest(report);
                 failures += CheckSettingsDefaults(report);
+                failures += CheckQuotes(report);
                 failures += CheckImagePdf(report, root);
                 failures += CheckImagePdfSeparate(report, root);
                 failures += CheckPdfSourceIntegrity(report, root);
@@ -41,6 +45,7 @@ namespace DocHub
                 failures += CheckWatermarkOutputs(report, root);
                 failures += CheckIcons(report);
                 failures += CheckSettingsLanguageReload(report);
+                failures += CheckBackdropCacheRecovery(report);
             }
             catch (Exception ex)
             {
@@ -83,7 +88,117 @@ namespace DocHub
                     $"  [{(ok ? "OK" : "FAIL")}] {skin.Id}: title {title:0.00}, subtitle {subtitle:0.00}");
             }
 
+            report.AppendLine();
+            report.AppendLine("[皮肤] 正文/次要/弱化文字与强调按钮对比度");
+            foreach (SkinPalette skin in SkinPalette.All)
+            {
+                double primary = Contrast(skin.TextPrimary, skin.Card);
+                double secondary = Contrast(skin.TextSecondary, skin.Card);
+                double muted = Contrast(skin.TextMuted, skin.Card);
+                double accentText = Contrast(skin.AccentText, skin.Accent);
+                double selected = Contrast(skin.TextPrimary, skin.ListSelected);
+
+                bool ok = primary >= 7.0 && secondary >= 4.5 && muted >= 2.5 &&
+                          accentText >= 3.0 && selected >= 4.5;
+                if (!ok) failures++;
+
+                report.AppendLine(
+                    $"  [{(ok ? "OK" : "FAIL")}] {skin.Id}: 正文 {primary:0.00}, 次要 {secondary:0.00}, " +
+                    $"弱化 {muted:0.00}, 强调按钮 {accentText:0.00}, 选中行 {selected:0.00}");
+            }
+
             return failures;
+        }
+
+        // ---------------- 皮肤目录 ----------------
+
+        private static int CheckSkinCatalog(StringBuilder report)
+        {
+            int failures = 0;
+            report.AppendLine();
+            report.AppendLine("[皮肤] 目录与风格");
+
+            string[] expected =
+            {
+                SkinPalette.ClassicBlueId, SkinPalette.NightId, SkinPalette.CloudWhiteId,
+                SkinPalette.SkeuoId, SkinPalette.NeumorphId
+            };
+            var ids = SkinPalette.All.Select(s => s.Id).ToList();
+            bool setOk = ids.Count == expected.Length &&
+                         expected.All(id => ids.Contains(id)) &&
+                         ids.Distinct().Count() == ids.Count;
+            if (!setOk) failures++;
+            report.AppendLine($"  [{(setOk ? "OK" : "FAIL")}] 皮肤数量 {ids.Count}：{string.Join(" / ", ids)}");
+
+            bool legacyOk = ids.All(id => !id.Contains("netease", StringComparison.OrdinalIgnoreCase)) &&
+                            !SkinPalette.Exists("netease") &&
+                            SkinPalette.FromId("netease").Id == SkinPalette.ClassicBlueId;
+            if (!legacyOk) failures++;
+            report.AppendLine($"  [{(legacyOk ? "OK" : "FAIL")}] 网易云皮肤已移除，未知皮肤回退经典蓝");
+
+            bool hudOk = !SkinPalette.Exists("hud") &&
+                         SkinPalette.FromId("hud").Id == SkinPalette.ClassicBlueId;
+            if (!hudOk) failures++;
+            report.AppendLine($"  [{(hudOk ? "OK" : "FAIL")}] HUD 科幻皮肤已移除，旧配置回退经典蓝");
+
+            bool terminalOk = !SkinPalette.Exists("terminal") &&
+                              SkinPalette.FromId("terminal").Id == SkinPalette.ClassicBlueId;
+            if (!terminalOk) failures++;
+            report.AppendLine($"  [{(terminalOk ? "OK" : "FAIL")}] 终端风皮肤已移除，旧配置回退经典蓝");
+
+            var surfaces = new Dictionary<string, SkinSurface>
+            {
+                [SkinPalette.SkeuoId] = SkinSurface.Skeuomorphic,
+                [SkinPalette.NeumorphId] = SkinSurface.Neumorphic
+            };
+            foreach (var pair in surfaces)
+            {
+                SkinPalette skin = SkinPalette.FromId(pair.Key);
+                bool ok = skin.Surface == pair.Value &&
+                          !string.IsNullOrWhiteSpace(skin.Name) &&
+                          !string.IsNullOrWhiteSpace(skin.Description);
+                if (!ok) failures++;
+                report.AppendLine(
+                    $"  [{(ok ? "OK" : "FAIL")}] {pair.Key}: Surface={skin.Surface}, {skin.Name} / {skin.Description}");
+            }
+
+            return failures;
+        }
+
+        // ---------------- 框选命中 ----------------
+
+        private static int CheckMarqueeHitTest(StringBuilder report)
+        {
+            report.AppendLine();
+            report.AppendLine("[列表] 框选命中与反向拖动");
+
+            var rows = new List<Rectangle>
+            {
+                new(10, 3, 500, 54),
+                new(10, 65, 500, 54),
+                new(10, 127, 500, 54),
+                new(10, 189, 500, 54)
+            };
+
+            Rectangle forward = DocumentListBox.NormalizeMarqueeRect(new Point(50, 20), new Point(300, 120));
+            List<int> hits = DocumentListBox.MarqueeHits(rows, forward);
+            bool forwardOk = hits.SequenceEqual(new[] { 0, 1 });
+
+            Rectangle backward = DocumentListBox.NormalizeMarqueeRect(new Point(300, 120), new Point(50, 20));
+            bool backwardOk = backward == forward;
+
+            // 从左侧 10px 留白起框，拖入行卡片后才命中
+            Rectangle gutter = DocumentListBox.NormalizeMarqueeRect(new Point(3, 10), new Point(6, 40));
+            bool gutterOk = DocumentListBox.MarqueeHits(rows, gutter).Count == 0;
+            Rectangle enter = DocumentListBox.NormalizeMarqueeRect(new Point(3, 10), new Point(20, 40));
+            bool enterOk = DocumentListBox.MarqueeHits(rows, enter).SequenceEqual(new[] { 0 });
+
+            bool ok = forwardOk && backwardOk && gutterOk && enterOk;
+            if (!ok) report.AppendLine($"  明细：forward={string.Join(",", hits)} backward={backwardOk} gutter={gutterOk} enter={enterOk}");
+            if (!ok) return 1;
+
+            report.AppendLine("  [OK] 正向/反向拖动、左右留白与行卡片命中一致");
+            return 0;
         }
 
         // ---------------- 设置默认值 ----------------
@@ -107,9 +222,101 @@ namespace DocHub
 
             bool watermarkOk = !defaults.WatermarkAnyEnabled;
             report.AppendLine(
-                $"  [{(watermarkOk ? "OK" : "FAIL")}] 三个水印开关默认关闭：合并={defaults.WatermarkEnabled}, PDF转图片={defaults.WatermarkForPdfImage}, 图片转PDF={defaults.WatermarkForImagePdf}");
+                $"  [{(watermarkOk ? "OK" : "FAIL")}] 四个水印开关默认关闭：合并={defaults.WatermarkEnabled}, PDF转图片={defaults.WatermarkForPdfImage}, 图片转PDF={defaults.WatermarkForImagePdf}, Word转PDF={defaults.WatermarkForWordPdf}");
 
-            return (convertOk ? 0 : 1) + (soundOk ? 0 : 1) + (watermarkOk ? 0 : 1);
+            AppSettings wordClone = defaults.Clone();
+            bool wordPdfOk = !defaults.WordPdfMergeIntoOne &&
+                             string.IsNullOrEmpty(defaults.LastWordPdfFolder) &&
+                             !wordClone.WordPdfMergeIntoOne &&
+                             string.IsNullOrEmpty(wordClone.LastWordPdfFolder);
+            report.AppendLine(
+                $"  [{(wordPdfOk ? "OK" : "FAIL")}] Word 转 PDF 默认逐份输出且可克隆：" +
+                $"MergeIntoOne={defaults.WordPdfMergeIntoOne}, LastFolder=\"{defaults.LastWordPdfFolder}\"");
+
+            string sanitized = WordPdfEngine.SanitizeStem("a/b:c.pdf");
+            bool wordNameOk = sanitized == "a_b_c" &&
+                              WordPdfEngine.SanitizeStem("  报告.pdf  ") == "报告";
+            report.AppendLine(
+                $"  [{(wordNameOk ? "OK" : "FAIL")}] Word 输出名清理：\"{sanitized}\"");
+
+            bool quotesOk = defaults.ShowQuotes && defaults.Clone().ShowQuotes;
+            report.AppendLine(
+                $"  [{(quotesOk ? "OK" : "FAIL")}] 名言卡片默认显示且可随设置克隆：ShowQuotes={defaults.ShowQuotes}");
+
+            AppSettings quoteClone = defaults.Clone();
+            bool quoteRefreshOk = defaults.QuoteAutoRefresh &&
+                                   defaults.QuoteRefreshSeconds == 30 &&
+                                   quoteClone.QuoteAutoRefresh &&
+                                   quoteClone.QuoteRefreshSeconds == 30;
+            report.AppendLine(
+                $"  [{(quoteRefreshOk ? "OK" : "FAIL")}] 名言自动换句默认开启、间隔 30 秒且可克隆：" +
+                $"AutoRefresh={defaults.QuoteAutoRefresh}, Seconds={defaults.QuoteRefreshSeconds}");
+
+            return (convertOk ? 0 : 1) + (soundOk ? 0 : 1) + (watermarkOk ? 0 : 1) +
+                   (wordPdfOk ? 0 : 1) + (wordNameOk ? 0 : 1) +
+                   (quotesOk ? 0 : 1) + (quoteRefreshOk ? 0 : 1);
+        }
+
+        // ---------------- 名言库 ----------------
+
+        private static int CheckQuotes(StringBuilder report)
+        {
+            int failures = 0;
+            report.AppendLine();
+            report.AppendLine("[名言] 六语言语录库");
+
+            int total = 0;
+            foreach (Language language in Loc.All)
+            {
+                IReadOnlyList<Quote> pool = Quotes.For(language);
+                bool ok = pool.Count >= 50;
+                var texts = new HashSet<string>(StringComparer.Ordinal);
+                foreach (Quote quote in pool)
+                {
+                    if (string.IsNullOrWhiteSpace(quote.Text) ||
+                        string.IsNullOrWhiteSpace(quote.Source) ||
+                        !quote.Source.StartsWith("—", StringComparison.Ordinal))
+                        ok = false;
+                    if (!texts.Add(quote.Text.Trim())) ok = false;
+                }
+
+                total += pool.Count;
+                if (!ok) failures++;
+                report.AppendLine(
+                    $"  [{(ok ? "OK" : "FAIL")}] {language}: {pool.Count} 句，示例「{Quotes.At(language, 0).Text}」{Quotes.At(language, 0).Source}");
+            }
+
+            bool totalOk = total >= 300;
+            if (!totalOk) failures++;
+            report.AppendLine(
+                $"  [{(totalOk ? "OK" : "FAIL")}] 合计 {total} 句（要求 ≥ 300，同一语言内不重复）");
+
+            // 随机播放：启动抽样应有多句不同，连续换句不与上一句重复
+            bool randomOk = true;
+            int index = -1;
+            var covered = new HashSet<int>();
+            for (int i = 0; i < 40; i++)
+            {
+                int next = Quotes.NextRandomIndex(Language.ZhCn, index);
+                if (next < 0 || next == index) randomOk = false;
+                index = next;
+                covered.Add(next);
+            }
+
+            var startupTexts = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = 0; i < 12; i++)
+            {
+                int startup = Quotes.NextRandomIndex(Language.ZhCn, -1);
+                startupTexts.Add(Quotes.At(Language.ZhCn, startup).Text);
+            }
+
+            if (covered.Count < 20 || startupTexts.Count < 4) randomOk = false;
+            if (!randomOk) failures++;
+            report.AppendLine(
+                $"  [{(randomOk ? "OK" : "FAIL")}] 启动与换句均为随机播放：" +
+                $"启动抽样 {startupTexts.Count}/12 句不同，连续 40 次换句无重复且覆盖 {covered.Count} 句");
+
+            return failures;
         }
 
         private static double Contrast(Color foreground, Color background)
@@ -760,6 +967,37 @@ namespace DocHub
             {
                 Loc.SetLanguage(Language.ZhCn);
                 Theme.ApplySkin(SkinPalette.ClassicBlue);
+            }
+        }
+
+        private static int CheckBackdropCacheRecovery(StringBuilder report)
+        {
+            report.AppendLine();
+            report.AppendLine("[玻璃] 背景缓存被误释放后自愈");
+            try
+            {
+                var size = new Size(860, 640);
+                SkinPalette skin = SkinPalette.ClassicBlue;
+                GlassPaint.Backdrop first = GlassPaint.GetBackdrop(size, skin);
+                Bitmap staleSharp = first.Sharp;
+                Bitmap staleFrosted = first.Frosted;
+
+                // 模拟旧版设置窗口在重建时误释放了缓存持有的位图
+                staleSharp.Dispose();
+                staleFrosted.Dispose();
+
+                GlassPaint.Backdrop again = GlassPaint.GetBackdrop(size, skin);
+                bool rebuilt = !ReferenceEquals(again.Sharp, staleSharp) &&
+                               again.Sharp.Width == size.Width &&
+                               again.Frosted.Width == size.Width;
+
+                report.AppendLine($"  [{(rebuilt ? "OK" : "FAIL")}] 命中坏缓存后重建：{rebuilt}");
+                return rebuilt ? 0 : 1;
+            }
+            catch (Exception ex)
+            {
+                report.AppendLine("  [FAIL] 缓存自愈异常: " + ex.Message);
+                return 1;
             }
         }
 

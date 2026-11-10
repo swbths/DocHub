@@ -13,17 +13,20 @@ namespace DocHub
             [Txt.Ok] = "OK",
             [Txt.Close] = "閉じる",
             [Txt.Cancel] = "キャンセル",
+            [Txt.Yes] = "はい",
+            [Txt.No] = "いいえ",
             [Txt.Save] = "保存",
             [Txt.Reset] = "既定に戻す",
             [Txt.Browse] = "参照",
             [Txt.PreviewWord] = "試聴",
             [Txt.Settings] = "設定",
             [Txt.About] = "バージョン情報",
+            [Txt.Skin] = "スキン",
             [Txt.RailMerge] = "結合",
 
             [Txt.DocsTitle] = "ファイルリスト",
             [Txt.DocCountFormat] = "{0} 個のファイル",
-            [Txt.ListHint] = "リスト項目をドラッグして順序を変更 · Word / PDF / 画像をまとめてドロップできます",
+            [Txt.ListHint] = "ドラッグで並べ替え · 空白をドラッグして範囲選択 · 複数ファイルをまとめてドロップ",
             [Txt.AddDocs] = "ファイルを追加",
             [Txt.MoveUp] = "上へ",
             [Txt.MoveDown] = "下へ",
@@ -55,6 +58,7 @@ namespace DocHub
             [Txt.TipStart] = "リスト順に結合して PDF を作成",
             [Txt.TipSettings] = "命名、テーマ、完了音、言語",
             [Txt.TipAbout] = "バージョン、更新履歴、利用規約",
+            [Txt.TipCancelBox] = "範囲選択を解除し、選択前の状態に戻します（Esc）",
             [Txt.TrayOpen] = "メイン画面を開く",
             [Txt.TrayExit] = "終了",
 
@@ -132,6 +136,14 @@ namespace DocHub
             [Txt.SoundHint] = "先に完了音をオンにしてから音を選択してください。選択すると自動再生されます",
             [Txt.LanguageSection] = "表示言語",
             [Txt.LanguageHint] = "切り替えるとすぐに反映されます",
+            [Txt.QuoteSection] = "今日の一言",
+            [Txt.QuoteHint] = "UI 言語に合わせて切り替わります",
+            [Txt.QuoteToggle] = "結合ページに名言や映画の台詞を表示",
+            [Txt.QuoteAutoRefresh] = "名言を自動で切り替え",
+            [Txt.QuoteRefreshInterval] = "切り替え間隔",
+            [Txt.QuoteRefreshSeconds] = "秒",
+            [Txt.QuoteRefreshHint] = "有効にすると設定した間隔で自動的に次の一言に切り替わります。オフの場合はカードをクリックして切り替えます",
+            [Txt.TipQuote] = "クリックで次の一言",
             [Txt.OutputSection] = "保存先",
             [Txt.OutputHint] = "結合後の PDF をどこに保存するか",
             [Txt.OutputFirst] = "先頭ファイルと同じフォルダー",
@@ -140,12 +152,14 @@ namespace DocHub
             [Txt.OutputCustomPlaceholder] = "フォルダーを選択または入力",
             [Txt.SkinBlueName] = "クラシックブルー",
             [Txt.SkinBlueDesc] = "爽やかで透明感",
-            [Txt.SkinRedName] = "NetEase レッド",
-            [Txt.SkinRedDesc] = "定番の Cloud Music",
             [Txt.SkinNightName] = "ナイトモード",
             [Txt.SkinNightDesc] = "没入感のあるダーク",
             [Txt.SkinCloudName] = "クラウドホワイト",
             [Txt.SkinCloudDesc] = "温かい紙の質感",
+            [Txt.SkinSkeuoName] = "スキューモーフィズム",
+            [Txt.SkinSkeuoDesc] = "革と紙の質感",
+            [Txt.SkinNeumorphName] = "ニューモーフィズム",
+            [Txt.SkinNeumorphDesc] = "柔らかな立体感",
             [Txt.SettingsLiveHint] = "すべての変更は即時反映されます",
 
             [Txt.AboutTitle] = "バージョン情報",
@@ -303,6 +317,7 @@ namespace DocHub
             [Txt.WatermarkForMerge] = "文書結合",
             [Txt.WatermarkForPdfImage] = "PDF → 画像",
             [Txt.WatermarkForImagePdf] = "画像 → PDF",
+            [Txt.WatermarkForWordPdf] = "Word → PDF",
             [Txt.WatermarkPresets] = "定型文字",
             [Txt.WatermarkCustom] = "カスタム",
             [Txt.WatermarkPreset1] = "正本",
@@ -406,7 +421,7 @@ namespace DocHub
             [Txt.ConvertPageSubtitle] = "PDF の各ページを画像に書き出し · 元ファイルは読み取り専用で変更しません",
             [Txt.ConvertFilesTitle] = "PDF ファイル",
             [Txt.ConvertCountFormat] = "{0} 個のファイル",
-            [Txt.ConvertListHint] = "PDF を追加するとページ数を自動取得 · 一括変換に対応",
+            [Txt.ConvertListHint] = "空白をドラッグして範囲選択 · PDF 追加時にページ数を自動取得",
             [Txt.ConvertAdd] = "PDF を追加",
             [Txt.ConvertDialogTitle] = "変換する PDF を選択",
             [Txt.ConvertEmptyTitle] = "PDF をここにドロップ",
@@ -482,14 +497,14 @@ namespace DocHub
             [Txt.TipNavConvert] = "PDF→画像：PDF の各ページを画像に書き出し",
             [Txt.TipAppearance] = "外観設定を開く",
             [Txt.TipNotifications] = "完了通知設定を開く",
-            [Txt.TipWatermark] = "透かし設定を開く（文書結合のみ）",
+            [Txt.TipWatermark] = "透かし設定を開く",
             [Txt.NavImagePdfTitle] = "画像→PDF",
             [Txt.NavImagePdfSubtitle] = "画像を個別または 1 つの PDF に",
             [Txt.ImagePdfPageTitle] = "画像→PDF",
             [Txt.ImagePdfPageSubtitle] = "画像を個別に出力、または 1 つの PDF に結合 · ローカル処理",
             [Txt.ImagePdfFilesTitle] = "画像ファイル",
             [Txt.ImagePdfCountFormat] = "{0} 個のファイル",
-            [Txt.ImagePdfListHint] = "リスト順に変換 · 既定では画像ごとに個別出力",
+            [Txt.ImagePdfListHint] = "空白をドラッグして範囲選択 · リスト順に変換",
             [Txt.ImagePdfAdd] = "画像を追加",
             [Txt.ImagePdfDialogTitle] = "変換する画像を選択",
             [Txt.ImagePdfEmptyTitle] = "画像をここにドロップ",
@@ -552,6 +567,146 @@ namespace DocHub
                 "· 個別出力時に 1 枚失敗しても残りの画像を処理し、成功 / 失敗数を集計\n" +
                 "#修正\n" +
                 "· PDF→画像は元 PDF を読み取り専用で扱い、文字・画像・ページを変更しません\n",
+            [Txt.NavWordPdfTitle] = "Word → PDF",
+            [Txt.NavWordPdfSubtitle] = "Word を一括で PDF に変換",
+            [Txt.WordPdfPageTitle] = "Word → PDF",
+            [Txt.WordPdfPageSubtitle] = "Word を個別または 1 つの PDF に変換 · ローカル処理",
+            [Txt.WordPdfFilesTitle] = "Word 文書",
+            [Txt.WordPdfCountFormat] = "{0} 個の文書",
+            [Txt.WordPdfListHint] = "空白をドラッグで範囲選択 · リスト順に変換",
+            [Txt.WordPdfAdd] = "Word を追加",
+            [Txt.WordPdfDialogTitle] = "変換する Word 文書を選択",
+            [Txt.WordPdfEmptyTitle] = "Word をここにドロップ",
+            [Txt.WordPdfEmptySubtitle] = "または「Word を追加」で複数選択",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfSettingsTitle] = "変換設定",
+            [Txt.WordPdfMergeOption] = "1 つのファイルに結合",
+            [Txt.WordPdfMergeHint] = "オフの場合は各 Word を同名の PDF として個別に出力",
+            [Txt.WordPdfNameLabel] = "ファイル名",
+            [Txt.WordPdfNamePlaceholder] = "空欄の場合は最初の Word のファイル名を使用",
+            [Txt.WordPdfSeparateHint] = "PDF は Word と同じ名前で出力され、重複時は連番",
+            [Txt.WordPdfOutput] = "保存先",
+            [Txt.WordPdfNamePreview] = "出力：{0}",
+            [Txt.WordPdfNamePreviewMulti] = "Word と同じ名前の PDF を {0} 個出力",
+            [Txt.WordPdfStart] = "変換を開始",
+            [Txt.WordPdfRunning] = "変換中…",
+            [Txt.WordPdfCancel] = "キャンセル",
+            [Txt.WordPdfCancelling] = "キャンセル中…",
+            [Txt.WordPdfReady] = "準備完了 · 各 Word を個別に PDF 出力",
+            [Txt.WordPdfReadyMerge] = "準備完了 · リスト順に 1 つの PDF に結合",
+            [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineLibre] = "LibreOffice",
+            [Txt.WordPdfProcessing] = "変換中（{0}/{1}）：{2}",
+            [Txt.WordPdfMerging] = "PDF ページを結合中…",
+            [Txt.WordPdfDone] = "変換完了 · {0} ページ · {1}",
+            [Txt.WordPdfDoneFiles] = "変換完了 · {0} 個の PDF · {1}",
+            [Txt.WordPdfCancelled] = "キャンセルしました · {0} 件完了",
+            [Txt.WordPdfFailStatus] = "変換に失敗しました。文書を確認して再試行してください",
+            [Txt.WordPdfFailTitle] = "変換失敗",
+            [Txt.WordPdfNoFiles] = "変換する Word 文書を追加してください。",
+            [Txt.WordPdfNeedFolder] = "保存先を選択してください。",
+            [Txt.WordPdfNoEngine] = "Microsoft Word または LibreOffice が見つからないため、Word を変換できません。",
+            [Txt.WordPdfNonWord] = "対応していない Word 文書です：{0}",
+            [Txt.WordPdfWriteError] = "PDF を書き込めません：{0}",
+            [Txt.WordPdfFailGeneric] = "Word の変換に失敗しました：{0}",
+            [Txt.WordPdfAdded] = "{0} 個の文書を追加しました",
+            [Txt.WordPdfSkippedNonWord] = "{0} 個の Word 以外のファイルを無視しました",
+            [Txt.WordPdfNothingAdded] = "追加されたファイルはありません：重複、存在しない、または Word 以外",
+            [Txt.WordPdfOutputCount] = "{0} 個の PDF",
+            [Txt.MsgWordPdfBusy] = "Word を変換中です。完了するまでウィンドウを閉じないでください。",
+            [Txt.TipNavWordPdf] = "Word → PDF：個別に出力、または 1 つのファイルに結合",
+            [Txt.Feature7] = "Word を一括で PDF に変換。既定では元のファイル名で個別出力し、1 ファイルへの結合や出力への透かしも可能",
+            [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
+            [Txt.ChangelogItems4520] =
+                "#改善\n" +
+                "· 今日の一言が起動時と実行中にランダム表示され、順番どおりの切り替えではなくなり、連続で同じ句は出ません\n" +
+                "· 自動切り替えの間隔が秒単位になり、既定値は 30 秒、設定で 5～86400 秒の範囲で変更できます\n",
+            [Txt.Changelog4519] = "4.5.19 · 2026-11-10",
+            [Txt.ChangelogItems4519] =
+                "#改善\n" +
+                "· アプリ内のすべてのダイアログが現在のスキンに追従。確認・警告・エラー・問い合わせの各ダイアログで背景色、文字、角丸、ボタンを統一\n" +
+                "· パスワード入力も同じ枠なしスキンウィンドウになり、ダークスキンで白いシステムタイトルバーが表示されない\n",
+            [Txt.Changelog4518] = "4.5.18 · 2026-11-10",
+            [Txt.ChangelogItems4518] =
+                "#新機能\n" +
+                "· 左側に「Word → PDF」ワークスペースを追加。.doc/.docx/.docm/.dot/.dotx/.dotm/.rtf/.odt の一括変換に対応\n" +
+                "· 既定では元のファイル名で PDF を個別出力し、重複時は連番。任意で「1 つのファイルに結合」可能\n" +
+                "· 透かし設定に「Word → PDF」を追加。出力 PDF のみに適用し、元の文書は変更しない\n" +
+                "· Microsoft Word または LibreOffice を自動で利用し、どちらもない場合は明確に案内\n",
+            [Txt.Changelog4517] = "4.5.17 · 2026-11-06",
+            [Txt.ChangelogItems4517] =
+                "#改善\n" +
+                "· 名言ライブラリから漢詩・漢文を削除し、すべて現代の名言に置き換え\n" +
+                "#追加\n" +
+                "· 国内外の名作映画の台詞と著名人の名言を追加。UI言語ごとに66件、6言語合計396件\n" +
+                "· 『フォレスト・ガンプ』『ショーシャンクの空に』『ゴッドファーザー』『タイタニック』『ナタ 魔童降臨』『グランド・マスター』などの台詞を収録\n" +
+                "· スティーブ・ジョブズ、ネルソン・マンデラ、ガンディー、キング牧師、ベーコン、チェーホフなどの名言を追加\n",
+            [Txt.Changelog4516] = "4.5.16 · 2026-11-06",
+            [Txt.ChangelogItems4516] =
+                "#改善\n" +
+                "· 「今日のひとこと」カードをすりガラス調に刷新：半透明の下地、上部のハイライト、角丸の縁取りでガラス基調のUIに統一\n" +
+                "· カード左側の赤い縦線を廃止し、ナイトテーマでも赤い装飾が表示されないように修正\n" +
+                "· 長い文章は文字サイズを自動で縮小し、途中で切れずに全文を表示\n" +
+                "#追加\n" +
+                "· 名言ライブラリを 348 件に拡充（各UI言語 58 件）、世界の著名人と名作映画の台詞を収録\n",
+            [Txt.Changelog4515] = "4.5.15 · 2026-11-06",
+            [Txt.ChangelogItems4515] =
+                "#追加\n" +
+                "· 「今日の一言」に自動切り替えを追加し、外観設定で間隔（既定 5 分）を変更できます\n" +
+                "· 自動切り替えをオフにしても、カードをクリックすればすぐに次の一言に変わります\n",
+            [Txt.Changelog4514] = "4.5.14 · 2026-11-06",
+            [Txt.ChangelogItems4514] =
+                "#修正\n" +
+                "· 表示言語を切り替えた後、設定ウィンドウが赤い×だらけになったり未処理例外が発生したりしなくなりました\n" +
+                "· ガラス背景キャッシュが誤って解放された場合は自動的に再構築され、同様の問題を防ぎます\n",
+            [Txt.Changelog4513] = "4.5.13 · 2026-11-06",
+            [Txt.ChangelogItems4513] =
+                "#追加\n" +
+                "· 結合ページ右側に「今日の一言」カードを追加し、世界の名言や映画の台詞を出典付きで表示します\n" +
+                "· 簡体中文・繁體中文・English・日本語・한국어・Русский の 6 言語の語録を収録し、UI 言語の切り替えに連動します\n" +
+                "· 外観設定に「結合ページに名言や映画の台詞を表示」スイッチを追加。カードをクリックすると次の一言へ切り替わります\n",
+            [Txt.Changelog4512] = "4.5.12 · 2026-11-06",
+            [Txt.ChangelogItems4512] =
+                "#変更\n" +
+                "· 透かし設定と完了通知の入口を左下へ移動し、スキン / 設定 / 情報と並べました\n" +
+                "· 結合ページ右側のヒント文を進捗バーの直下へ移動しました\n" +
+                "#修正\n" +
+                "· 透かし入口のヒントから古い「文書結合のみ」の説明を削除しました\n",
+            [Txt.Changelog4511] = "4.5.11 · 2026-11-06",
+            [Txt.ChangelogItems4511] =
+                "#変更\n" +
+                "· 「ターミナル」スキンを削除しました。使用中の設定は自動的にクラシックブルーへ戻ります\n" +
+                "#修正\n" +
+                "· 右上のウォーターマークボタンのアイコンが 19px で欠けて表示される問題を修正しました\n",
+            [Txt.Changelog4510] = "4.5.10 · 2026-11-06",
+            [Txt.ChangelogItems4510] =
+                "#修正\n" +
+                "· 通常の左クリック（Ctrl+クリックを含む）では現在のファイルだけが選択され、前の行の選択はすぐに消えます\n" +
+                "· 複数選択が残るのは範囲選択と Shift+クリックのみです\n",
+            [Txt.Changelog459] = "4.5.9 · 2026-11-06",
+            [Txt.ChangelogItems459] =
+                "#修正\n" +
+                "· 通常の左クリックではクリックしたファイルだけが選択され、前の行の選択が残らなくなりました。行内の上へ / 下へ / 削除ボタンも同じです\n" +
+                "· Ctrl / Shift による複数選択は従来どおりです\n",
+            [Txt.Changelog458] = "4.5.8 · 2026-11-06",
+            [Txt.ChangelogItems458] =
+                "#新機能\n" +
+                "· スキン入口を左下の設定の上へ移動し、スキン / 設定 / バージョン情報をフラットな線画アイコンに統一\n" +
+                "· ファイル一覧に「範囲選択を解除」ボタンを追加。選択前の状態に戻せ、Esc でも解除できます\n" +
+                "· 削除、クリア、範囲選択の解除などの一覧ボタンにホバー ヒントを追加\n" +
+                "#改善\n" +
+                "· マウス左ドラッグで範囲選択する際に一覧が跳ねる問題を修正\n" +
+                "#変更\n" +
+                "· HUD SF スキンを削除。保存済みの設定はクラシックブルーに自動で戻ります\n",
+            [Txt.Changelog457] = "4.5.7 · 2026-11-06",
+            [Txt.ChangelogItems457] =
+                "#新機能\n" +
+                "· ファイル一覧の空白をドラッグして範囲選択でき、3 つのワークスペースすべてで複数選択に対応\n" +
+                "· Ctrl を押しながら範囲選択すると既存の選択に追加\n" +
+                "· 新しいスキン 4 種：スキューモーフィズム、ニューモーフィズム、ターミナル、HUD SF\n" +
+                "#改善\n" +
+                "· 範囲選択したファイルは Delete でまとめて削除\n" +
+                "· NetEase Red スキンを削除。保存済みの設定はクラシックブルーに自動で戻ります\n",
             [Txt.Changelog456] = "4.5.6 · 2026-11-06",
             [Txt.ChangelogItems456] =
                 "#改善\n" +

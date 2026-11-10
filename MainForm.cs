@@ -21,12 +21,17 @@ namespace DocHub
         private readonly NavCard _navMerge;
         private readonly NavCard _navConvert;
         private readonly NavCard _navImagePdf;
+        private readonly NavCard _navWordPdf;
+        private readonly SideLink _sideSkin;
         private readonly SideLink _sideSettings;
         private readonly SideLink _sideAbout;
+        private readonly SideLink _sideWatermark;
+        private readonly SideLink _sideDone;
         private readonly Label _pageTitle;
         private readonly Label _pageSubtitle;
         private readonly ConvertWorkspace _convertPage;
         private readonly ImagePdfWorkspace _imagePdfPage;
+        private readonly WordPdfWorkspace _wordPdfPage;
         private readonly GlassCard _listCard;
         private readonly GlassCard _outputCard;
         private readonly LogoBadge _logo;
@@ -35,6 +40,7 @@ namespace DocHub
         private readonly Label _sectionLabel;
         private readonly Label _countLabel;
         private readonly Label _hintLabel;
+        private readonly QuoteCard _quoteCard;
         private readonly Label _outputLabel;
         private readonly Label _folderLabel;
         private readonly Label _pdfSuffix;
@@ -46,12 +52,10 @@ namespace DocHub
         private readonly IconButton _downButton;
         private readonly IconButton _removeButton;
         private readonly IconButton _clearButton;
+        private readonly IconButton _cancelBoxButton;
         private readonly RoundedButton _browseButton;
         private readonly RoundedButton _startButton;
         private readonly RoundedButton _viewResultButton;
-        private readonly TopNavButton _lookButton;
-        private readonly TopNavButton _watermarkButton;
-        private readonly TopNavButton _doneButton;
         private readonly DocumentListBox _list;
         private readonly EmptyStatePanel _emptyPanel;
         private readonly Panel _dropLine;
@@ -59,6 +63,7 @@ namespace DocHub
         private readonly RoundedInput _folderInput;
         private readonly SlimProgressBar _progress;
         private readonly System.Windows.Forms.Timer _backdropTimer = new() { Interval = 140 };
+        private readonly System.Windows.Forms.Timer _quoteTimer = new();
         private readonly ToolTip _toolTip = new();
         private readonly ContextMenuStrip _contextMenu = new();
         private readonly ToolStripMenuItem _menuTop;
@@ -174,14 +179,22 @@ namespace DocHub
                 Icon = IconKind.Image,
                 Bounds = new Rectangle(16, 228, SidebarWidth - 32, 66)
             };
+            _navWordPdf = new NavCard
+            {
+                Icon = IconKind.WordPdf,
+                Bounds = new Rectangle(16, 302, SidebarWidth - 32, 66)
+            };
 
             _sideDivider = new Panel
             {
                 Height = 1,
                 BackColor = Theme.Separator
             };
+            _sideSkin = new SideLink { Icon = IconKind.Palette };
             _sideSettings = new SideLink { Icon = IconKind.Settings };
             _sideAbout = new SideLink { Icon = IconKind.Info };
+            _sideWatermark = new SideLink { Icon = IconKind.Watermark };
+            _sideDone = new SideLink { Icon = IconKind.Bell };
 
             _navMerge.Title = Loc.T(Txt.NavMergeTitle);
             _navMerge.Subtitle = Loc.T(Txt.NavMergeSubtitle);
@@ -189,19 +202,20 @@ namespace DocHub
             _navConvert.Subtitle = Loc.T(Txt.NavConvertSubtitle);
             _navImagePdf.Title = Loc.T(Txt.NavImagePdfTitle);
             _navImagePdf.Subtitle = Loc.T(Txt.NavImagePdfSubtitle);
+            _navWordPdf.Title = Loc.T(Txt.NavWordPdfTitle);
+            _navWordPdf.Subtitle = Loc.T(Txt.NavWordPdfSubtitle);
+            _sideSkin.Text = Loc.T(Txt.Skin);
             _sideSettings.Text = Loc.T(Txt.Settings);
             _sideAbout.Text = Loc.T(Txt.About);
+            _sideWatermark.Text = Loc.T(Txt.SettingsNavWatermark);
+            _sideDone.Text = Loc.T(Txt.SettingsNavDone);
 
             _sidebar.Controls.AddRange(new Control[]
             {
                 _logo, _appTitle, _versionLabel, _brandDivider,
-                _navMerge, _navConvert, _navImagePdf, _sideDivider, _sideSettings, _sideAbout
+                _navMerge, _navConvert, _navImagePdf, _navWordPdf, _sideDivider,
+                _sideWatermark, _sideDone, _sideSkin, _sideSettings, _sideAbout
             });
-
-            // 页头右上角：外观 / 水印（仅合并页）/ 完成提醒
-            _lookButton = CreateNavButton(IconKind.Contrast);
-            _watermarkButton = CreateNavButton(IconKind.Watermark);
-            _doneButton = CreateNavButton(IconKind.Bell);
 
             _pageTitle = new Label
             {
@@ -226,8 +240,7 @@ namespace DocHub
 
             Controls.AddRange(new Control[]
             {
-                _sidebar, _pageTitle, _pageSubtitle,
-                _lookButton, _watermarkButton, _doneButton
+                _sidebar, _pageTitle, _pageSubtitle
             });
 
             _listCard = new GlassCard();
@@ -275,6 +288,8 @@ namespace DocHub
             _downButton = CreateIconButton(IconKind.Down);
             _removeButton = CreateIconButton(IconKind.Trash);
             _clearButton = CreateIconButton(IconKind.Clear);
+            _cancelBoxButton = CreateIconButton(IconKind.MarqueeOff);
+            _cancelBoxButton.Enabled = false;
 
             _list = new DocumentListBox
             {
@@ -385,10 +400,17 @@ namespace DocHub
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
 
+            _quoteCard = new QuoteCard
+            {
+                Bounds = new Rectangle(16, 330, 274, 150),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                Visible = _settings.ShowQuotes
+            };
+
             _listCard.Controls.AddRange(new Control[]
             {
                 _sectionLabel, _countLabel, _addButton, _upButton, _downButton,
-                _removeButton, _clearButton, _list
+                _removeButton, _clearButton, _cancelBoxButton, _list
             });
             _listCard.Controls.Add(_emptyPanel);
             _emptyPanel.BringToFront();
@@ -398,7 +420,7 @@ namespace DocHub
             {
                 _outputLabel, _nameInput, _pdfSuffix, _folderLabel, _folderInput,
                 _browseButton, _divider, _statusLabel, _progress, _startButton,
-                _viewResultButton, _localLabel, _hintLabel
+                _viewResultButton, _localLabel, _hintLabel, _quoteCard
             });
 
             _convertPage = new ConvertWorkspace(_settings)
@@ -415,10 +437,18 @@ namespace DocHub
             };
             _imagePdfPage.BusyChanged += (_, _) => UpdateNavigationEnabled();
 
+            _wordPdfPage = new WordPdfWorkspace(_settings)
+            {
+                Visible = false,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+            };
+            _wordPdfPage.BusyChanged += (_, _) => UpdateNavigationEnabled();
+
             Controls.Add(_listCard);
             Controls.Add(_outputCard);
             Controls.Add(_convertPage);
             Controls.Add(_imagePdfPage);
+            Controls.Add(_wordPdfPage);
 
             // 窗口缩放时按卡片实际宽度重新排布，避免状态行等内容压到按钮上
             _listCard.Resize += (_, _) => LayoutQueueCard();
@@ -437,6 +467,12 @@ namespace DocHub
             {
                 _backdropTimer.Stop();
                 RebuildBackdrop();
+            };
+
+            _quoteTimer.Tick += (_, _) =>
+            {
+                if (_settings.ShowQuotes && _settings.QuoteAutoRefresh && _quoteCard.Visible)
+                    _quoteCard.NextQuote();
             };
 
             ConfigureToolTips();
@@ -465,35 +501,17 @@ namespace DocHub
             };
         }
 
-        private TopNavButton CreateNavButton(IconKind icon)
-        {
-            return new TopNavButton
-            {
-                Icon = icon,
-                Bounds = new Rectangle(0, 14, 36, 36),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
-            };
-        }
-
-        /// <summary>页头：左侧页面标题，右侧外观 / 水印 / 完成提醒快捷图标。</summary>
+        /// <summary>页头：左侧页面标题，右侧留空给窗口按钮。</summary>
         private void LayoutHeader()
         {
-            const int iconY = 22;
             int right = ClientSize.Width - 24;
-
-            _doneButton.Bounds = new Rectangle(right - 36, iconY, 36, 36);
-            right -= 42;
-            _lookButton.Bounds = new Rectangle(right - 36, iconY, 36, 36);
-            right -= 42;
-            _watermarkButton.Bounds = new Rectangle(right - 36, iconY, 36, 36);
-
             int titleLeft = SidebarWidth + 24;
-            int titleWidth = Math.Max(180, right - 20 - titleLeft);
+            int titleWidth = Math.Max(180, right - titleLeft);
             _pageTitle.Bounds = new Rectangle(titleLeft, 18, titleWidth, 28);
             _pageSubtitle.Bounds = new Rectangle(titleLeft, 47, titleWidth, 22);
         }
 
-        /// <summary>左侧卡片导航：品牌、两个入口、底部设置与关于。</summary>
+        /// <summary>左侧卡片导航：品牌、四个入口、底部水印/提醒/皮肤/设置/关于。</summary>
         private void LayoutSidebar()
         {
             int height = ClientSize.Height;
@@ -504,11 +522,15 @@ namespace DocHub
             _navMerge.Bounds = new Rectangle(16, 80, SidebarWidth - 32, 66);
             _navConvert.Bounds = new Rectangle(16, 154, SidebarWidth - 32, 66);
             _navImagePdf.Bounds = new Rectangle(16, 228, SidebarWidth - 32, 66);
+            _navWordPdf.Bounds = new Rectangle(16, 302, SidebarWidth - 32, 66);
 
             const int linkHeight = 34;
             _sideAbout.Bounds = new Rectangle(16, height - 18 - linkHeight, SidebarWidth - 32, linkHeight);
             _sideSettings.Bounds = new Rectangle(16, _sideAbout.Top - 4 - linkHeight, SidebarWidth - 32, linkHeight);
-            _sideDivider.Bounds = new Rectangle(20, _sideSettings.Top - 12, SidebarWidth - 40, 1);
+            _sideSkin.Bounds = new Rectangle(16, _sideSettings.Top - 4 - linkHeight, SidebarWidth - 32, linkHeight);
+            _sideDone.Bounds = new Rectangle(16, _sideSkin.Top - 4 - linkHeight, SidebarWidth - 32, linkHeight);
+            _sideWatermark.Bounds = new Rectangle(16, _sideDone.Top - 4 - linkHeight, SidebarWidth - 32, linkHeight);
+            _sideDivider.Bounds = new Rectangle(20, _sideWatermark.Top - 12, SidebarWidth - 40, 1);
         }
 
         /// <summary>合并页两张卡片与转换页容器的位置。</summary>
@@ -527,6 +549,7 @@ namespace DocHub
             _convertPage.Bounds = new Rectangle(SidebarWidth, PageHeaderHeight, pageWidth,
                 Math.Max(120, ClientSize.Height - PageHeaderHeight));
             _imagePdfPage.Bounds = _convertPage.Bounds;
+            _wordPdfPage.Bounds = _convertPage.Bounds;
         }
 
         /// <summary>按当前语言的实际文字宽度排布，避免长语言下按钮被截断或标签互相重叠。</summary>
@@ -541,16 +564,17 @@ namespace DocHub
 
         private void SwitchPage(int page)
         {
-            if (_running || _convertPage.IsBusy || _imagePdfPage.IsBusy) return;
+            if (_running || _convertPage.IsBusy || _imagePdfPage.IsBusy || _wordPdfPage.IsBusy) return;
 
-            _activePage = Math.Clamp(page, 0, 2);
+            _activePage = Math.Clamp(page, 0, 3);
             _navMerge.Selected = _activePage == 0;
             _navConvert.Selected = _activePage == 1;
             _navImagePdf.Selected = _activePage == 2;
+            _navWordPdf.Selected = _activePage == 3;
             _listCard.Visible = _outputCard.Visible = _activePage == 0;
-            _watermarkButton.Visible = _activePage == 0;
             _convertPage.Visible = _activePage == 1;
             _imagePdfPage.Visible = _activePage == 2;
+            _wordPdfPage.Visible = _activePage == 3;
             UpdatePageHeader();
 
             if (_activePage == 1)
@@ -562,6 +586,11 @@ namespace DocHub
             {
                 _imagePdfPage.ApplySettings();
                 _imagePdfPage.Focus();
+            }
+            else if (_activePage == 3)
+            {
+                _wordPdfPage.ApplySettings();
+                _wordPdfPage.Focus();
             }
         }
 
@@ -577,6 +606,10 @@ namespace DocHub
                     _pageTitle.Text = Loc.T(Txt.ImagePdfPageTitle);
                     _pageSubtitle.Text = Loc.T(Txt.ImagePdfPageSubtitle);
                     break;
+                case 3:
+                    _pageTitle.Text = Loc.T(Txt.WordPdfPageTitle);
+                    _pageSubtitle.Text = Loc.T(Txt.WordPdfPageSubtitle);
+                    break;
                 default:
                     _pageTitle.Text = Loc.T(Txt.MergePageTitle);
                     _pageSubtitle.Text = Loc.T(Txt.MergePageSubtitle);
@@ -586,15 +619,16 @@ namespace DocHub
 
         private void UpdateNavigationEnabled()
         {
-            bool busy = _running || _convertPage.IsBusy || _imagePdfPage.IsBusy;
+            bool busy = _running || _convertPage.IsBusy || _imagePdfPage.IsBusy || _wordPdfPage.IsBusy;
             _navMerge.Enabled = !busy;
             _navConvert.Enabled = !busy;
             _navImagePdf.Enabled = !busy;
+            _navWordPdf.Enabled = !busy;
+            _sideSkin.Enabled = !busy;
             _sideSettings.Enabled = !busy;
             _sideAbout.Enabled = !busy;
-            _lookButton.Enabled = !busy;
-            _doneButton.Enabled = !busy;
-            _watermarkButton.Enabled = !busy;
+            _sideWatermark.Enabled = !busy;
+            _sideDone.Enabled = !busy;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -617,6 +651,12 @@ namespace DocHub
                 return true;
             }
 
+            if (keyData == (Keys.Control | Keys.D4) || keyData == (Keys.Control | Keys.NumPad4))
+            {
+                SwitchPage(3);
+                return true;
+            }
+
             if (keyData == (Keys.Control | Keys.O))
             {
                 if (_activePage == 0)
@@ -627,9 +667,13 @@ namespace DocHub
                 {
                     _convertPage.PromptAddFiles();
                 }
-                else
+                else if (_activePage == 2)
                 {
                     _imagePdfPage.PromptAddFiles();
+                }
+                else
+                {
+                    _wordPdfPage.PromptAddFiles();
                 }
                 return true;
             }
@@ -650,6 +694,8 @@ namespace DocHub
             const int gap = 4;
             int x = _addButton.Left - 14;
             x -= 30;
+            _cancelBoxButton.Bounds = new Rectangle(x, 14, 30, 30);
+            x -= 30 + gap;
             _clearButton.Bounds = new Rectangle(x, 14, 30, 30);
             x -= 30 + gap;
             _removeButton.Bounds = new Rectangle(x, 14, 30, 30);
@@ -701,7 +747,13 @@ namespace DocHub
             _localLabel.Bounds = new Rectangle(16, _startButton.Top - 26, inner, 16);
             _viewResultButton.Bounds = new Rectangle(16, _localLabel.Top - 38, inner, 30);
             _hintLabel.Bounds = new Rectangle(18,
-                Math.Max(y + 22, _viewResultButton.Top - 76), Math.Max(60, inner - 4), 68);
+                Math.Min(y + 34, _viewResultButton.Top - 76), Math.Max(60, inner - 4), 68);
+
+            // 名言卡片占据提示文字与底部按钮之间的空白；空间不足时自动隐藏
+            int quoteTop = _hintLabel.Bottom + 18;
+            int quoteHeight = Math.Min(172, _viewResultButton.Top - 14 - quoteTop);
+            _quoteCard.Bounds = new Rectangle(16, quoteTop, inner, Math.Max(0, quoteHeight));
+            _quoteCard.Visible = _settings.ShowQuotes && quoteHeight >= 128;
         }
 
         private Label MakeLabel(string text, Font font, string role, int x, int y)
@@ -758,12 +810,15 @@ namespace DocHub
             _toolTip.SetToolTip(_browseButton, Loc.T(Txt.TipBrowse));
             _toolTip.SetToolTip(_list, Loc.T(Txt.TipList));
             _toolTip.SetToolTip(_startButton, Loc.T(Txt.TipStart));
-            _toolTip.SetToolTip(_lookButton, Loc.T(Txt.TipAppearance));
-            _toolTip.SetToolTip(_watermarkButton, Loc.T(Txt.TipWatermark));
-            _toolTip.SetToolTip(_doneButton, Loc.T(Txt.TipNotifications));
+            _toolTip.SetToolTip(_cancelBoxButton, Loc.T(Txt.TipCancelBox));
+            _toolTip.SetToolTip(_quoteCard, Loc.T(Txt.TipQuote));
+            _toolTip.SetToolTip(_sideWatermark, Loc.T(Txt.TipWatermark));
+            _toolTip.SetToolTip(_sideDone, Loc.T(Txt.TipNotifications));
             _toolTip.SetToolTip(_navMerge, Loc.T(Txt.TipNavMerge));
             _toolTip.SetToolTip(_navConvert, Loc.T(Txt.TipNavConvert));
             _toolTip.SetToolTip(_navImagePdf, Loc.T(Txt.TipNavImagePdf));
+            _toolTip.SetToolTip(_navWordPdf, Loc.T(Txt.TipNavWordPdf));
+            _toolTip.SetToolTip(_sideSkin, Loc.T(Txt.TipAppearance));
             _toolTip.SetToolTip(_sideSettings, Loc.T(Txt.TipSettings));
             _toolTip.SetToolTip(_sideAbout, Loc.T(Txt.TipAbout));
         }
@@ -815,16 +870,23 @@ namespace DocHub
             _browseButton.Click += (_, _) => BrowseFolder();
             _startButton.Click += (_, _) => StartMerge();
             _viewResultButton.Click += (_, _) => OpenOutput(_lastOutputPath);
-            _lookButton.Click += (_, _) => OpenSettings(0);
-            _watermarkButton.Click += (_, _) => OpenSettings(4);
-            _doneButton.Click += (_, _) => OpenSettings(3);
+            _sideWatermark.Click += (_, _) => OpenSettings(4);
+            _sideDone.Click += (_, _) => OpenSettings(3);
             _navMerge.Click += (_, _) => SwitchPage(0);
             _navConvert.Click += (_, _) => SwitchPage(1);
             _navImagePdf.Click += (_, _) => SwitchPage(2);
+            _navWordPdf.Click += (_, _) => SwitchPage(3);
+            _sideSkin.Click += (_, _) => OpenSettings(0);
             _sideSettings.Click += (_, _) => OpenSettings(1);
             _sideAbout.Click += (_, _) => OpenAbout();
+            _cancelBoxButton.Click += (_, _) =>
+            {
+                _list.CancelMarqueeSelection();
+                UpdateButtons();
+            };
 
             _list.SelectedIndexChanged += (_, _) => UpdateButtons();
+            _list.MarqueeStateChanged += (_, _) => UpdateButtons();
             _list.KeyDown += (_, e) =>
             {
                 if (e.KeyCode == Keys.Delete) RemoveSelected();
@@ -910,7 +972,7 @@ namespace DocHub
                 if (_running)
                 {
                     e.Cancel = true;
-                    MessageBox.Show(this,
+                    ThemedMessageBox.Show(this,
                         Loc.T(Txt.MsgMergeBusy),
                         Loc.T(Txt.AppName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -919,7 +981,7 @@ namespace DocHub
                 if (_convertPage.IsBusy)
                 {
                     e.Cancel = true;
-                    MessageBox.Show(this,
+                    ThemedMessageBox.Show(this,
                         Loc.T(Txt.MsgConvertBusy),
                         Loc.T(Txt.AppName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -928,8 +990,17 @@ namespace DocHub
                 if (_imagePdfPage.IsBusy)
                 {
                     e.Cancel = true;
-                    MessageBox.Show(this,
+                    ThemedMessageBox.Show(this,
                         Loc.T(Txt.MsgImagePdfBusy),
+                        Loc.T(Txt.AppName), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                if (_wordPdfPage.IsBusy)
+                {
+                    e.Cancel = true;
+                    ThemedMessageBox.Show(this,
+                        Loc.T(Txt.MsgWordPdfBusy),
                         Loc.T(Txt.AppName), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -1004,6 +1075,9 @@ namespace DocHub
             _convertPage.ApplySettings();
             if (convertDefaultsChanged) _convertPage.ApplyConvertDefaults();
             _imagePdfPage.ApplySettings();
+            _wordPdfPage.ApplySettings();
+            LayoutSideCard();
+            UpdateQuoteTimer();
             UpdateButtons();
         }
 
@@ -1026,10 +1100,18 @@ namespace DocHub
             _navConvert.Subtitle = Loc.T(Txt.NavConvertSubtitle);
             _navImagePdf.Title = Loc.T(Txt.NavImagePdfTitle);
             _navImagePdf.Subtitle = Loc.T(Txt.NavImagePdfSubtitle);
+            _navWordPdf.Title = Loc.T(Txt.NavWordPdfTitle);
+            _navWordPdf.Subtitle = Loc.T(Txt.NavWordPdfSubtitle);
+            _sideSkin.Text = Loc.T(Txt.Skin);
             _sideSettings.Text = Loc.T(Txt.Settings);
             _sideAbout.Text = Loc.T(Txt.About);
+            _sideWatermark.Text = Loc.T(Txt.SettingsNavWatermark);
+            _sideDone.Text = Loc.T(Txt.SettingsNavDone);
+            _sideSkin.ApplyTheme();
             _sideSettings.ApplyTheme();
             _sideAbout.ApplyTheme();
+            _sideWatermark.ApplyTheme();
+            _sideDone.ApplyTheme();
 
             _pageTitle.Font = Theme.SectionFont;
             _pageSubtitle.Font = Theme.SmallFont;
@@ -1040,6 +1122,7 @@ namespace DocHub
             _countLabel.Font = Theme.SmallFont;
             _hintLabel.Text = Loc.T(Txt.ListHint);
             _hintLabel.Font = Theme.SmallFont;
+            _quoteCard.SetLanguage(_settings.Language);
             _localLabel.Text = Loc.T(Txt.LocalBadge);
             _localLabel.Font = Theme.SmallFont;
 
@@ -1084,6 +1167,7 @@ namespace DocHub
 
             _convertPage.ApplyLanguage();
             _imagePdfPage.ApplyLanguage();
+            _wordPdfPage.ApplyLanguage();
             LayoutLocalizedControls();
             UpdateNamePreview();
             RefreshList(_list.SelectedIndex);
@@ -1108,13 +1192,19 @@ namespace DocHub
             _navMerge.ApplyTheme();
             _navConvert.ApplyTheme();
             _navImagePdf.ApplyTheme();
+            _navWordPdf.ApplyTheme();
+            _sideSkin.ApplyTheme();
             _sideSettings.ApplyTheme();
             _sideAbout.ApplyTheme();
+            _sideWatermark.ApplyTheme();
+            _sideDone.ApplyTheme();
             _convertPage.ApplyTheme();
             _imagePdfPage.ApplyTheme();
+            _wordPdfPage.ApplyTheme();
             _list.ApplyTheme();
             _emptyPanel.Invalidate();
             _progress.Invalidate();
+            _quoteCard.ApplyTheme();
             GlassPaint.ApplyWindowChrome(this, Theme.IsDark);
             Invalidate(true);
             RebuildBackdrop();
@@ -1139,9 +1229,24 @@ namespace DocHub
         {
             base.OnShown(e);
             RebuildBackdrop();
+            UpdateQuoteTimer();
 
             // 后台预生成设置窗口的壁纸（约 70ms），避免第一次点开侧栏「设置」时现算而卡一下
             GlassPaint.PrewarmBackdrop(SettingsForm.DialogSize, Theme.Current);
+        }
+
+        /// <summary>按设置启用/停用名言自动换句，并同步刷新间隔。</summary>
+        private void UpdateQuoteTimer()
+        {
+            int seconds = Math.Clamp(_settings.QuoteRefreshSeconds,
+                AppSettings.MinQuoteRefreshSeconds, AppSettings.MaxQuoteRefreshSeconds);
+            int interval = seconds * 1000;
+            if (_quoteTimer.Interval != interval) _quoteTimer.Interval = interval;
+
+            if (_settings.ShowQuotes && _settings.QuoteAutoRefresh)
+                _quoteTimer.Start();
+            else
+                _quoteTimer.Stop();
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -1443,7 +1548,7 @@ namespace DocHub
         {
             if (_documents.Count == 0) return;
 
-            if (MessageBox.Show(this, Loc.T(Txt.MsgClearText),
+            if (ThemedMessageBox.Show(this, Loc.T(Txt.MsgClearText),
                     Loc.T(Txt.MsgClearTitle), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                     MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
@@ -1595,6 +1700,7 @@ namespace DocHub
                 selected[selected.Length - 1] < _documents.Count - 1;
             _removeButton.Enabled = interactive && hasSelection;
             _clearButton.Enabled = interactive;
+            _cancelBoxButton.Enabled = interactive && _list.HasMarqueeSelection;
             _browseButton.Enabled = !_running;
             _nameInput.Enabled = !_running;
             _list.Enabled = !_running;
@@ -1632,7 +1738,7 @@ namespace DocHub
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show(this, ex.Message, Loc.T(Txt.ErrCannotStartTitle), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ThemedMessageBox.Show(this, ex.Message, Loc.T(Txt.ErrCannotStartTitle), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -1642,13 +1748,13 @@ namespace DocHub
             {
                 if (wordFiles == _documents.Count)
                 {
-                    MessageBox.Show(this,
+                    ThemedMessageBox.Show(this,
                         Loc.T(Txt.MergeWordMissing),
                         Loc.T(Txt.MsgNoWordTitle), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (MessageBox.Show(this,
+                if (ThemedMessageBox.Show(this,
                         Loc.T(Txt.MsgSkipWordText, wordFiles),
                         Loc.T(Txt.MsgSkipWordTitle), MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
@@ -1666,6 +1772,7 @@ namespace DocHub
             WatermarkSpec? watermark = BuildWatermarkSpec();
             SetRunningUi(true);
             _viewResultButton.Visible = false;
+            LayoutSideCard();
             _progress.Value = 0;
             SetStatus(Loc.T(Txt.StatusPreparing));
 
@@ -1796,6 +1903,7 @@ namespace DocHub
                 _downButton.Enabled = false;
                 _removeButton.Enabled = false;
                 _clearButton.Enabled = false;
+                _cancelBoxButton.Enabled = false;
                 _browseButton.Enabled = false;
                 _nameInput.Enabled = false;
                 _list.Enabled = false;
@@ -1824,6 +1932,7 @@ namespace DocHub
             _lastOutputPath = result.OutputPath;
             _viewResultButton.Visible = true;
             _viewResultButton.Enabled = true;
+            LayoutSideCard();
             LayoutLocalizedControls();
 
             _settings.LastOutputFolder = Path.GetDirectoryName(result.OutputPath) ?? string.Empty;
@@ -1873,7 +1982,7 @@ namespace DocHub
         {
             if (!File.Exists(path))
             {
-                MessageBox.Show(this, Loc.T(Txt.OpenFailed),
+                ThemedMessageBox.Show(this, Loc.T(Txt.OpenFailed),
                     Loc.T(Txt.AppName), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -1909,7 +2018,7 @@ namespace DocHub
                 ? exception.Message
                 : Loc.T(Txt.FailPrefix, exception.Message);
             WriteFailureLog(exception);
-            MessageBox.Show(this, message, Loc.T(Txt.FailTitle), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            ThemedMessageBox.Show(this, message, Loc.T(Txt.FailTitle), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>把合并失败的完整异常写到 %APPDATA%\DocHub\last-error.log，便于排查无法复现的问题。</summary>

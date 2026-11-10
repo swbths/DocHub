@@ -2,11 +2,11 @@
 
 **DocHub: the document hub — merge and convert in one click.**
 
-A Windows desktop tool that merges **Word, PDF and image** files into a **single lossless PDF** in the order you choose, converts **PDFs to images** in batches, and converts **images to PDF** (separately or merged).
+A Windows desktop tool that merges **Word, PDF and image** files into a **single lossless PDF** in the order you choose, converts **PDFs to images** in batches, converts **images to PDF** (separately or merged), and converts **Word to PDF** in batches.
 
 Everything runs locally — no uploads, no telemetry.
 
-- Version: `4.5.6` (2026-11-06)
+- Version: `4.5.20` (2026-11-10)
 - Platform: Windows 10 2004 (10.0.19041) or later, x64
 - Stack: .NET 10 + WinForms + [PDFsharp](https://github.com/empira/PDFsharp) 6.2.4
 
@@ -62,6 +62,20 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 - EXIF orientation is applied and transparent images are flattened onto white
 - Corrupt or undecodable images produce a clear message without affecting the other checks
 
+### Word to PDF
+
+| Item | Details |
+| --- | --- |
+| Input | `.doc` `.docx` `.docm` `.dot` `.dotx` `.dotm` `.rtf` `.odt`; multi-select, folder drop (recursive), drag to reorder, remove |
+| Output | One same-name PDF per Word file by default, with `-1`, `-2` appended on collisions; enable **Merge into one file** to combine them in list order |
+| Naming | Separate output uses the original Word file name; merged output takes a custom name that defaults to the first Word file and falls back automatically when left blank |
+| Engine | Uses local Microsoft Word or LibreOffice automatically; the Start button is disabled with a clear hint when neither is installed |
+| Output location | The first Word file's folder by default; browse to choose and the last location is remembered |
+| Watermark | Enable **Word to PDF** on the Watermark settings page to draw the watermark on output PDFs only; source Word files are never modified |
+
+- Encrypted Word files prompt for the open password before starting; it is used for this run only and never written to disk
+- Conversion runs on a background thread and can be cancelled; cancelled or failed runs clean up incomplete PDFs produced by that run
+
 ### File list
 
 - Drop files, drop a folder (recursively collected), or use **Add documents**
@@ -77,7 +91,7 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 
 ### Watermark
 
-- Targets: enable **Document merge**, **PDF to images** and **Images to PDF** separately; all three switches default to off and share one style
+- Targets: enable **Document merge**, **PDF to images**, **Images to PDF** and **Word to PDF** separately; all four switches default to off and share one style
 - Text: 4 presets (Original / Copy / Confidential / Top Secret) plus any custom text
 - Look: diagonal tiling, or pinned to top left / top right / centre / bottom left / bottom right; in grey, red or blue
 - Controls: **opacity 0–100%**, **size 10–400%**, **rotation −180° to 180°**, **horizontal/vertical offset ±100%** — drag the slider or type a value directly
@@ -93,12 +107,15 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 
 ### Experience
 
-- Card-style sidebar: Merge / PDF to Images / Images to PDF, with Settings and About pinned to the bottom
-- 4 skins: Classic Blue (default), NetEase Red, Night, Cloud White (light/dark colours switch with the skin; sidebar contrast is verified)
+- Card-style sidebar: Merge / PDF to Images / Images to PDF / Word to PDF, with Watermark, Notifications, Skins, Settings and About pinned to the bottom
+- All four file lists support drag reordering, marquee selection on empty space and Shift-click ranges; a plain click (including Ctrl+click) keeps only the current file, so the previous highlight disappears at once. Selected files can be removed in bulk, and Cancel Selection (or Esc) restores the selection from before the box drag
+- 5 skins: Classic Blue (default), Night, Cloud White, Skeuomorphic, Neumorphic (light/dark colours switch with the skin; sidebar and body contrast are verified against WCAG)
 - 6 UI languages: 简体中文, 繁體中文, English, 日本語, 한국어, Русский
-- A row of flat icons in the page header (Appearance / Notifications; Watermark on the merge page) with tooltips, each opening its settings page directly
-- `Ctrl+1` / `Ctrl+2` / `Ctrl+3` switches pages, `Ctrl+O` adds files
+- A frosted-glass "Daily quote" card on the merge page: 396 movie lines and famous quotes across all six languages (66 each) with their sources, following the UI language; plays randomly at startup and while running, rotating automatically every 30 seconds by default with a configurable interval (5–86400 seconds) under Appearance, click the card for another one immediately, and switch it off under Appearance
+- Flat sidebar entries at the bottom left (Watermark, Notifications, Skins, Settings, About) with tooltips, each opening its settings page directly
+- `Ctrl+1` / `Ctrl+2` / `Ctrl+3` / `Ctrl+4` switches pages, `Ctrl+O` adds files
 - Completion feedback: system notification / 5 sounds (sound is off by default; sound choices are greyed out until enabled) / open the result automatically
+- Every in-app dialog (confirmations, warnings, errors, questions and the password prompt) follows the active skin — dark skins no longer show white system pop-ups
 - Tray support; every setting applies instantly and is saved to `%APPDATA%\DocHub\settings.json`
 
 ---
@@ -107,7 +124,7 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 
 ### Installer (recommended)
 
-Run `文枢_安装程序_v4.5.6.exe`:
+Run `文枢_安装程序_v4.5.20.exe`:
 
 - Installs to `%LOCALAPPDATA%\Programs\DocHub` (per-user) by default — **no administrator rights needed**, nothing written to `C:\Program Files`, no UAC prompt; the folder can be changed and the path you enter is used as-is (picking a path under `C:\Program Files` shows a warning that normal users usually cannot write there)
 - Creates Start-menu and desktop shortcuts, plus an **Uninstall DocHub** entry in the Start-menu folder
@@ -120,13 +137,13 @@ Silent mode (deployment and automated tests; the installer is built in this repo
 
 ```bat
 :: Full silent install (per-user, default folder %LOCALAPPDATA%\Programs\DocHub)
-文枢_安装程序_v4.5.6.exe --silent
+文枢_安装程序_v4.5.20.exe --silent
 
 :: Custom folder (a path under Program Files falls back to the per-user folder)
-文枢_安装程序_v4.5.6.exe --silent --dir D:\Apps\DocHub
+文枢_安装程序_v4.5.20.exe --silent --dir D:\Apps\DocHub
 
 :: Extract the payload only: no registry, no shortcuts — handy for verifying contents
-文枢_安装程序_v4.5.6.exe --extract D:\temp\dochub_payload
+文枢_安装程序_v4.5.20.exe --extract D:\temp\dochub_payload
 
 :: Silent uninstall
 "%LOCALAPPDATA%\Programs\DocHub\app\DocHub.exe" --uninstall --yes
@@ -136,7 +153,7 @@ Exit codes: `0` success, `1` failure, `2` bad arguments, `3` some files could no
 
 ### Portable
 
-Extract `文枢_绿色版_v4.5.6.zip` and run `DocHub.exe` from its root. Nothing is written to the registry and no shortcuts are created. The build is self-contained — **no .NET runtime is required**.
+Extract `文枢_绿色版_v4.5.20.zip` and run `DocHub.exe` from its root. Nothing is written to the registry and no shortcuts are created. The build is self-contained — **no .NET runtime is required**.
 
 ---
 
@@ -187,8 +204,8 @@ powershell -ExecutionPolicy Bypass -File tools\package.ps1
 
 Outputs in `dist\`:
 
-- `文枢_安装程序_v4.5.6.exe`
-- `文枢_绿色版_v4.5.6.zip`
+- `文枢_安装程序_v4.5.20.exe`
+- `文枢_绿色版_v4.5.20.zip`
 
 Build the app only:
 
@@ -219,6 +236,7 @@ AboutForm.cs            About and changelog
 EulaForm.cs / ToastForm.cs   First-run agreement, lightweight toasts
 UiControls.cs / GlassEffects.cs   Custom controls and acrylic glass effects
 AppSettings.cs          Settings model and skin palettes (JSON persistence)
+Quotes.cs               Quote and movie-line library for the 6 languages
 Localization*.cs        Text for the 6 languages
 SoundLibrary.cs         Completion sounds
 SelfTest.cs             Headless self-test (`--selftest`): sidebar contrast, images-to-PDF page sizes / separate / merged / cancel, source PDF integrity

@@ -416,7 +416,7 @@ namespace DocHub
         /// 旧版（以管理员身份运行时）创建的目录带高完整性级别，普通权限启动的程序
         /// 无法在其中新建子目录，会报「Access to the path ... is denied」。
         /// </summary>
-        private static string CreateWorkDirectory()
+        internal static string CreateWorkDirectory()
         {
             string name = "DocHub_" + Guid.NewGuid().ToString("N");
             string[] candidates =
@@ -647,7 +647,7 @@ namespace DocHub
             progress?.Report(new MergeProgress(Math.Clamp(percent, 0, 100), status));
         }
 
-        private static void EnsureWord(ref object? word, ref object? documents)
+        internal static void EnsureWord(ref object? word, ref object? documents)
         {
             if (word != null && documents != null) return;
 
@@ -676,7 +676,7 @@ namespace DocHub
             documents = Get(word, "Documents");
         }
 
-        private static void ExportWordToPdf(object word, object documents, string source, string targetPdf, string? password)
+        internal static void ExportWordToPdf(object word, object documents, string source, string targetPdf, string? password)
         {
             object? document = null;
             string name = Path.GetFileName(source);
@@ -732,7 +732,7 @@ namespace DocHub
         }
 
         /// <summary>用 LibreOffice 无界面模式把 Word 文档导出为 PDF（无 Microsoft Word 时的备用方案）。</summary>
-        private static void ExportWordWithLibreOffice(string source, string targetPdf)
+        internal static void ExportWordWithLibreOffice(string source, string targetPdf)
         {
             string name = Path.GetFileName(source);
             string? soffice = FindLibreOffice();
@@ -811,7 +811,7 @@ namespace DocHub
             }
         }
 
-        private static void QuitWord(ref object? word, ref object? documents)
+        internal static void QuitWord(ref object? word, ref object? documents)
         {
             if (word != null)
             {
@@ -844,7 +844,7 @@ namespace DocHub
             try { Marshal.FinalReleaseComObject(target); } catch { /* 忽略 */ }
         }
 
-        private static void TryDeleteDirectory(string path)
+        internal static void TryDeleteDirectory(string path)
         {
             try
             {

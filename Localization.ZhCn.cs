@@ -13,17 +13,20 @@ namespace DocHub
             [Txt.Ok] = "确定",
             [Txt.Close] = "关闭",
             [Txt.Cancel] = "取消",
+            [Txt.Yes] = "是",
+            [Txt.No] = "否",
             [Txt.Save] = "保存",
             [Txt.Reset] = "恢复默认",
             [Txt.Browse] = "浏览",
             [Txt.PreviewWord] = "试听",
             [Txt.Settings] = "设置",
             [Txt.About] = "关于",
+            [Txt.Skin] = "皮肤",
             [Txt.RailMerge] = "合并",
 
             [Txt.DocsTitle] = "文件列表",
             [Txt.DocCountFormat] = "{0} 个文件",
-            [Txt.ListHint] = "拖动列表项可调整顺序 · 支持批量拖入 Word / PDF / 图片",
+            [Txt.ListHint] = "拖动排序 · 空白处拖出选框可多选 · 支持批量拖入 Word / PDF / 图片",
             [Txt.AddDocs] = "添加文件",
             [Txt.MoveUp] = "上移",
             [Txt.MoveDown] = "下移",
@@ -55,6 +58,7 @@ namespace DocHub
             [Txt.TipStart] = "按列表顺序合并并生成 PDF",
             [Txt.TipSettings] = "命名方式、皮肤、提示音与语言",
             [Txt.TipAbout] = "版本信息、更新日志与用户协议",
+            [Txt.TipCancelBox] = "取消框选，还原为框选前的选择（Esc）",
             [Txt.TrayOpen] = "打开主界面",
             [Txt.TrayExit] = "退出",
 
@@ -132,6 +136,14 @@ namespace DocHub
             [Txt.SoundHint] = "先打开提示音，再选择音效；选中即自动播放",
             [Txt.LanguageSection] = "界面语言",
             [Txt.LanguageHint] = "切换后立即生效",
+            [Txt.QuoteSection] = "每日一言",
+            [Txt.QuoteHint] = "随界面语言切换",
+            [Txt.QuoteToggle] = "在合并页显示名言或电影台词",
+            [Txt.QuoteAutoRefresh] = "自动换一句",
+            [Txt.QuoteRefreshInterval] = "换句间隔",
+            [Txt.QuoteRefreshSeconds] = "秒",
+            [Txt.QuoteRefreshHint] = "开启后每隔设定时间自动换一句；关闭后仅点击卡片换句",
+            [Txt.TipQuote] = "点击换一句",
             [Txt.OutputSection] = "保存位置",
             [Txt.OutputHint] = "合并后的 PDF 保存在哪里",
             [Txt.OutputFirst] = "最上方文件所在的文件夹",
@@ -140,12 +152,14 @@ namespace DocHub
             [Txt.OutputCustomPlaceholder] = "选择或输入文件夹路径",
             [Txt.SkinBlueName] = "经典蓝",
             [Txt.SkinBlueDesc] = "清爽通透",
-            [Txt.SkinRedName] = "网易红",
-            [Txt.SkinRedDesc] = "经典云音乐",
             [Txt.SkinNightName] = "夜间模式",
             [Txt.SkinNightDesc] = "沉浸暗色",
             [Txt.SkinCloudName] = "云白",
             [Txt.SkinCloudDesc] = "暖白纸感",
+            [Txt.SkinSkeuoName] = "拟物风",
+            [Txt.SkinSkeuoDesc] = "皮革纸张质感",
+            [Txt.SkinNeumorphName] = "新拟态",
+            [Txt.SkinNeumorphDesc] = "柔和立体",
             [Txt.SettingsLiveHint] = "所有修改即时生效",
 
             [Txt.AboutTitle] = "关于",
@@ -299,6 +313,7 @@ namespace DocHub
             [Txt.WatermarkForMerge] = "文档合并",
             [Txt.WatermarkForPdfImage] = "PDF 转图片",
             [Txt.WatermarkForImagePdf] = "图片转 PDF",
+            [Txt.WatermarkForWordPdf] = "Word 转 PDF",
             [Txt.WatermarkPresets] = "预置文字",
             [Txt.WatermarkCustom] = "自定义",
             [Txt.WatermarkPreset1] = "正本",
@@ -404,7 +419,7 @@ namespace DocHub
             [Txt.ConvertPageSubtitle] = "把 PDF 的每一页导出为图片 · 只读源文件，不修改原文",
             [Txt.ConvertFilesTitle] = "PDF 文件",
             [Txt.ConvertCountFormat] = "{0} 个文件",
-            [Txt.ConvertListHint] = "添加 PDF 后自动读取页数 · 支持批量转换",
+            [Txt.ConvertListHint] = "空白处拖动可框选 · 添加 PDF 后自动读取页数",
             [Txt.ConvertAdd] = "添加 PDF",
             [Txt.ConvertDialogTitle] = "选择要转换的 PDF",
             [Txt.ConvertEmptyTitle] = "拖拽 PDF 到这里",
@@ -480,14 +495,14 @@ namespace DocHub
             [Txt.TipNavConvert] = "PDF 转图片：把 PDF 每一页导出为图片",
             [Txt.TipAppearance] = "打开外观设置",
             [Txt.TipNotifications] = "打开完成提醒设置",
-            [Txt.TipWatermark] = "打开水印设置（仅文档合并生效）",
+            [Txt.TipWatermark] = "打开水印设置",
             [Txt.NavImagePdfTitle] = "图片转 PDF",
             [Txt.NavImagePdfSubtitle] = "图片逐张或合并转 PDF",
             [Txt.ImagePdfPageTitle] = "图片转 PDF",
             [Txt.ImagePdfPageSubtitle] = "图片逐张输出或合并为一个 PDF · 本地处理",
             [Txt.ImagePdfFilesTitle] = "图片文件",
             [Txt.ImagePdfCountFormat] = "{0} 个文件",
-            [Txt.ImagePdfListHint] = "按列表顺序转换 · 默认每张图片单独输出",
+            [Txt.ImagePdfListHint] = "空白处拖动可框选 · 按列表顺序转换",
             [Txt.ImagePdfAdd] = "添加图片",
             [Txt.ImagePdfDialogTitle] = "选择要转换的图片",
             [Txt.ImagePdfEmptyTitle] = "拖拽图片到这里",
@@ -550,6 +565,146 @@ namespace DocHub
                 "· 逐张输出时单张失败会继续处理其余图片，并汇总成功 / 失败数量\n" +
                 "#修复\n" +
                 "· PDF 转图片全程只读源文件，转换前后原 PDF 的文字、图像与页面保持一致\n",
+            [Txt.NavWordPdfTitle] = "Word 转 PDF",
+            [Txt.NavWordPdfSubtitle] = "Word 批量转 PDF",
+            [Txt.WordPdfPageTitle] = "Word 转 PDF",
+            [Txt.WordPdfPageSubtitle] = "Word 逐份或合并转 PDF · 本地处理",
+            [Txt.WordPdfFilesTitle] = "Word 文档",
+            [Txt.WordPdfCountFormat] = "{0} 个文档",
+            [Txt.WordPdfListHint] = "空白处拖动可框选 · 按列表顺序转换",
+            [Txt.WordPdfAdd] = "添加 Word",
+            [Txt.WordPdfDialogTitle] = "选择要转换的 Word 文档",
+            [Txt.WordPdfEmptyTitle] = "拖拽 Word 到这里",
+            [Txt.WordPdfEmptySubtitle] = "或点击「添加 Word」批量选择",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfSettingsTitle] = "转换设置",
+            [Txt.WordPdfMergeOption] = "合并成一个文件",
+            [Txt.WordPdfMergeHint] = "关闭时每个 Word 单独输出同名 PDF",
+            [Txt.WordPdfNameLabel] = "文件名",
+            [Txt.WordPdfNamePlaceholder] = "留空则使用第一个 Word 的文件名",
+            [Txt.WordPdfSeparateHint] = "输出文件名与 Word 相同，重名自动编号",
+            [Txt.WordPdfOutput] = "保存位置",
+            [Txt.WordPdfNamePreview] = "输出：{0}",
+            [Txt.WordPdfNamePreviewMulti] = "{0} 个 PDF，文件名与 Word 相同",
+            [Txt.WordPdfStart] = "开始转换",
+            [Txt.WordPdfRunning] = "转换中…",
+            [Txt.WordPdfCancel] = "取消",
+            [Txt.WordPdfCancelling] = "正在取消…",
+            [Txt.WordPdfReady] = "准备就绪 · 每份 Word 单独输出 PDF",
+            [Txt.WordPdfReadyMerge] = "准备就绪 · 按列表顺序合并为一个 PDF",
+            [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineLibre] = "LibreOffice",
+            [Txt.WordPdfProcessing] = "正在转换（{0}/{1}）：{2}",
+            [Txt.WordPdfMerging] = "正在合并 PDF 页面…",
+            [Txt.WordPdfDone] = "转换完成 · {0} 页 · {1}",
+            [Txt.WordPdfDoneFiles] = "转换完成 · {0} 个 PDF · {1}",
+            [Txt.WordPdfCancelled] = "已取消 · 已完成 {0} 份",
+            [Txt.WordPdfFailStatus] = "转换失败，请检查文档后重试",
+            [Txt.WordPdfFailTitle] = "转换失败",
+            [Txt.WordPdfNoFiles] = "请先添加要转换的 Word 文档。",
+            [Txt.WordPdfNeedFolder] = "请选择保存位置。",
+            [Txt.WordPdfNoEngine] = "未检测到 Microsoft Word 或 LibreOffice，无法转换 Word。",
+            [Txt.WordPdfNonWord] = "不是受支持的 Word 文档：{0}",
+            [Txt.WordPdfWriteError] = "无法写入 PDF：{0}",
+            [Txt.WordPdfFailGeneric] = "转换 Word 失败：{0}",
+            [Txt.WordPdfAdded] = "已添加 {0} 个文档",
+            [Txt.WordPdfSkippedNonWord] = "已忽略 {0} 个非 Word 文件",
+            [Txt.WordPdfNothingAdded] = "没有新增文件：文件重复、不存在或不是 Word",
+            [Txt.WordPdfOutputCount] = "{0} 个 PDF",
+            [Txt.MsgWordPdfBusy] = "正在转换 Word，请等待完成后再关闭窗口。",
+            [Txt.TipNavWordPdf] = "Word 转 PDF：每份单独输出，或合并为一个文件",
+            [Txt.Feature7] = "Word 批量转 PDF：默认按原文件名逐份输出，可合并为一个文件，并可为输出加水印",
+            [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
+            [Txt.ChangelogItems4520] =
+                "#优化\n" +
+                "· 每日一言在启动时与运行中随机播放，不再按顺序轮换，连续两次也不会重复\n" +
+                "· 自动换句间隔改为秒，默认 30 秒，可在设置中自定义（5–86400 秒）\n",
+            [Txt.Changelog4519] = "4.5.19 · 2026-11-10",
+            [Txt.ChangelogItems4519] =
+                "#优化\n" +
+                "· 应用内所有提示框改用当前皮肤：确认、警告、错误与询问弹窗统一使用皮肤的底色、文字、圆角与按钮样式\n" +
+                "· 密码输入框改为同一套无边框皮肤窗口，深色皮肤下不再出现系统白色标题栏\n",
+            [Txt.Changelog4518] = "4.5.18 · 2026-11-10",
+            [Txt.ChangelogItems4518] =
+                "#新增\n" +
+                "· 左侧新增「Word 转 PDF」工作区，支持 .doc/.docx/.docm/.dot/.dotx/.dotm/.rtf/.odt 批量转换\n" +
+                "· 默认按原文件名逐份输出 PDF，重名自动编号；可开启「合并成一个文件」\n" +
+                "· 水印设置新增「Word 转 PDF」目标，仅作用于输出 PDF，不改动源文档\n" +
+                "· 自动复用 Microsoft Word 或 LibreOffice 完成转换，缺少两者时给出明确提示\n",
+            [Txt.Changelog4517] = "4.5.17 · 2026-11-06",
+            [Txt.ChangelogItems4517] =
+                "#优化\n" +
+                "· 移除名言库中的古诗词与文言文，全部替换为现代名言\n" +
+                "#新增\n" +
+                "· 新增国内外经典电影台词与名人名言，每个界面语言 66 条、六语言合计 396 条\n" +
+                "· 收录《阿甘正传》《肖申克的救赎》《教父》《泰坦尼克号》《哪吒之魔童降世》《一代宗师》等影片台词\n" +
+                "· 新增乔布斯、曼德拉、甘地、马丁·路德·金、培根、契诃夫等名人名言\n",
+            [Txt.Changelog4516] = "4.5.16 · 2026-11-06",
+            [Txt.ChangelogItems4516] =
+                "#优化\n" +
+                "· 「每日一言」卡片改为毛玻璃质感：半透明底色、顶部高光与圆角描边，与整体玻璃风格统一\n" +
+                "· 移除卡片左侧的红色竖线，夜间皮肤下不再出现刺眼的红色装饰\n" +
+                "· 长句会自动缩小字号并完整展示，避免被截断\n" +
+                "#新增\n" +
+                "· 名言库扩充至 348 条，每种界面语言各 58 条，涵盖中外名人与经典电影台词\n",
+            [Txt.Changelog4515] = "4.5.15 · 2026-11-06",
+            [Txt.ChangelogItems4515] =
+                "#新增\n" +
+                "· 每日一言新增自动换句，可在外观设置中自定义换句间隔（默认 5 分钟）\n" +
+                "· 关闭自动换句后，仍可点击卡片立即换一句\n",
+            [Txt.Changelog4514] = "4.5.14 · 2026-11-06",
+            [Txt.ChangelogItems4514] =
+                "#修复\n" +
+                "· 切换界面语言后，设置窗口不再整窗显示红叉或弹出未处理异常\n" +
+                "· 玻璃背景缓存被误释放后会自动重建，避免同类问题再次出现\n",
+            [Txt.Changelog4513] = "4.5.13 · 2026-11-06",
+            [Txt.ChangelogItems4513] =
+                "#新增\n" +
+                "· 合并页右侧新增「每日一言」卡片，展示世界名言与电影台词并注明出处\n" +
+                "· 内置简体中文、繁體中文、English、日本語、한국어、Русский 六套语录，切换界面语言时同步更换\n" +
+                "· 外观设置新增「在合并页显示名言或电影台词」开关，点击卡片可换一句\n",
+            [Txt.Changelog4512] = "4.5.12 · 2026-11-06",
+            [Txt.ChangelogItems4512] =
+                "#调整\n" +
+                "· 水印设置与完成提醒入口移到左下角，与皮肤、设置、关于排在一起\n" +
+                "· 合并页右侧的提示文字上移，紧跟在进度条下方\n" +
+                "#修复\n" +
+                "· 删除水印入口提示中「仅合并文档生效」的旧说明\n",
+            [Txt.Changelog4511] = "4.5.11 · 2026-11-06",
+            [Txt.ChangelogItems4511] =
+                "#调整\n" +
+                "· 移除终端风皮肤，正在使用该皮肤的配置会自动回退到经典蓝\n" +
+                "#修复\n" +
+                "· 修复右上角水印按钮图标在 19px 尺寸下显示不全的问题\n",
+            [Txt.Changelog4510] = "4.5.10 · 2026-11-06",
+            [Txt.ChangelogItems4510] =
+                "#修复\n" +
+                "· 普通左键点击（包括 Ctrl+点击）只保留当前文件，上一行的选中状态立即消失\n" +
+                "· 只有框选与 Shift 连选保留多选\n",
+            [Txt.Changelog459] = "4.5.9 · 2026-11-06",
+            [Txt.ChangelogItems459] =
+                "#修复\n" +
+                "· 鼠标普通左键点击文件时只保留当前文件，不再残留上一行的选中状态；行内上移 / 下移 / 移除按钮同样生效\n" +
+                "· Ctrl / Shift 多选行为保持不变\n",
+            [Txt.Changelog458] = "4.5.8 · 2026-11-06",
+            [Txt.ChangelogItems458] =
+                "#新增\n" +
+                "· 皮肤入口移到左下角，位于设置上方，皮肤 / 设置 / 关于统一为扁平线性图标\n" +
+                "· 文件列表新增「取消框选」按钮，可一键还原框选前的选择，按 Esc 同样有效\n" +
+                "· 删除、清空、取消框选等列表按钮增加鼠标悬停提示\n" +
+                "#优化\n" +
+                "· 修复鼠标左键框选时列表跳动的问题，框选过程更稳定\n" +
+                "#调整\n" +
+                "· 移除 HUD 科幻皮肤，已选该皮肤的配置会自动回退到经典蓝\n",
+            [Txt.Changelog457] = "4.5.7 · 2026-11-06",
+            [Txt.ChangelogItems457] =
+                "#新增\n" +
+                "· 待处理区支持鼠标框选：在列表空白处拖出选框即可批量选中文件，三个工作区均可使用\n" +
+                "· 按住 Ctrl 框选会把新文件追加到已有选择\n" +
+                "· 新增四套皮肤：拟物风、新拟态、终端风、HUD 科幻\n" +
+                "#优化\n" +
+                "· 框选后可批量移除选中文件\n" +
+                "· 移除网易红皮肤，已选该皮肤的配置会自动回退到经典蓝\n",
             [Txt.Changelog456] = "4.5.6 · 2026-11-06",
             [Txt.ChangelogItems456] =
                 "#优化\n" +

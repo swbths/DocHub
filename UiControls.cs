@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -16,6 +17,19 @@ namespace DocHub
         }
 
         public static bool IsDark => Current.IsDark;
+        public static SkinSurface Surface => Current.Surface;
+
+        /// <summary>按皮肤风格调整圆角：新拟态更柔和，拟物略收敛。</summary>
+        public static float ControlRadius(float baseRadius)
+        {
+            if (baseRadius <= 0) return 0;
+            return Current.Surface switch
+            {
+                SkinSurface.Neumorphic => baseRadius + 4f,
+                SkinSurface.Skeuomorphic => Math.Max(2f, baseRadius - 2f),
+                _ => baseRadius
+            };
+        }
 
         public static Color Background => Current.Background;
         public static Color Card => Current.Card;
@@ -261,18 +275,20 @@ namespace DocHub
             Color border = !Enabled ? DisabledBorder : BorderColor;
 
             var rect = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
-            using GraphicsPath path = Theme.RoundedRect(rect, Radius);
+            using GraphicsPath path = Theme.RoundedRect(rect, Theme.ControlRadius(Radius));
             if (fill.A > 0)
             {
                 using var brush = new SolidBrush(fill);
                 g.FillPath(brush, path);
             }
 
-            if (ShowBorder || border.A > 0)
+            if ((ShowBorder || border.A > 0) && Theme.Surface != SkinSurface.Neumorphic)
             {
                 using var pen = new Pen(border, 1f);
                 g.DrawPath(pen, path);
             }
+
+            SkinStyles.PaintButton(g, path, rect, Role, _pressed, Enabled);
 
             if (Icon == IconKind.None)
             {
@@ -365,7 +381,7 @@ namespace DocHub
         {
             base.OnResize(eventargs);
             if (Width <= 0 || Height <= 0) return;
-            using GraphicsPath path = Theme.RoundedRect(new RectangleF(0, 0, Width, Height), Radius);
+            using GraphicsPath path = Theme.RoundedRect(new RectangleF(0, 0, Width, Height), Theme.ControlRadius(Radius));
             Region? old = Region;
             Region = new Region(path);
             old?.Dispose();
@@ -375,7 +391,12 @@ namespace DocHub
         {
             base.OnPaint(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using GraphicsPath path = Theme.RoundedRect(new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f), Radius);
+            using GraphicsPath path = Theme.RoundedRect(new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f), Theme.ControlRadius(Radius));
+            if (Theme.Surface != SkinSurface.Glass)
+            {
+                SkinStyles.PaintCard(e.Graphics, path, new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f), Theme.ControlRadius(Radius));
+                return;
+            }
             using var pen = new Pen(Theme.Border, 1f);
             e.Graphics.DrawPath(pen, path);
         }
@@ -614,14 +635,20 @@ namespace DocHub
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             var rect = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
-            using GraphicsPath path = Theme.RoundedRect(rect, 10);
+            using GraphicsPath path = Theme.RoundedRect(rect, Theme.ControlRadius(10));
             Color fill = Box.ReadOnly || !Enabled ? Theme.InputReadOnlyFill : Theme.GlassInput;
             using (var brush = new SolidBrush(fill))
                 e.Graphics.FillPath(brush, path);
 
             Color border = _focused && Enabled ? Theme.Accent : Theme.Border;
-            using var pen = new Pen(border, _focused ? 1.4f : 1f);
-            e.Graphics.DrawPath(pen, path);
+            bool drawBorder = Theme.Surface != SkinSurface.Neumorphic || (_focused && Enabled);
+            if (drawBorder)
+            {
+                using var pen = new Pen(border, _focused ? 1.4f : 1f);
+                e.Graphics.DrawPath(pen, path);
+            }
+
+            SkinStyles.PaintInput(e.Graphics, path, rect, _focused && Enabled);
         }
     }
 
@@ -707,6 +734,67 @@ namespace DocHub
         private int _hoverIndex = -1;
         private int _hoverZone;
 
+        private bool _marqueeActive;
+        private bool _marqueeMoved;
+        private bool _applyingMarquee;
+        private Point _marqueeStart;
+        private Point _marqueeCurrent;
+        private Rectangle _marqueeFrame;
+        private readonly HashSet<int> _marqueeBase = new();
+        private HashSet<int> _marqueeBefore = new();
+        private HashSet<int>? _marqueeUndo;
+        private int _marqueeUndoCount;
+
+        /// <summary>是否正在框选；主窗口据此避免把框选当成拖拽排序。</summary>
+        public bool MarqueeActive => _marqueeActive;
+
+        /// <summary>最近一次框选是否可以用“取消框选”还原。</summary>
+        public bool HasMarqueeSelection =>
+            _marqueeActive || (_marqueeUndo != null && _marqueeUndoCount == Items.Count);
+
+        /// <summary>框选开始或结束时触发，供工具栏刷新“取消框选”按钮状态。</summary>
+        public event EventHandler? MarqueeStateChanged;
+
+        /// <summary>还原到框选前的选择；正在拖动时则直接中止本次框选。</summary>
+        public void CancelMarqueeSelection()
+        {
+            if (_marqueeActive)
+            {
+                EraseMarqueeFrame();
+                _marqueeActive = false;
+                _marqueeMoved = false;
+                if (Capture) Capture = false;
+                ApplySelection(_marqueeBefore);
+                MarqueeStateChanged?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            if (_marqueeUndo == null) return;
+            HashSet<int> restore = _marqueeUndo;
+            _marqueeUndo = null;
+            _marqueeUndoCount = 0;
+            ApplySelection(restore);
+            MarqueeStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>把两个点规范成左上到右下的矩形。</summary>
+        public static Rectangle NormalizeMarqueeRect(Point a, Point b) =>
+            Rectangle.FromLTRB(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y),
+                Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
+
+        /// <summary>返回与选框相交的行号；坐标均使用列表内坐标。</summary>
+        public static List<int> MarqueeHits(IReadOnlyList<Rectangle> rowBounds, Rectangle marquee)
+        {
+            var hits = new List<int>();
+            for (int i = 0; i < rowBounds.Count; i++)
+            {
+                Rectangle row = rowBounds[i];
+                if (row.Width > 0 && row.Height > 0 && row.IntersectsWith(marquee))
+                    hits.Add(i);
+            }
+            return hits;
+        }
+
         /// <summary>行内操作：上移、下移、移除。由主窗口接管真正的移动逻辑。</summary>
         public event EventHandler? ActionUp;
         public event EventHandler? ActionDown;
@@ -726,7 +814,7 @@ namespace DocHub
             BorderStyle = BorderStyle.None;
             BackColor = Theme.Card;
             ForeColor = Theme.TextPrimary;
-            SelectionMode = SelectionMode.One;
+            SelectionMode = SelectionMode.MultiExtended;
             IntegralHeight = false;
             Font = Theme.ItemFont;
             // 双缓冲 + 仅重绘变化的行，消除悬停/滚动时的闪烁
@@ -787,6 +875,12 @@ namespace DocHub
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (_marqueeActive)
+            {
+                UpdateMarquee(e.Location);
+                return;
+            }
+
             int index = IndexFromPoint(e.Location);
             int zone = ZoneAt(index, e.Location);
             if (index != _hoverIndex || zone != _hoverZone)
@@ -807,17 +901,224 @@ namespace DocHub
             {
                 int index = IndexFromPoint(e.Location);
                 int zone = ZoneAt(index, e.Location);
+                // 只有 Shift 连选和框选保留多选；普通点击与 Ctrl+点击都只保留当前行
+                bool plainClick = (ModifierKeys & Keys.Shift) == Keys.None;
                 if (zone > 0)
                 {
-                    SelectedIndex = index;
+                    // 多选模式下 SelectedIndex 是追加选中，这里必须显式收起其他行
+                    if (plainClick) CollapseSelectionTo(index);
+                    else SelectedIndex = index;
                     if (!ShowMoveActions) ActionRemove?.Invoke(this, EventArgs.Empty);
                     else if (zone == 1) ActionUp?.Invoke(this, EventArgs.Empty);
                     else if (zone == 2) ActionDown?.Invoke(this, EventArgs.Empty);
                     else ActionRemove?.Invoke(this, EventArgs.Empty);
                     return;
                 }
+
+                // 行卡片之外的空白（含左右留白）按下即开始框选，避免与拖拽排序冲突
+                if (SelectionMode != SelectionMode.One && !IsRowBody(index, e.Location))
+                {
+                    BeginMarquee(e.Location);
+                    return;
+                }
+
+                // 普通点击（含 Ctrl）只保留当前行；即使原生控件延迟收起（例如随后被判为拖拽），也先在这里定案
+                if (plainClick && index >= 0) CollapseSelectionTo(index);
             }
             base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (_marqueeActive && e.Button == MouseButtons.Left)
+            {
+                EndMarquee();
+                return;
+            }
+            base.OnMouseUp(e);
+        }
+
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            if (_marqueeActive && !Capture) EndMarquee();
+            base.OnMouseCaptureChanged(e);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                if (_marqueeActive || HasMarqueeSelection)
+                {
+                    CancelMarqueeSelection();
+                    e.Handled = true;
+                    return;
+                }
+            }
+            base.OnKeyDown(e);
+        }
+
+        protected override void OnSelectedIndexChanged(EventArgs e)
+        {
+            base.OnSelectedIndexChanged(e);
+            // 普通点选会清掉“取消框选”的快照，避免还原出过期的选择
+            if (!_applyingMarquee && _marqueeUndo != null)
+            {
+                _marqueeUndo = null;
+                _marqueeUndoCount = 0;
+                MarqueeStateChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private bool IsRowBody(int index, Point point)
+        {
+            if (index < 0 || index >= Items.Count) return false;
+            return RowBounds(index).Contains(point);
+        }
+
+        private Rectangle RowBounds(int index)
+        {
+            Rectangle item = GetItemRectangle(index);
+            return new Rectangle(item.Left + 10, item.Top + 3,
+                Math.Max(10, item.Width - 20), Math.Max(10, item.Height - 8));
+        }
+
+        private void BeginMarquee(Point start)
+        {
+            _marqueeActive = true;
+            _marqueeMoved = false;
+            _marqueeStart = start;
+            _marqueeCurrent = start;
+            _marqueeBefore.Clear();
+            foreach (int i in SelectedIndices) _marqueeBefore.Add(i);
+            _marqueeUndo = null;
+            _marqueeUndoCount = 0;
+            _marqueeBase.Clear();
+            if ((ModifierKeys & Keys.Control) == Keys.Control)
+            {
+                foreach (int i in SelectedIndices) _marqueeBase.Add(i);
+            }
+            else if (SelectedIndices.Count > 0)
+            {
+                ApplySelection(_marqueeBase);
+            }
+
+            int previous = _hoverIndex;
+            _hoverIndex = -1;
+            _hoverZone = 0;
+            InvalidateRow(previous);
+            Cursor = Cursors.Default;
+            // ListBox 获得焦点时会把焦点行滚入视图，这里记住滚动位置再还原，
+            // 否则在空白处按下开始框选时列表会突然跳一下。
+            int top = TopIndex;
+            Focus();
+            if (TopIndex != top) TopIndex = top;
+            Capture = true;
+            MarqueeStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void UpdateMarquee(Point point)
+        {
+            if (!_marqueeMoved)
+            {
+                Rectangle moved = NormalizeMarqueeRect(_marqueeStart, point);
+                if (moved.Width >= 3 || moved.Height >= 3) _marqueeMoved = true;
+            }
+
+            _marqueeCurrent = point;
+            EraseMarqueeFrame();
+            ApplyMarqueeSelection();
+            DrawMarqueeFrame();
+        }
+
+        /// <summary>普通点选时只保留目标行：先选中目标，再清掉其它行，避免上一行残留选中。</summary>
+        private void CollapseSelectionTo(int index)
+        {
+            if (index < 0 || index >= Items.Count) return;
+            if (SelectedIndices.Count == 1 && GetSelected(index)) return;
+
+            int top = TopIndex;
+            BeginUpdate();
+            try
+            {
+                if (!GetSelected(index)) SetSelected(index, true);
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    if (i != index && GetSelected(i)) SetSelected(i, false);
+                }
+            }
+            finally
+            {
+                EndUpdate();
+            }
+            if (TopIndex != top) TopIndex = top;
+        }
+
+        private void ApplySelection(ICollection<int> desired)
+        {
+            int top = TopIndex;
+            _applyingMarquee = true;
+            BeginUpdate();
+            try
+            {
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    bool want = desired.Contains(i);
+                    if (GetSelected(i) != want) SetSelected(i, want);
+                }
+            }
+            finally
+            {
+                EndUpdate();
+                _applyingMarquee = false;
+            }
+            if (TopIndex != top) TopIndex = top;
+        }
+
+        private void ApplyMarqueeSelection()
+        {
+            Rectangle box = NormalizeMarqueeRect(_marqueeStart, _marqueeCurrent);
+            var desired = new HashSet<int>(_marqueeBase);
+            int count = Items.Count;
+            for (int i = 0; i < count; i++)
+            {
+                Rectangle item = GetItemRectangle(i);
+                if (item.Width <= 0 || item.Height <= 0) continue;
+                if (RowBounds(i).IntersectsWith(box)) desired.Add(i);
+            }
+            ApplySelection(desired);
+        }
+
+        private void DrawMarqueeFrame()
+        {
+            Rectangle client = Rectangle.Intersect(
+                NormalizeMarqueeRect(_marqueeStart, _marqueeCurrent), ClientRectangle);
+            if (client.Width <= 0 || client.Height <= 0) return;
+            _marqueeFrame = RectangleToScreen(client);
+            ControlPaint.DrawReversibleFrame(_marqueeFrame, Theme.Accent, FrameStyle.Dashed);
+        }
+
+        private void EraseMarqueeFrame()
+        {
+            if (_marqueeFrame.Width <= 0 || _marqueeFrame.Height <= 0) return;
+            ControlPaint.DrawReversibleFrame(_marqueeFrame, Theme.Accent, FrameStyle.Dashed);
+            _marqueeFrame = Rectangle.Empty;
+        }
+
+        private void EndMarquee()
+        {
+            if (!_marqueeActive) return;
+            EraseMarqueeFrame();
+            _marqueeActive = false;
+            if (Capture) Capture = false;
+            ApplyMarqueeSelection();
+
+            if (_marqueeMoved)
+            {
+                _marqueeUndo = _marqueeBefore;
+                _marqueeUndoCount = Items.Count;
+            }
+            MarqueeStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -875,7 +1176,7 @@ namespace DocHub
 
             // 序号：选中时用强调色方块，更容易一眼看出多选范围
             var numberRect = new Rectangle(row.Left + 12, row.Top + (row.Height - 24) / 2, 24, 24);
-            using (GraphicsPath path = Theme.RoundedRect(numberRect, 7))
+            using (GraphicsPath path = Theme.RoundedRect(numberRect, Theme.ControlRadius(7)))
             using (var brush = new SolidBrush(selected ? Theme.Accent : Theme.Current.NumberFill))
                 g.FillPath(brush, path);
             TextRenderer.DrawText(g, (e.Index + 1).ToString(), Theme.BadgeFont, numberRect,
@@ -945,7 +1246,7 @@ namespace DocHub
                     bool hot = _hoverZone == i + 1;
                     if (hot)
                     {
-                        using GraphicsPath hotPath = Theme.RoundedRect(actions[i], 6);
+                        using GraphicsPath hotPath = Theme.RoundedRect(actions[i], Theme.ControlRadius(6));
                         using var hotBrush = new SolidBrush(Color.FromArgb(38, Theme.Accent));
                         g.FillPath(hotBrush, hotPath);
                     }
@@ -1068,8 +1369,11 @@ namespace DocHub
         Bell,
         Convert,
         Image,
+        WordPdf,
         Close,
-        Refresh
+        Refresh,
+        Palette,
+        MarqueeOff
     }
 
     /// <summary>统一的线性图标绘制（24×24 网格按目标矩形缩放），不依赖任何图标资源文件。</summary>
@@ -1251,16 +1555,15 @@ namespace DocHub
                 }
                 case IconKind.Watermark:
                 {
-                    // 水印：一滴水 + 两道斜向水印线
+                    // 水印：一滴水；小尺寸下不再叠加内部斜线，保证 19px 时轮廓完整清晰
                     using var drop = new GraphicsPath();
-                    drop.AddBezier(12f, 3.4f, 16.3f, 8.2f, 18.4f, 11.9f, 18.4f, 15.2f);
-                    drop.AddArc(5.6f, 8.8f, 12.8f, 12.8f, 0f, 180f);
-                    drop.AddBezier(5.6f, 15.2f, 5.6f, 11.9f, 7.7f, 8.2f, 12f, 3.4f);
+                    drop.AddBezier(12f, 3.6f, 16.2f, 8.4f, 18.2f, 12f, 18.2f, 15.2f);
+                    drop.AddArc(5.8f, 9f, 12.4f, 12.4f, 0f, 180f);
+                    drop.AddBezier(5.8f, 15.2f, 5.8f, 12f, 7.8f, 8.4f, 12f, 3.6f);
                     drop.CloseFigure();
                     g.FillPath(softBrush, drop);
                     g.DrawPath(pen, drop);
-                    g.DrawLine(pen, 8.6f, 13.8f, 13.4f, 9f);
-                    g.DrawLine(pen, 10.8f, 15.3f, 15.4f, 10.7f);
+                    if (!compact) g.DrawLine(pen, 9.8f, 14.8f, 14.2f, 10.4f);
                     break;
                 }
                 case IconKind.Bell:
@@ -1349,6 +1652,64 @@ namespace DocHub
                     g.DrawLine(pen, 19.4f, 8.4f, 15.2f, 7.6f);
                     break;
                 }
+                case IconKind.Palette:
+                {
+                    // 皮肤：调色板 + 四个色点
+                    using var palette = new GraphicsPath();
+                    palette.AddBezier(new PointF(12f, 3.6f), new PointF(6.6f, 3.6f),
+                        new PointF(3.4f, 7.3f), new PointF(3.4f, 11.6f));
+                    palette.AddBezier(new PointF(3.4f, 11.6f), new PointF(3.4f, 16.4f),
+                        new PointF(6.8f, 20.2f), new PointF(11.6f, 20.2f));
+                    palette.AddBezier(new PointF(11.6f, 20.2f), new PointF(13.6f, 20.2f),
+                        new PointF(13.6f, 18.4f), new PointF(13.6f, 18.4f));
+                    palette.AddBezier(new PointF(13.6f, 18.4f), new PointF(13.6f, 17.1f),
+                        new PointF(15.1f, 16.6f), new PointF(15.1f, 16.6f));
+                    palette.AddBezier(new PointF(15.1f, 16.6f), new PointF(20.6f, 16.6f),
+                        new PointF(20.6f, 11.4f), new PointF(20.6f, 11.4f));
+                    palette.AddBezier(new PointF(20.6f, 11.4f), new PointF(20.6f, 6.9f),
+                        new PointF(16.7f, 3.6f), new PointF(12f, 3.6f));
+                    palette.CloseFigure();
+                    g.FillPath(softBrush, palette);
+                    g.DrawPath(pen, palette);
+                    g.FillEllipse(solidBrush, 7.4f, 7.2f, 2.1f, 2.1f);
+                    g.FillEllipse(solidBrush, 11.2f, 6.2f, 2.1f, 2.1f);
+                    g.FillEllipse(solidBrush, 15f, 7.4f, 2.1f, 2.1f);
+                    g.FillEllipse(solidBrush, 6.8f, 13.2f, 2.1f, 2.1f);
+                    break;
+                }
+                case IconKind.WordPdf:
+                {
+                    // Word 文档：右上折角纸张 + 内部 W 折线
+                    using (GraphicsPath page = new GraphicsPath())
+                    {
+                        page.AddLine(6.2f, 2.8f, 14.4f, 2.8f);
+                        page.AddLine(14.4f, 2.8f, 18.2f, 6.6f);
+                        page.AddLine(18.2f, 6.6f, 18.2f, 21.2f);
+                        page.AddLine(18.2f, 21.2f, 6.2f, 21.2f);
+                        page.CloseFigure();
+                        g.FillPath(softBrush, page);
+                        g.DrawPath(pen, page);
+                    }
+                    g.DrawLine(pen, 14.4f, 2.8f, 14.4f, 6.6f);
+                    g.DrawLine(pen, 14.4f, 6.6f, 18.2f, 6.6f);
+                    g.DrawLines(pen, new[]
+                    {
+                        new PointF(8.9f, 10.4f), new PointF(10.4f, 17.2f),
+                        new PointF(12.2f, 12.4f), new PointF(14f, 17.2f),
+                        new PointF(15.5f, 10.4f)
+                    });
+                    break;
+                }
+                case IconKind.MarqueeOff:
+                {
+                    // 取消框选：虚线选框 + 斜杠
+                    using var dashed = (Pen)pen.Clone();
+                    dashed.DashStyle = DashStyle.Dash;
+                    dashed.DashPattern = new[] { 2f, 1.8f };
+                    g.DrawRectangle(dashed, 3.8f, 4.6f, 16.4f, 14.8f);
+                    g.DrawLine(pen, 4.8f, 19.2f, 19.2f, 4.8f);
+                    break;
+                }
             }
 
             g.Restore(state);
@@ -1387,6 +1748,15 @@ namespace DocHub
             return Strong ? Theme.GlassStrong : Theme.GlassFill;
         }
 
+        /// <summary>新拟态卡片需要给外侧阴影留出空间，其他风格仍贴合控件边界。</summary>
+        private bool NeumorphInset => Theme.Surface == SkinSurface.Neumorphic && Radius > 0 && DrawBorder;
+
+        private RectangleF SurfaceBounds => NeumorphInset
+            ? new RectangleF(5.5f, 5.5f, Math.Max(1f, Width - 11f), Math.Max(1f, Height - 11f))
+            : new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
+
+        private float SurfaceRadius => Math.Max(0f, Theme.ControlRadius(Radius));
+
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             GlassPaint.Paint(this, e.Graphics, ResolveTint(), Sharp);
@@ -1399,25 +1769,32 @@ namespace DocHub
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            var bounds = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
+            RectangleF bounds = SurfaceBounds;
             if (bounds.Width <= 1f || bounds.Height <= 1f) return;
 
-            using GraphicsPath path = Theme.RoundedRect(bounds, Radius);
+            using GraphicsPath path = Theme.RoundedRect(bounds, SurfaceRadius);
 
             if (DrawBorder)
             {
-                using (var border = new Pen(Theme.GlassBorder, 1f))
-                    g.DrawPath(border, path);
-
-                if (Width > 40)
+                if (Theme.Surface == SkinSurface.Glass)
                 {
-                    using var edge = new LinearGradientBrush(
-                        new RectangleF(0, 0, Width, 1f),
-                        Theme.GlassEdge, Color.FromArgb(0, Theme.GlassEdge), 0f);
-                    using var edgePen = new Pen(edge, 1.2f);
-                    g.DrawLine(edgePen,
-                        bounds.Left + Radius * 0.6f, 1.2f,
-                        bounds.Right - Radius * 0.6f, 1.2f);
+                    using (var border = new Pen(Theme.GlassBorder, 1f))
+                        g.DrawPath(border, path);
+
+                    if (Width > 40)
+                    {
+                        using var edge = new LinearGradientBrush(
+                            new RectangleF(0, 0, Width, 1f),
+                            Theme.GlassEdge, Color.FromArgb(0, Theme.GlassEdge), 0f);
+                        using var edgePen = new Pen(edge, 1.2f);
+                        g.DrawLine(edgePen,
+                            bounds.Left + SurfaceRadius * 0.6f, 1.2f,
+                            bounds.Right - SurfaceRadius * 0.6f, 1.2f);
+                    }
+                }
+                else
+                {
+                    SkinStyles.PaintCard(g, path, bounds, SurfaceRadius);
                 }
             }
 
@@ -1432,127 +1809,20 @@ namespace DocHub
         {
             base.OnResize(eventargs);
 
-            if (Radius <= 0 || Width <= 0 || Height <= 0)
+            if (Radius <= 0 || Width <= 0 || Height <= 0 || NeumorphInset)
             {
                 Region = null;
                 return;
             }
 
-            using GraphicsPath path = Theme.RoundedRect(new RectangleF(0, 0, Width, Height), Radius);
+            using GraphicsPath path = Theme.RoundedRect(
+                new RectangleF(0, 0, Width, Height), SurfaceRadius);
             Region? old = Region;
             Region = new Region(path);
             old?.Dispose();
         }
     }
 
-    /// <summary>窗口右上角的扁平化功能按钮：只有一个线性图标，悬停时出现淡色圆角底。</summary>
-    public sealed class TopNavButton : Control
-    {
-        private bool _hover;
-        private bool _pressed;
-
-        public IconKind Icon { get; set; } = IconKind.Settings;
-
-        public TopNavButton()
-        {
-            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
-                     ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
-                     ControlStyles.SupportsTransparentBackColor, true);
-            BackColor = Color.Transparent;
-            Cursor = Cursors.Hand;
-            TabStop = true;
-            Size = new Size(36, 36);
-        }
-
-        public void ApplyTheme()
-        {
-            Invalidate();
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            GlassPaint.Paint(this, e.Graphics, Color.Empty);
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            var rect = new RectangleF(1.5f, 1.5f, Width - 3f, Height - 3f);
-            bool active = Enabled && (_hover || _pressed);
-
-            if (active)
-            {
-                using GraphicsPath path = Theme.RoundedRect(rect, 9);
-                using (var fill = new SolidBrush(_pressed
-                    ? Color.FromArgb(Math.Min(255, Theme.GlassHover.A + 40), Theme.GlassHover)
-                    : Theme.GlassHover))
-                    g.FillPath(fill, path);
-
-                using var border = new Pen(Theme.GlassBorder, 1f);
-                g.DrawPath(border, path);
-            }
-
-            Color color = !Enabled
-                ? Theme.Current.SecondaryDisabledText
-                : _hover || _pressed ? Theme.Accent : Theme.TextSecondary;
-
-            const int iconSize = 19;
-            IconPainter.Draw(g, Icon,
-                new RectangleF((Width - iconSize) / 2f, (Height - iconSize) / 2f, iconSize, iconSize),
-                color, 1.8f);
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            _hover = true;
-            Invalidate();
-            base.OnMouseEnter(e);
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            _hover = false;
-            _pressed = false;
-            Invalidate();
-            base.OnMouseLeave(e);
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                _pressed = true;
-                Invalidate();
-            }
-            base.OnMouseDown(e);
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            _pressed = false;
-            Invalidate();
-            base.OnMouseUp(e);
-        }
-
-        protected override void OnEnabledChanged(EventArgs e)
-        {
-            Invalidate();
-            base.OnEnabledChanged(e);
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter)
-            {
-                OnClick(EventArgs.Empty);
-                e.Handled = true;
-            }
-            base.OnKeyDown(e);
-        }
-    }
     /// <summary>队列工具栏使用的紧凑图标按钮。</summary>
     public sealed class IconButton : Control
     {
@@ -2005,6 +2275,212 @@ namespace DocHub
         }
     }
 
+    /// <summary>合并页右侧的名言卡片：磨砂玻璃底、大引号、斜体名言与右下角出处，点击可换一句。</summary>
+    public sealed class QuoteCard : Control
+    {
+        private Language _language = Language.ZhCn;
+        private int _index = -1;
+        private Quote _quote = new(string.Empty, string.Empty);
+
+        public QuoteCard()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
+                     ControlStyles.SupportsTransparentBackColor, true);
+            BackColor = Color.Transparent;
+            Cursor = Cursors.Hand;
+            TabStop = false;
+            SetLanguage(Loc.Current);
+        }
+
+        /// <summary>切换到指定语言的语录池，并随机抽一句作为起始句。</summary>
+        public void SetLanguage(Language language)
+        {
+            _language = language;
+            _index = -1;
+            NextQuote();
+        }
+
+        /// <summary>随机抽一句；只要池里有多句，就不会与当前句重复。</summary>
+        public void NextQuote()
+        {
+            int index = Quotes.NextRandomIndex(_language, _index);
+            _index = index;
+            _quote = index < 0 ? new Quote(string.Empty, string.Empty) : Quotes.At(_language, index);
+            Invalidate();
+        }
+
+        public void ApplyTheme()
+        {
+            Invalidate();
+        }
+
+        /// <summary>按词换行，避免俄语等长单词被 GDI 从中间截断；中日文无空格时按字符换行。</summary>
+        private static List<string> WrapText(Graphics g, string text, Font font, int width)
+        {
+            const TextFormatFlags measureFlags = TextFormatFlags.SingleLine |
+                TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding;
+            var lines = new List<string>();
+            if (string.IsNullOrEmpty(text)) return lines;
+
+            foreach (string paragraph in text.Split('\n'))
+            {
+                string remaining = paragraph.Trim();
+                while (remaining.Length > 0)
+                {
+                    int fit = 0;
+                    for (int i = 0; i < remaining.Length; i++)
+                    {
+                        string candidate = remaining.Substring(0, i + 1).TrimEnd();
+                        if (TextRenderer.MeasureText(g, candidate, font, Size.Empty, measureFlags).Width > width)
+                            break;
+                        fit = i + 1;
+                    }
+
+                    if (fit >= remaining.Length)
+                    {
+                        lines.Add(remaining);
+                        break;
+                    }
+
+                    if (fit <= 0) fit = 1;
+                    int cut = remaining.LastIndexOf(' ', Math.Max(0, fit - 1), fit);
+                    if (cut <= 0) cut = fit;
+
+                    string line = remaining.Substring(0, cut).TrimEnd();
+                    if (line.Length > 0) lines.Add(line);
+                    remaining = remaining.Substring(cut).TrimStart();
+
+                    // 极端窄宽下的保护，避免死循环
+                    if (lines.Count > 200) return lines;
+                }
+            }
+
+            return lines;
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            NextQuote();
+            base.OnClick(e);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (Width < 60 || Height < 60) return;
+
+            Graphics g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var bounds = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
+            float radius = Theme.ControlRadius(14);
+            using GraphicsPath path = Theme.RoundedRect(bounds, radius);
+
+            // 磨砂玻璃：圆角内取窗口同区域的模糊壁纸，再叠半透明底色与顶部反光
+            GraphicsState glass = g.Save();
+            g.SetClip(path, CombineMode.Replace);
+            GlassPaint.Paint(this, g, Color.Transparent);
+
+            using (var veil = new SolidBrush(Color.FromArgb(Theme.IsDark ? 104 : 128, Theme.Card)))
+                g.FillRectangle(veil, ClientRectangle);
+
+            int sheenHeight = Math.Max(2, Height / 2);
+            using (var sheen = new LinearGradientBrush(
+                new Rectangle(0, 0, Math.Max(1, Width), sheenHeight),
+                Color.FromArgb(Theme.IsDark ? 24 : 88, Color.White),
+                Color.FromArgb(0, Color.White), 90f))
+                g.FillRectangle(sheen, 0, 0, Math.Max(1, Width), sheenHeight);
+            g.Restore(glass);
+
+            // 中性描边与顶部反光边缘：不随强调色变化，夜间模式下也不会出现红线
+            if (Theme.Surface == SkinSurface.Glass)
+            {
+                using (var border = new Pen(Theme.GlassBorder, 1f))
+                    g.DrawPath(border, path);
+
+                using var edge = new LinearGradientBrush(
+                    new RectangleF(0, 0, Math.Max(1, Width), 1f),
+                    Theme.GlassEdge, Color.FromArgb(0, Theme.GlassEdge), 0f);
+                using var edgePen = new Pen(edge, 1.2f);
+                g.DrawLine(edgePen, bounds.Left + radius * 0.6f, 1.2f,
+                    bounds.Right - radius * 0.6f, 1.2f);
+            }
+            else
+            {
+                SkinStyles.PaintCard(g, path, bounds, radius);
+            }
+
+            // 大号开引号，用中性色，避免抢正文
+            using (var markFont = new Font("Georgia", Math.Min(36f, Height * 0.26f), FontStyle.Bold))
+            using (var markBrush = new SolidBrush(Color.FromArgb(Theme.IsDark ? 66 : 44, Theme.TextPrimary)))
+                g.DrawString("\u201C", markFont, markBrush, new PointF(22f, 2f));
+
+            int left = 24;
+            int textWidth = Math.Max(20, Width - left - 18);
+            int top = 42;
+            int sourceTop = Height - 30;
+            int quoteHeight = Math.Max(20, sourceTop - top - 4);
+
+            bool slanted = _language is Language.En or Language.Ru;
+            float quoteSize = _language == Language.Ru ? 9.7f : 10.2f;
+            const float minQuoteSize = 8.8f;
+            const TextFormatFlags measureFlags = TextFormatFlags.SingleLine |
+                TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding;
+
+            // 长句放不下时先略微缩小字号，尽量完整显示，避免直接截断成省略号
+            Font textFont = new Font(Theme.BaseFont.FontFamily, quoteSize,
+                slanted ? FontStyle.Italic : FontStyle.Regular);
+            List<string> lines;
+            int lineHeight;
+            int maxLines;
+            while (true)
+            {
+                lineHeight = TextRenderer.MeasureText(g, "Ag", textFont, Size.Empty, measureFlags).Height;
+                lines = WrapText(g, _quote.Text, textFont, textWidth);
+                maxLines = Math.Max(1, (sourceTop - top - 4) / Math.Max(1, lineHeight));
+                if (lines.Count <= maxLines || quoteSize <= minQuoteSize) break;
+
+                textFont.Dispose();
+                quoteSize = Math.Max(minQuoteSize, quoteSize - 0.3f);
+                textFont = new Font(Theme.BaseFont.FontFamily, quoteSize,
+                    slanted ? FontStyle.Italic : FontStyle.Regular);
+            }
+
+            using (textFont)
+            {
+                if (lines.Count > maxLines)
+                {
+                    lines.RemoveRange(maxLines, lines.Count - maxLines);
+                    lines[maxLines - 1] = lines[maxLines - 1].TrimEnd() + "…";
+                }
+
+                int textTop = top + Math.Max(0, (quoteHeight - lines.Count * lineHeight) / 2);
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    TextRenderer.DrawText(g, lines[i], textFont,
+                        new Rectangle(left, textTop + i * lineHeight, textWidth, lineHeight),
+                        Theme.TextPrimary,
+                        TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.SingleLine |
+                        TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding);
+                }
+            }
+
+            // 出处与正文之间的细分隔线（中性灰，不使用强调色）
+            int lineY = sourceTop - 7;
+            using (var line = new Pen(Color.FromArgb(Theme.IsDark ? 46 : 30, Theme.TextPrimary), 1f))
+                g.DrawLine(line, left, lineY, Width - 18, lineY);
+
+            using (var sourceFont = new Font(Theme.SmallFont.FontFamily, 8.2f))
+            {
+                TextRenderer.DrawText(g, _quote.Source, sourceFont,
+                    new Rectangle(left, sourceTop - 3, textWidth, 21),
+                    Theme.TextSecondary,
+                    TextFormatFlags.Right | TextFormatFlags.VerticalCenter |
+                    TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis);
+            }
+        }
+    }
+
     /// <summary>分段选择器：格式 / PPI 等少量互斥选项。</summary>
     public sealed class SegmentedControl : Control
     {
@@ -2061,7 +2537,7 @@ namespace DocHub
 
             if (Width <= 2 || Height <= 2) return;
             var outer = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
-            using GraphicsPath outerPath = Theme.RoundedRect(outer, 9);
+            using GraphicsPath outerPath = Theme.RoundedRect(outer, Theme.ControlRadius(9));
             using (var fill = new SolidBrush(Theme.GlassInput))
                 g.FillPath(fill, outerPath);
             using (var border = new Pen(Theme.Border, 1f))
@@ -2079,14 +2555,14 @@ namespace DocHub
                 if (selected)
                 {
                     var inner = RectangleF.Inflate(cell, -1.5f, -1.5f);
-                    using GraphicsPath selectedPath = Theme.RoundedRect(inner, 7);
+                    using GraphicsPath selectedPath = Theme.RoundedRect(inner, Theme.ControlRadius(7));
                     using var brush = new SolidBrush(Theme.Accent);
                     g.FillPath(brush, selectedPath);
                 }
                 else if (hovered)
                 {
                     var inner = RectangleF.Inflate(cell, -1.5f, -1.5f);
-                    using GraphicsPath hoverPath = Theme.RoundedRect(inner, 7);
+                    using GraphicsPath hoverPath = Theme.RoundedRect(inner, Theme.ControlRadius(7));
                     using var brush = new SolidBrush(Theme.GlassHover);
                     g.FillPath(brush, hoverPath);
                 }
@@ -2387,9 +2863,6 @@ namespace DocHub
                     case GlassCard glass:
                         glass.ApplyTheme();
                         break;
-                    case TopNavButton nav:
-                        nav.ApplyTheme();
-                        break;
                     case IconButton icon:
                         icon.ApplyTheme();
                         break;
@@ -2609,7 +3082,7 @@ namespace DocHub
             int size = 18;
             int top = (Height - size) / 2;
             var box = new Rectangle(1, top, size, size);
-            using (GraphicsPath path = Theme.RoundedRect(box, 5))
+            using (GraphicsPath path = Theme.RoundedRect(box, Theme.ControlRadius(5)))
             {
                 if (_checked)
                 {
@@ -2718,23 +3191,20 @@ namespace DocHub
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             var rect = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
-            using GraphicsPath path = Theme.RoundedRect(rect, 10);
+            using GraphicsPath path = Theme.RoundedRect(rect, Theme.ControlRadius(10));
 
             using (var fill = new SolidBrush(Palette.Card))
                 g.FillPath(fill, path);
 
-            // 顶部皮肤预览条（扁平纯色）
+            // 顶部皮肤预览条：按皮肤风格叠加渐变、扫描线、网格或斜面
             var headerRect = new RectangleF(0, 0, Width, 30f);
-            g.SetClip(path);
-            using (var headerBrush = new SolidBrush(Palette.HeaderStart))
-                g.FillRectangle(headerBrush, headerRect);
+            SkinStyles.PaintSkinPreview(g, path, headerRect, Palette);
 
             if (!_selected)
             {
                 using var accentDot = new SolidBrush(Palette.Accent);
                 g.FillEllipse(accentDot, Width - 22, 10, 9, 9);
             }
-            g.ResetClip();
 
             TextRenderer.DrawText(g, Loc.SkinName(Palette.Id), Theme.BadgeFont,
                 new Rectangle(11, 2, Width - 40, 26), Palette.HeaderText,

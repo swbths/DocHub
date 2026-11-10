@@ -55,12 +55,17 @@ namespace DocHub
                 Blob(g, new RectangleF(w * 0.10f, -h * 0.22f, w * 0.52f, h * 0.60f), palette.WallpaperGlowC);
 
                 // 顶部一层极淡的白色高光，让玻璃边缘有反光感
-                using (var sheen = new LinearGradientBrush(
-                    new Rectangle(0, 0, w, Math.Max(1, h / 2)),
-                    Color.FromArgb(26, 255, 255, 255),
-                    Color.FromArgb(0, 255, 255, 255),
-                    90f))
+                if (palette.Surface is SkinSurface.Glass or SkinSurface.Skeuomorphic)
+                {
+                    using var sheen = new LinearGradientBrush(
+                        new Rectangle(0, 0, w, Math.Max(1, h / 2)),
+                        Color.FromArgb(26, 255, 255, 255),
+                        Color.FromArgb(0, 255, 255, 255),
+                        90f);
                     g.FillRectangle(sheen, 0, 0, w, Math.Max(1, h / 2));
+                }
+
+                SkinStyles.PaintWallpaperOverlay(g, new Size(w, h), palette);
             }
 
             return bitmap;
@@ -123,6 +128,24 @@ namespace DocHub
             return palette.Id + "@" + size.Width + "x" + size.Height;
         }
 
+        /// <summary>位图可能已被误释放：访问尺寸会抛 ArgumentException，此时应重建而不是继续使用。</summary>
+        private static bool IsUsable(Bitmap? bitmap)
+        {
+            if (bitmap == null) return false;
+
+            try
+            {
+                return bitmap.Width > 0 && bitmap.Height > 0;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        private static bool IsUsable(Backdrop backdrop)
+            => IsUsable(backdrop.Sharp) && IsUsable(backdrop.Frosted);
+
         /// <summary>按皮肤与尺寸取（或构建）壁纸缓存。返回的位图由缓存持有，调用方不要释放。</summary>
         public static Backdrop GetBackdrop(Size size, SkinPalette palette)
         {
@@ -136,11 +159,21 @@ namespace DocHub
                 {
                     if (BackdropCache[i].Key != key) continue;
 
-                    // 命中后移到末尾，保持「最近使用」顺序
                     Backdrop hit = BackdropCache[i].Value;
                     BackdropCache.RemoveAt(i);
-                    BackdropCache.Add(new KeyValuePair<string, Backdrop>(key, hit));
-                    return hit;
+
+                    // 缓存里的位图若被外部误释放（例如窗口重建时直接 Dispose），
+                    // 继续返回会让所有玻璃控件的绘制抛 “Parameter is not valid”，
+                    // 表现为整窗红叉。这里丢弃坏条目并重新生成。
+                    if (IsUsable(hit))
+                    {
+                        // 命中后移到末尾，保持「最近使用」顺序
+                        BackdropCache.Add(new KeyValuePair<string, Backdrop>(key, hit));
+                        return hit;
+                    }
+
+                    hit.Dispose();
+                    break;
                 }
 
                 Bitmap sharp = BuildWallpaper(new Size(width, height), palette);
@@ -195,7 +228,7 @@ namespace DocHub
                 ? (sharp ? scene.SharpBackdrop : scene.FrostedBackdrop)
                 : null;
 
-            if (form == null || bitmap == null)
+            if (form == null || bitmap == null || !IsUsable(bitmap))
             {
                 using var solid = new SolidBrush(fallback);
                 g.FillRectangle(solid, client);

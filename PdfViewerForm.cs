@@ -268,7 +268,7 @@ namespace DocHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, Loc.T(Txt.ViewerLoadFailed, ex.Message),
+                ThemedMessageBox.Show(this, Loc.T(Txt.ViewerLoadFailed, ex.Message),
                     Loc.T(Txt.PdfViewerTitle), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Close();
             }
@@ -329,7 +329,7 @@ namespace DocHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, Loc.T(Txt.ViewerLoadFailed, ex.Message),
+                ThemedMessageBox.Show(this, Loc.T(Txt.ViewerLoadFailed, ex.Message),
                     Loc.T(Txt.PdfViewerTitle), MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             finally

@@ -13,17 +13,20 @@ namespace DocHub
             [Txt.Ok] = "確定",
             [Txt.Close] = "關閉",
             [Txt.Cancel] = "取消",
+            [Txt.Yes] = "是",
+            [Txt.No] = "否",
             [Txt.Save] = "儲存",
             [Txt.Reset] = "恢復預設",
             [Txt.Browse] = "瀏覽",
             [Txt.PreviewWord] = "試聽",
             [Txt.Settings] = "設定",
             [Txt.About] = "關於",
+            [Txt.Skin] = "面板",
             [Txt.RailMerge] = "合併",
 
             [Txt.DocsTitle] = "檔案清單",
             [Txt.DocCountFormat] = "{0} 個檔案",
-            [Txt.ListHint] = "拖曳清單項目可調整順序 · 支援批次拖入 Word / PDF / 圖片",
+            [Txt.ListHint] = "拖曳排序 · 空白處拖出選框可多選 · 支援批次拖入 Word / PDF / 圖片",
             [Txt.AddDocs] = "加入檔案",
             [Txt.MoveUp] = "上移",
             [Txt.MoveDown] = "下移",
@@ -55,6 +58,7 @@ namespace DocHub
             [Txt.TipStart] = "依清單順序合併並產生 PDF",
             [Txt.TipSettings] = "命名方式、面板、提示音與語言",
             [Txt.TipAbout] = "版本資訊、更新紀錄與使用者條款",
+            [Txt.TipCancelBox] = "取消框選，還原為框選前的選擇（Esc）",
             [Txt.TrayOpen] = "開啟主畫面",
             [Txt.TrayExit] = "結束",
 
@@ -132,6 +136,14 @@ namespace DocHub
             [Txt.SoundHint] = "先開啟提示音，再選擇音效；選取即自動播放",
             [Txt.LanguageSection] = "介面語言",
             [Txt.LanguageHint] = "切換後立即生效",
+            [Txt.QuoteSection] = "每日一言",
+            [Txt.QuoteHint] = "隨介面語言切換",
+            [Txt.QuoteToggle] = "在合併頁顯示名言或電影台詞",
+            [Txt.QuoteAutoRefresh] = "自動換一句",
+            [Txt.QuoteRefreshInterval] = "換句間隔",
+            [Txt.QuoteRefreshSeconds] = "秒",
+            [Txt.QuoteRefreshHint] = "開啟後每隔設定時間自動換一句；關閉後僅點擊卡片換句",
+            [Txt.TipQuote] = "點擊換一句",
             [Txt.OutputSection] = "儲存位置",
             [Txt.OutputHint] = "合併後的 PDF 儲存在哪裡",
             [Txt.OutputFirst] = "最上方檔案所在的資料夾",
@@ -140,12 +152,14 @@ namespace DocHub
             [Txt.OutputCustomPlaceholder] = "選擇或輸入資料夾路徑",
             [Txt.SkinBlueName] = "經典藍",
             [Txt.SkinBlueDesc] = "清爽通透",
-            [Txt.SkinRedName] = "網易紅",
-            [Txt.SkinRedDesc] = "經典雲音樂",
             [Txt.SkinNightName] = "夜間模式",
             [Txt.SkinNightDesc] = "沉浸暗色",
             [Txt.SkinCloudName] = "雲白",
             [Txt.SkinCloudDesc] = "暖白紙感",
+            [Txt.SkinSkeuoName] = "擬物風",
+            [Txt.SkinSkeuoDesc] = "皮革紙張質感",
+            [Txt.SkinNeumorphName] = "新擬態",
+            [Txt.SkinNeumorphDesc] = "柔和立體",
             [Txt.SettingsLiveHint] = "所有修改即時生效",
 
             [Txt.AboutTitle] = "關於",
@@ -299,6 +313,7 @@ namespace DocHub
             [Txt.WatermarkForMerge] = "文件合併",
             [Txt.WatermarkForPdfImage] = "PDF 轉圖片",
             [Txt.WatermarkForImagePdf] = "圖片轉 PDF",
+            [Txt.WatermarkForWordPdf] = "Word 轉 PDF",
             [Txt.WatermarkPresets] = "預置文字",
             [Txt.WatermarkCustom] = "自訂",
             [Txt.WatermarkPreset1] = "正本",
@@ -404,7 +419,7 @@ namespace DocHub
             [Txt.ConvertPageSubtitle] = "將 PDF 的每一頁匯出為圖片 · 唯讀來源檔，不修改原文",
             [Txt.ConvertFilesTitle] = "PDF 檔案",
             [Txt.ConvertCountFormat] = "{0} 個檔案",
-            [Txt.ConvertListHint] = "加入 PDF 後自動讀取頁數 · 支援批次轉換",
+            [Txt.ConvertListHint] = "空白處拖曳可框選 · 加入 PDF 後自動讀取頁數",
             [Txt.ConvertAdd] = "加入 PDF",
             [Txt.ConvertDialogTitle] = "選擇要轉換的 PDF",
             [Txt.ConvertEmptyTitle] = "拖曳 PDF 到這裡",
@@ -480,14 +495,14 @@ namespace DocHub
             [Txt.TipNavConvert] = "PDF 轉圖片：將 PDF 每一頁匯出為圖片",
             [Txt.TipAppearance] = "開啟外觀設定",
             [Txt.TipNotifications] = "開啟完成提醒設定",
-            [Txt.TipWatermark] = "開啟浮水印設定（僅文件合併生效）",
+            [Txt.TipWatermark] = "開啟浮水印設定",
             [Txt.NavImagePdfTitle] = "圖片轉 PDF",
             [Txt.NavImagePdfSubtitle] = "圖片逐張或合併轉 PDF",
             [Txt.ImagePdfPageTitle] = "圖片轉 PDF",
             [Txt.ImagePdfPageSubtitle] = "圖片逐張輸出或合併為一個 PDF · 本機處理",
             [Txt.ImagePdfFilesTitle] = "圖片檔案",
             [Txt.ImagePdfCountFormat] = "{0} 個檔案",
-            [Txt.ImagePdfListHint] = "依清單順序轉換 · 預設每張圖片單獨輸出",
+            [Txt.ImagePdfListHint] = "空白處拖曳可框選 · 依清單順序轉換",
             [Txt.ImagePdfAdd] = "加入圖片",
             [Txt.ImagePdfDialogTitle] = "選擇要轉換的圖片",
             [Txt.ImagePdfEmptyTitle] = "拖曳圖片到這裡",
@@ -550,6 +565,146 @@ namespace DocHub
                 "· 逐張輸出時單張失敗會繼續處理其餘圖片，並彙總成功 / 失敗數量\n" +
                 "#修復\n" +
                 "· PDF 轉圖片全程唯讀來源檔，轉換前後原 PDF 的文字、圖像與頁面保持一致\n",
+            [Txt.NavWordPdfTitle] = "Word 轉 PDF",
+            [Txt.NavWordPdfSubtitle] = "Word 批次轉 PDF",
+            [Txt.WordPdfPageTitle] = "Word 轉 PDF",
+            [Txt.WordPdfPageSubtitle] = "Word 逐份或合併轉 PDF · 本機處理",
+            [Txt.WordPdfFilesTitle] = "Word 文件",
+            [Txt.WordPdfCountFormat] = "{0} 個文件",
+            [Txt.WordPdfListHint] = "空白處拖曳可框選 · 依列表順序轉換",
+            [Txt.WordPdfAdd] = "新增 Word",
+            [Txt.WordPdfDialogTitle] = "選擇要轉換的 Word 文件",
+            [Txt.WordPdfEmptyTitle] = "拖曳 Word 到這裡",
+            [Txt.WordPdfEmptySubtitle] = "或點擊「新增 Word」批次選擇",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfSettingsTitle] = "轉換設定",
+            [Txt.WordPdfMergeOption] = "合併成一個檔案",
+            [Txt.WordPdfMergeHint] = "關閉時每個 Word 單獨輸出同名 PDF",
+            [Txt.WordPdfNameLabel] = "檔案名稱",
+            [Txt.WordPdfNamePlaceholder] = "留空則使用第一個 Word 的檔案名稱",
+            [Txt.WordPdfSeparateHint] = "輸出檔案名稱與 Word 相同，重名自動編號",
+            [Txt.WordPdfOutput] = "儲存位置",
+            [Txt.WordPdfNamePreview] = "輸出：{0}",
+            [Txt.WordPdfNamePreviewMulti] = "{0} 個 PDF，檔案名稱與 Word 相同",
+            [Txt.WordPdfStart] = "開始轉換",
+            [Txt.WordPdfRunning] = "轉換中…",
+            [Txt.WordPdfCancel] = "取消",
+            [Txt.WordPdfCancelling] = "正在取消…",
+            [Txt.WordPdfReady] = "準備就緒 · 每份 Word 單獨輸出 PDF",
+            [Txt.WordPdfReadyMerge] = "準備就緒 · 依列表順序合併為一個 PDF",
+            [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineLibre] = "LibreOffice",
+            [Txt.WordPdfProcessing] = "正在轉換（{0}/{1}）：{2}",
+            [Txt.WordPdfMerging] = "正在合併 PDF 頁面…",
+            [Txt.WordPdfDone] = "轉換完成 · {0} 頁 · {1}",
+            [Txt.WordPdfDoneFiles] = "轉換完成 · {0} 個 PDF · {1}",
+            [Txt.WordPdfCancelled] = "已取消 · 已完成 {0} 份",
+            [Txt.WordPdfFailStatus] = "轉換失敗，請檢查文件後重試",
+            [Txt.WordPdfFailTitle] = "轉換失敗",
+            [Txt.WordPdfNoFiles] = "請先新增要轉換的 Word 文件。",
+            [Txt.WordPdfNeedFolder] = "請選擇儲存位置。",
+            [Txt.WordPdfNoEngine] = "未偵測到 Microsoft Word 或 LibreOffice，無法轉換 Word。",
+            [Txt.WordPdfNonWord] = "不是支援的 Word 文件：{0}",
+            [Txt.WordPdfWriteError] = "無法寫入 PDF：{0}",
+            [Txt.WordPdfFailGeneric] = "轉換 Word 失敗：{0}",
+            [Txt.WordPdfAdded] = "已新增 {0} 個文件",
+            [Txt.WordPdfSkippedNonWord] = "已忽略 {0} 個非 Word 檔案",
+            [Txt.WordPdfNothingAdded] = "沒有新增檔案：檔案重複、不存在或不是 Word",
+            [Txt.WordPdfOutputCount] = "{0} 個 PDF",
+            [Txt.MsgWordPdfBusy] = "正在轉換 Word，請等待完成後再關閉視窗。",
+            [Txt.TipNavWordPdf] = "Word 轉 PDF：每份單獨輸出，或合併為一個檔案",
+            [Txt.Feature7] = "Word 批次轉 PDF：預設依原檔名逐份輸出，可合併為一個檔案，並可為輸出加上浮水印",
+            [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
+            [Txt.ChangelogItems4520] =
+                "#優化\n" +
+                "· 每日一言在啟動時與執行中隨機播放，不再依序輪換，連續兩次也不會重複\n" +
+                "· 自動換句間隔改為秒，預設 30 秒，可在設定中自訂（5–86400 秒）\n",
+            [Txt.Changelog4519] = "4.5.19 · 2026-11-10",
+            [Txt.ChangelogItems4519] =
+                "#優化\n" +
+                "· 應用程式內所有提示框改用目前面板：確認、警告、錯誤與詢問視窗統一使用面板的底色、文字、圓角與按鈕樣式\n" +
+                "· 密碼輸入框改為同一套無邊框面板視窗，深色面板下不再出現系統白色標題列\n",
+            [Txt.Changelog4518] = "4.5.18 · 2026-11-10",
+            [Txt.ChangelogItems4518] =
+                "#新增\n" +
+                "· 左側新增「Word 轉 PDF」工作區，支援 .doc/.docx/.docm/.dot/.dotx/.dotm/.rtf/.odt 批次轉換\n" +
+                "· 預設依原檔名逐份輸出 PDF，重名自動編號；可開啟「合併成一個檔案」\n" +
+                "· 浮水印設定新增「Word 轉 PDF」目標，僅作用於輸出 PDF，不改動來源文件\n" +
+                "· 自動沿用 Microsoft Word 或 LibreOffice 完成轉換，缺少兩者時給出明確提示\n",
+            [Txt.Changelog4517] = "4.5.17 · 2026-11-06",
+            [Txt.ChangelogItems4517] =
+                "#優化\n" +
+                "· 移除名言庫中的古詩詞與文言文，全部替換為現代名言\n" +
+                "#新增\n" +
+                "· 新增國內外經典電影台詞與名人名言，每個介面語言 66 條、六語言合計 396 條\n" +
+                "· 收錄《阿甘正傳》《刺激1995》《教父》《鐵達尼號》《哪吒之魔童降世》《一代宗師》等影片台詞\n" +
+                "· 新增賈伯斯、曼德拉、甘地、馬丁·路德·金、培根、契訶夫等名人名言\n",
+            [Txt.Changelog4516] = "4.5.16 · 2026-11-06",
+            [Txt.ChangelogItems4516] =
+                "#優化\n" +
+                "· 「每日一言」卡片改為毛玻璃質感：半透明底色、頂部高光與圓角描邊，與整體玻璃風格統一\n" +
+                "· 移除卡片左側的紅色豎線，夜間模式下不再出現刺眼的紅色裝飾\n" +
+                "· 長句會自動縮小字號並完整顯示，避免被截斷\n" +
+                "#新增\n" +
+                "· 名言庫擴充至 348 條，每種介面語言各 58 條，涵蓋中外名人與經典電影台詞\n",
+            [Txt.Changelog4515] = "4.5.15 · 2026-11-06",
+            [Txt.ChangelogItems4515] =
+                "#新增\n" +
+                "· 每日一言新增自動換句，可在外觀設定中自訂換句間隔（預設 5 分鐘）\n" +
+                "· 關閉自動換句後，仍可點擊卡片立即換一句\n",
+            [Txt.Changelog4514] = "4.5.14 · 2026-11-06",
+            [Txt.ChangelogItems4514] =
+                "#修復\n" +
+                "· 切換介面語言後，設定視窗不再整窗顯示紅叉或彈出未處理例外\n" +
+                "· 玻璃背景快取被誤釋放後會自動重建，避免同類問題再次出現\n",
+            [Txt.Changelog4513] = "4.5.13 · 2026-11-06",
+            [Txt.ChangelogItems4513] =
+                "#新增\n" +
+                "· 合併頁右側新增「每日一言」卡片，展示世界名言與電影台詞並註明出處\n" +
+                "· 內建簡體中文、繁體中文、English、日本語、한국어、Русский 六套語錄，切換介面語言時同步更換\n" +
+                "· 外觀設定新增「在合併頁顯示名言或電影台詞」開關，點擊卡片可換一句\n",
+            [Txt.Changelog4512] = "4.5.12 · 2026-11-06",
+            [Txt.ChangelogItems4512] =
+                "#調整\n" +
+                "· 浮水印設定與完成提醒入口移到左下角，與面板、設定、關於排在一起\n" +
+                "· 合併頁右側的提示文字上移，緊跟在進度條下方\n" +
+                "#修復\n" +
+                "· 刪除浮水印入口提示中「僅檔案合併生效」的舊說明\n",
+            [Txt.Changelog4511] = "4.5.11 · 2026-11-06",
+            [Txt.ChangelogItems4511] =
+                "#調整\n" +
+                "· 移除終端風面板，正在使用該面板的設定會自動回退到經典藍\n" +
+                "#修復\n" +
+                "· 修正右上角浮水印按鈕圖示在 19px 尺寸下顯示不全的問題\n",
+            [Txt.Changelog4510] = "4.5.10 · 2026-11-06",
+            [Txt.ChangelogItems4510] =
+                "#修復\n" +
+                "· 滑鼠一般左鍵點選（包括 Ctrl+點選）只保留目前檔案，上一列的選取狀態立即消失\n" +
+                "· 只有框選與 Shift 連選保留多選\n",
+            [Txt.Changelog459] = "4.5.9 · 2026-11-06",
+            [Txt.ChangelogItems459] =
+                "#修復\n" +
+                "· 滑鼠一般左鍵點選檔案時只保留目前檔案，不再殘留上一列的選取狀態；列內上移 / 下移 / 移除按鈕同樣生效\n" +
+                "· Ctrl / Shift 多選行為維持不變\n",
+            [Txt.Changelog458] = "4.5.8 · 2026-11-06",
+            [Txt.ChangelogItems458] =
+                "#新增\n" +
+                "· 面板入口移到左下角，位於設定上方，面板 / 設定 / 關於統一為扁平線性圖示\n" +
+                "· 檔案清單新增「取消框選」按鈕，可一鍵還原框選前的選擇，按 Esc 同樣有效\n" +
+                "· 刪除、清空、取消框選等清單按鈕增加滑鼠懸停提示\n" +
+                "#優化\n" +
+                "· 修正滑鼠左鍵框選時清單跳動的問題，框選過程更穩定\n" +
+                "#調整\n" +
+                "· 移除 HUD 科幻面板，已選該面板的設定會自動回退到經典藍\n",
+            [Txt.Changelog457] = "4.5.7 · 2026-11-06",
+            [Txt.ChangelogItems457] =
+                "#新增\n" +
+                "· 待處理區支援滑鼠框選：在清單空白處拖出選框即可批次選取檔案，三個工作區皆可使用\n" +
+                "· 按住 Ctrl 框選會將新檔案追加到既有選擇\n" +
+                "· 新增四套面板：擬物風、新擬態、終端風、HUD 科幻\n" +
+                "#優化\n" +
+                "· 框選後可批次移除選取的檔案\n" +
+                "· 移除網易紅面板，已選該面板的設定會自動回退到經典藍\n",
             [Txt.Changelog456] = "4.5.6 · 2026-11-06",
             [Txt.ChangelogItems456] =
                 "#優化\n" +

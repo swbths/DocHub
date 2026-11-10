@@ -65,9 +65,13 @@ namespace DocHub
         private SkinCheckBox _checkNotify = null!;
         private SkinCheckBox _checkSound = null!;
         private SkinCheckBox _checkOpen = null!;
+        private SkinCheckBox _checkQuotes = null!;
+        private SkinCheckBox _checkQuoteAutoRefresh = null!;
+        private RoundedInput _quoteIntervalInput = null!;
         private SkinCheckBox _checkWatermark = null!;
         private SkinCheckBox _checkWatermarkPdfImage = null!;
         private SkinCheckBox _checkWatermarkImagePdf = null!;
+        private SkinCheckBox _checkWatermarkWordPdf = null!;
         private RoundedButton _outputBrowse = null!;
         private RoundedButton _resetButton = null!;
         private RoundedButton _closeSaveButton = null!;
@@ -182,7 +186,7 @@ namespace DocHub
                 _skinCards[i] = new SkinCard
                 {
                     Palette = SkinPalette.All[i],
-                    Bounds = new Rectangle((i % 3) * 158, 28 + (i / 3) * 84, 148, 76)
+                    Bounds = new Rectangle((i % 4) * 154, 28 + (i / 4) * 84, 146, 76)
                 };
                 pageLook.Controls.Add(_skinCards[i]);
             }
@@ -207,6 +211,32 @@ namespace DocHub
                 };
                 pageLook.Controls.Add(_languageRadios[i]);
             }
+
+            var sectionQuote = PageLabel(pageLook, Loc.T(Txt.QuoteSection), Theme.SectionFont, "section", 0, 304);
+            PageHint(pageLook, Loc.T(Txt.QuoteHint), sectionQuote, 0);
+            _checkQuotes = new SkinCheckBox
+            {
+                Bounds = new Rectangle(0, 336, ContentWidth, 26),
+                Text = Loc.T(Txt.QuoteToggle)
+            };
+            pageLook.Controls.Add(_checkQuotes);
+
+            _checkQuoteAutoRefresh = new SkinCheckBox
+            {
+                Bounds = new Rectangle(0, 370, ContentWidth, 26),
+                Text = Loc.T(Txt.QuoteAutoRefresh)
+            };
+            pageLook.Controls.Add(_checkQuoteAutoRefresh);
+
+            PageLabel(pageLook, Loc.T(Txt.QuoteRefreshInterval), Theme.BaseFont, "secondary", 0, 408);
+            _quoteIntervalInput = new RoundedInput
+            {
+                Bounds = new Rectangle(150, 402, 84, 30)
+            };
+            _quoteIntervalInput.MaxLength = 5;
+            pageLook.Controls.Add(_quoteIntervalInput);
+            PageLabel(pageLook, Loc.T(Txt.QuoteRefreshSeconds), Theme.BaseFont, "secondary", 242, 408);
+            PageLabel(pageLook, Loc.T(Txt.QuoteRefreshHint), Theme.SmallFont, "muted", 0, 444);
 
             // ---------- 命名与保存 ----------
             var pageNaming = _pages[1];
@@ -391,22 +421,28 @@ namespace DocHub
 
             _checkWatermark = new SkinCheckBox
             {
-                Bounds = new Rectangle(0, 30, 200, 26),
+                Bounds = new Rectangle(0, 30, 150, 26),
                 Text = Loc.T(Txt.WatermarkForMerge)
             };
             _checkWatermarkPdfImage = new SkinCheckBox
             {
-                Bounds = new Rectangle(208, 30, 200, 26),
+                Bounds = new Rectangle(156, 30, 150, 26),
                 Text = Loc.T(Txt.WatermarkForPdfImage)
             };
             _checkWatermarkImagePdf = new SkinCheckBox
             {
-                Bounds = new Rectangle(416, 30, 200, 26),
+                Bounds = new Rectangle(312, 30, 150, 26),
                 Text = Loc.T(Txt.WatermarkForImagePdf)
+            };
+            _checkWatermarkWordPdf = new SkinCheckBox
+            {
+                Bounds = new Rectangle(468, 30, 150, 26),
+                Text = Loc.T(Txt.WatermarkForWordPdf)
             };
             pageMark.Controls.AddRange(new Control[]
             {
-                _checkWatermark, _checkWatermarkPdfImage, _checkWatermarkImagePdf
+                _checkWatermark, _checkWatermarkPdfImage, _checkWatermarkImagePdf,
+                _checkWatermarkWordPdf
             });
 
             PageLabel(pageMark, Loc.T(Txt.WatermarkPresets), Theme.BaseFont, "secondary", 0, 64);
@@ -744,6 +780,31 @@ namespace DocHub
                 _working.OpenAfterMerge = _checkOpen.Checked;
                 NotifyApplied();
             };
+            _checkQuotes.Click += (_, _) =>
+            {
+                if (_loading) return;
+                _working.ShowQuotes = _checkQuotes.Checked;
+                UpdateEnabledStates();
+                NotifyApplied();
+            };
+
+            _checkQuoteAutoRefresh.Click += (_, _) =>
+            {
+                if (_loading) return;
+                _working.QuoteAutoRefresh = _checkQuoteAutoRefresh.Checked;
+                UpdateEnabledStates();
+                NotifyApplied();
+            };
+
+            _quoteIntervalInput.TextChanged += (_, _) =>
+            {
+                if (_loading) return;
+                if (!int.TryParse(_quoteIntervalInput.Text.Trim(), out int seconds)) return;
+                if (seconds < AppSettings.MinQuoteRefreshSeconds || seconds > AppSettings.MaxQuoteRefreshSeconds) return;
+
+                _working.QuoteRefreshSeconds = seconds;
+                NotifyApplied();
+            };
 
             for (int i = 0; i < _convertFormatRadios.Length; i++)
             {
@@ -828,6 +889,14 @@ namespace DocHub
             {
                 if (_loading) return;
                 _working.WatermarkForImagePdf = _checkWatermarkImagePdf.Checked;
+                UpdateEnabledStates();
+                UpdateWatermarkPreview();
+                NotifyApplied();
+            };
+            _checkWatermarkWordPdf.Click += (_, _) =>
+            {
+                if (_loading) return;
+                _working.WatermarkForWordPdf = _checkWatermarkWordPdf.Checked;
                 UpdateEnabledStates();
                 UpdateWatermarkPreview();
                 NotifyApplied();
@@ -958,6 +1027,10 @@ namespace DocHub
             _checkNotify.Checked = _working.ShowNotification;
             _checkSound.Checked = _working.PlaySound;
             _checkOpen.Checked = _working.OpenAfterMerge;
+            _checkQuotes.Checked = _working.ShowQuotes;
+            _checkQuoteAutoRefresh.Checked = _working.QuoteAutoRefresh;
+            _quoteIntervalInput.Text = Math.Clamp(_working.QuoteRefreshSeconds,
+                AppSettings.MinQuoteRefreshSeconds, AppSettings.MaxQuoteRefreshSeconds).ToString();
 
             for (int i = 0; i < _convertFormatRadios.Length; i++)
                 _convertFormatRadios[i].Checked = (int)_working.ConvertFormat == i;
@@ -975,6 +1048,7 @@ namespace DocHub
             _checkWatermark.Checked = _working.WatermarkEnabled;
             _checkWatermarkPdfImage.Checked = _working.WatermarkForPdfImage;
             _checkWatermarkImagePdf.Checked = _working.WatermarkForImagePdf;
+            _checkWatermarkWordPdf.Checked = _working.WatermarkForWordPdf;
             for (int i = 0; i < _presetRadios.Length; i++)
                 _presetRadios[i].Checked = _working.WatermarkPreset == i;
             _watermarkInput.Text = _working.WatermarkCustomText ?? string.Empty;
@@ -1016,6 +1090,12 @@ namespace DocHub
                 radio.Enabled = _working.PlaySound;
                 radio.Invalidate();
             }
+
+            bool quotesOn = _working.ShowQuotes;
+            _checkQuoteAutoRefresh.Enabled = quotesOn;
+            _checkQuoteAutoRefresh.Invalidate();
+            _quoteIntervalInput.Enabled = quotesOn && _working.QuoteAutoRefresh;
+            _quoteIntervalInput.ApplyTheme();
 
             bool watermarkOn = _working.WatermarkAnyEnabled;
             bool customText = _working.WatermarkPreset == 4 && watermarkOn;
@@ -1175,15 +1255,16 @@ namespace DocHub
                 control.Dispose();
             }
 
-            _backdropSharp?.Dispose();
+            // 背景位图由 GlassPaint 的缓存持有，这里只解除引用，不能 Dispose，
+            // 否则缓存里会留下已释放的位图，下次绘制时抛 “Parameter is not valid”。
             _backdropSharp = null;
-            _backdropFrosted?.Dispose();
             _backdropFrosted = null;
             _backdropKey = string.Empty;
 
             BuildUi();
             ShowPage(page);
             ResumeLayout(true);
+            RebuildBackdrop();
             Invalidate(true);
         }
 

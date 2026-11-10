@@ -13,17 +13,20 @@ namespace DocHub
             [Txt.Ok] = "OK",
             [Txt.Close] = "Close",
             [Txt.Cancel] = "Cancel",
+            [Txt.Yes] = "Yes",
+            [Txt.No] = "No",
             [Txt.Save] = "Save",
             [Txt.Reset] = "Restore defaults",
             [Txt.Browse] = "Browse",
             [Txt.PreviewWord] = "Preview",
             [Txt.Settings] = "Settings",
             [Txt.About] = "About",
+            [Txt.Skin] = "Skins",
             [Txt.RailMerge] = "Merge",
 
             [Txt.DocsTitle] = "Files",
             [Txt.DocCountFormat] = "{0} files",
-            [Txt.ListHint] = "Drag items to reorder · Drop multiple Word / PDF / image files at once",
+            [Txt.ListHint] = "Drag to reorder · Drag empty space to box-select · Drop multiple files at once",
             [Txt.AddDocs] = "Add files",
             [Txt.MoveUp] = "Up",
             [Txt.MoveDown] = "Down",
@@ -55,6 +58,7 @@ namespace DocHub
             [Txt.TipStart] = "Merge in list order and create a PDF",
             [Txt.TipSettings] = "Naming, appearance and post-merge behavior",
             [Txt.TipAbout] = "Version, changelog and user agreement",
+            [Txt.TipCancelBox] = "Cancel box selection and restore the previous selection (Esc)",
             [Txt.TrayOpen] = "Open DocHub",
             [Txt.TrayExit] = "Exit",
 
@@ -132,6 +136,14 @@ namespace DocHub
             [Txt.SoundHint] = "Turn on the completion sound first, then choose a tone; selecting plays it",
             [Txt.LanguageSection] = "Language",
             [Txt.LanguageHint] = "Applies immediately",
+            [Txt.QuoteSection] = "Daily quote",
+            [Txt.QuoteHint] = "Follows the interface language",
+            [Txt.QuoteToggle] = "Show a quote or movie line on the merge page",
+            [Txt.QuoteAutoRefresh] = "Auto-rotate quotes",
+            [Txt.QuoteRefreshInterval] = "Interval",
+            [Txt.QuoteRefreshSeconds] = "sec",
+            [Txt.QuoteRefreshHint] = "When enabled, a new quote appears at the chosen interval; when off, click the card to change it",
+            [Txt.TipQuote] = "Click for another",
             [Txt.OutputSection] = "Save location",
             [Txt.OutputHint] = "Where the merged PDF is saved",
             [Txt.OutputFirst] = "Folder of the top file",
@@ -140,12 +152,14 @@ namespace DocHub
             [Txt.OutputCustomPlaceholder] = "Choose or type a folder path",
             [Txt.SkinBlueName] = "Classic Blue",
             [Txt.SkinBlueDesc] = "Crisp and clear",
-            [Txt.SkinRedName] = "NetEase Red",
-            [Txt.SkinRedDesc] = "NetEase classic",
             [Txt.SkinNightName] = "Night",
             [Txt.SkinNightDesc] = "Immersive dark",
             [Txt.SkinCloudName] = "Cloud White",
             [Txt.SkinCloudDesc] = "Warm paper feel",
+            [Txt.SkinSkeuoName] = "Skeuomorphic",
+            [Txt.SkinSkeuoDesc] = "Leather and paper",
+            [Txt.SkinNeumorphName] = "Neumorphic",
+            [Txt.SkinNeumorphDesc] = "Soft depth",
             [Txt.SettingsLiveHint] = "All changes apply immediately",
 
             [Txt.AboutTitle] = "About",
@@ -310,6 +324,7 @@ namespace DocHub
             [Txt.WatermarkForMerge] = "Document merge",
             [Txt.WatermarkForPdfImage] = "PDF to images",
             [Txt.WatermarkForImagePdf] = "Images to PDF",
+            [Txt.WatermarkForWordPdf] = "Word to PDF",
             [Txt.WatermarkPresets] = "Preset text",
             [Txt.WatermarkCustom] = "Custom",
             [Txt.WatermarkPreset1] = "ORIGINAL",
@@ -413,7 +428,7 @@ namespace DocHub
             [Txt.ConvertPageSubtitle] = "Export every PDF page as an image · source is read-only and never edited",
             [Txt.ConvertFilesTitle] = "PDF files",
             [Txt.ConvertCountFormat] = "{0} files",
-            [Txt.ConvertListHint] = "Page counts load automatically · batch conversion supported",
+            [Txt.ConvertListHint] = "Drag empty space to box-select · Page counts load automatically",
             [Txt.ConvertAdd] = "Add PDFs",
             [Txt.ConvertDialogTitle] = "Choose PDF files to convert",
             [Txt.ConvertEmptyTitle] = "Drop PDF files here",
@@ -489,14 +504,14 @@ namespace DocHub
             [Txt.TipNavConvert] = "PDF to Images: export every PDF page as an image",
             [Txt.TipAppearance] = "Open appearance settings",
             [Txt.TipNotifications] = "Open completion notification settings",
-            [Txt.TipWatermark] = "Open watermark settings (merge only)",
+            [Txt.TipWatermark] = "Open watermark settings",
             [Txt.NavImagePdfTitle] = "Images to PDF",
             [Txt.NavImagePdfSubtitle] = "Images one by one or merged to PDF",
             [Txt.ImagePdfPageTitle] = "Images to PDF",
             [Txt.ImagePdfPageSubtitle] = "Export images separately or merge them into one PDF · processed locally",
             [Txt.ImagePdfFilesTitle] = "Image files",
             [Txt.ImagePdfCountFormat] = "{0} files",
-            [Txt.ImagePdfListHint] = "Converted in list order · each image gets its own PDF by default",
+            [Txt.ImagePdfListHint] = "Drag empty space to box-select · Converted in list order",
             [Txt.ImagePdfAdd] = "Add images",
             [Txt.ImagePdfDialogTitle] = "Choose images to convert",
             [Txt.ImagePdfEmptyTitle] = "Drop images here",
@@ -559,6 +574,146 @@ namespace DocHub
                 "· In separate mode a failed image no longer stops the batch; successes and failures are summarised\n" +
                 "#Fixed\n" +
                 "· PDF to Images now reads the source PDF only; its text, images and pages stay unchanged\n",
+            [Txt.NavWordPdfTitle] = "Word to PDF",
+            [Txt.NavWordPdfSubtitle] = "Batch convert Word to PDF",
+            [Txt.WordPdfPageTitle] = "Word to PDF",
+            [Txt.WordPdfPageSubtitle] = "Convert Word separately or merge into one PDF · Local processing",
+            [Txt.WordPdfFilesTitle] = "Word files",
+            [Txt.WordPdfCountFormat] = "{0} files",
+            [Txt.WordPdfListHint] = "Drag on empty space to marquee · converted in list order",
+            [Txt.WordPdfAdd] = "Add Word",
+            [Txt.WordPdfDialogTitle] = "Select Word documents to convert",
+            [Txt.WordPdfEmptyTitle] = "Drop Word files here",
+            [Txt.WordPdfEmptySubtitle] = "or click Add Word to select multiple files",
+            [Txt.WordPdfEmptyFormats] = ".doc .docx .docm .dot .dotx .dotm .rtf .odt",
+            [Txt.WordPdfSettingsTitle] = "Conversion settings",
+            [Txt.WordPdfMergeOption] = "Merge into one file",
+            [Txt.WordPdfMergeHint] = "When off, each Word file is saved as a PDF with the same name",
+            [Txt.WordPdfNameLabel] = "File name",
+            [Txt.WordPdfNamePlaceholder] = "Leave empty to use the first Word file name",
+            [Txt.WordPdfSeparateHint] = "PDF names match the Word files; duplicates are numbered",
+            [Txt.WordPdfOutput] = "Save to",
+            [Txt.WordPdfNamePreview] = "Output: {0}",
+            [Txt.WordPdfNamePreviewMulti] = "{0} PDFs with the same names as the Word files",
+            [Txt.WordPdfStart] = "Start conversion",
+            [Txt.WordPdfRunning] = "Converting…",
+            [Txt.WordPdfCancel] = "Cancel",
+            [Txt.WordPdfCancelling] = "Cancelling…",
+            [Txt.WordPdfReady] = "Ready · each Word file becomes its own PDF",
+            [Txt.WordPdfReadyMerge] = "Ready · merged into one PDF in list order",
+            [Txt.WordPdfEngineWord] = "Microsoft Word",
+            [Txt.WordPdfEngineLibre] = "LibreOffice",
+            [Txt.WordPdfProcessing] = "Converting ({0}/{1}): {2}",
+            [Txt.WordPdfMerging] = "Merging PDF pages…",
+            [Txt.WordPdfDone] = "Done · {0} pages · {1}",
+            [Txt.WordPdfDoneFiles] = "Done · {0} PDFs · {1}",
+            [Txt.WordPdfCancelled] = "Cancelled · {0} completed",
+            [Txt.WordPdfFailStatus] = "Conversion failed. Check the documents and try again.",
+            [Txt.WordPdfFailTitle] = "Conversion failed",
+            [Txt.WordPdfNoFiles] = "Add Word documents to convert first.",
+            [Txt.WordPdfNeedFolder] = "Choose a save location.",
+            [Txt.WordPdfNoEngine] = "Microsoft Word or LibreOffice is required to convert Word files.",
+            [Txt.WordPdfNonWord] = "Not a supported Word document: {0}",
+            [Txt.WordPdfWriteError] = "Could not write the PDF: {0}",
+            [Txt.WordPdfFailGeneric] = "Could not convert the Word document: {0}",
+            [Txt.WordPdfAdded] = "Added {0} document(s)",
+            [Txt.WordPdfSkippedNonWord] = "Ignored {0} non-Word file(s)",
+            [Txt.WordPdfNothingAdded] = "Nothing added: files are duplicates, missing, or not Word documents",
+            [Txt.WordPdfOutputCount] = "{0} PDFs",
+            [Txt.MsgWordPdfBusy] = "Word conversion is running. Please wait before closing the window.",
+            [Txt.TipNavWordPdf] = "Word to PDF: save each file separately or merge into one",
+            [Txt.Feature7] = "Batch Word to PDF with original file names by default, optional single-file merge and output watermark",
+            [Txt.Changelog4520] = "4.5.20 · 2026-11-10",
+            [Txt.ChangelogItems4520] =
+                "# Improved\n" +
+                "· Daily quotes now play randomly at startup and while the app runs instead of rotating in order, and never repeat back-to-back\n" +
+                "· The auto-rotate interval is now in seconds, defaulting to 30 and customizable from 5 to 86400 seconds\n",
+            [Txt.Changelog4519] = "4.5.19 · 2026-11-10",
+            [Txt.ChangelogItems4519] =
+                "# Improved\n" +
+                "· All in-app dialogs now follow the active skin: confirmations, warnings, errors and questions use its colours, typography, corners and buttons\n" +
+                "· The password prompt now uses the same borderless skin window, so dark skins no longer show a white system title bar\n",
+            [Txt.Changelog4518] = "4.5.18 · 2026-11-10",
+            [Txt.ChangelogItems4518] =
+                "# New\n" +
+                "· Added a Word to PDF workspace for .doc/.docx/.docm/.dot/.dotx/.dotm/.rtf/.odt batch conversion\n" +
+                "· Each Word file is exported as a PDF with its original name by default; duplicates are numbered, with an optional merge into one file\n" +
+                "· Added a Word to PDF target in Watermark settings that only affects output PDFs, never the source files\n" +
+                "· Reuses Microsoft Word or LibreOffice automatically and shows a clear hint when neither is available\n",
+            [Txt.Changelog4517] = "4.5.17 · 2026-11-06",
+            [Txt.ChangelogItems4517] =
+                "# Improved\n" +
+                "· Removed classical Chinese poetry and literary Chinese from the quote library and replaced them with modern quotes\n" +
+                "# Added\n" +
+                "· Added classic movie lines and famous quotes from China and abroad: 66 per UI language, 396 in total\n" +
+                "· Includes lines from Forrest Gump, The Shawshank Redemption, The Godfather, Titanic, Nezha and The Grandmaster\n" +
+                "· Adds quotes from Steve Jobs, Nelson Mandela, Gandhi, Martin Luther King Jr., Francis Bacon and Anton Chekhov\n",
+            [Txt.Changelog4516] = "4.5.16 · 2026-11-06",
+            [Txt.ChangelogItems4516] =
+                "# Improved\n" +
+                "· The daily quote card now uses a frosted-glass look: translucent fill, top sheen and rounded outline that match the glass theme\n" +
+                "· Removed the red vertical bar, so the night skin no longer shows a harsh red accent\n" +
+                "· Long quotes automatically shrink their font size and stay fully visible\n" +
+                "# Added\n" +
+                "· Quote library expanded to 348 entries (58 per UI language), covering world figures and classic movie lines\n",
+            [Txt.Changelog4515] = "4.5.15 · 2026-11-06",
+            [Txt.ChangelogItems4515] =
+                "#Added\n" +
+                "· Daily quotes can now rotate automatically, with a custom interval under Appearance (default: 5 minutes)\n" +
+                "· When auto-rotate is off, click the card to change the quote instantly\n",
+            [Txt.Changelog4514] = "4.5.14 · 2026-11-06",
+            [Txt.ChangelogItems4514] =
+                "#Fixed\n" +
+                "· The Settings window no longer turns into a wall of red X marks or raises an unhandled exception after switching the UI language\n" +
+                "· The glass backdrop cache now rebuilds itself if its bitmaps are released by mistake, preventing the same problem from recurring\n",
+            [Txt.Changelog4513] = "4.5.13 · 2026-11-06",
+            [Txt.ChangelogItems4513] =
+                "#Added\n" +
+                "· A \"Daily quote\" card on the merge page shows famous quotes and movie lines with their sources\n" +
+                "· Six quote collections (简体中文, 繁體中文, English, 日本語, 한국어, Русский) that follow the interface language\n" +
+                "· A new \"Show a quote or movie line on the merge page\" toggle under Appearance; click the card for another quote\n",
+            [Txt.Changelog4512] = "4.5.12 · 2026-11-06",
+            [Txt.ChangelogItems4512] =
+                "#Changed\n" +
+                "· Watermark and Notifications moved to the bottom-left sidebar next to Skins, Settings and About\n" +
+                "· The hint text on the merge page now sits directly below the progress bar\n" +
+                "#Fixed\n" +
+                "· Removed the outdated \"merge only\" note from the watermark tooltip\n",
+            [Txt.Changelog4511] = "4.5.11 · 2026-11-06",
+            [Txt.ChangelogItems4511] =
+                "#Changed\n" +
+                "· Removed the Terminal skin; configs using it fall back to Classic Blue automatically\n" +
+                "#Fixed\n" +
+                "· Fixed the top-right watermark button icon being clipped at 19 px\n",
+            [Txt.Changelog4510] = "4.5.10 · 2026-11-06",
+            [Txt.ChangelogItems4510] =
+                "#Fixed\n" +
+                "· A plain left click (including Ctrl+click) keeps only the current file, so the previous highlight disappears immediately\n" +
+                "· Only box selection and Shift-click preserve multi-select\n",
+            [Txt.Changelog459] = "4.5.9 · 2026-11-06",
+            [Txt.ChangelogItems459] =
+                "#Fixed\n" +
+                "· A plain left click now keeps only the clicked file selected instead of leaving the previous row highlighted; the row Up / Down / Remove buttons behave the same\n" +
+                "· Ctrl / Shift multi-select is unchanged\n",
+            [Txt.Changelog458] = "4.5.8 · 2026-11-06",
+            [Txt.ChangelogItems458] =
+                "#New\n" +
+                "· The skin entry moved to the lower-left sidebar, above Settings; Skins, Settings and About now share flat line icons\n" +
+                "· File lists have a Cancel Selection button that restores the selection from before the box drag; Esc works too\n" +
+                "· Hover tooltips added to Delete, Clear, Cancel Selection and other list buttons\n" +
+                "#Improved\n" +
+                "· Fixed the list jumping while dragging a marquee selection with the left mouse button\n" +
+                "#Changed\n" +
+                "· Removed the HUD Sci-Fi skin; saved settings fall back to Classic Blue\n",
+            [Txt.Changelog457] = "4.5.7 · 2026-11-06",
+            [Txt.ChangelogItems457] =
+                "#New\n" +
+                "· File lists support marquee selection: drag on empty space to select many files, in all three workspaces\n" +
+                "· Hold Ctrl while marquee-selecting to add files to the current selection\n" +
+                "· Four new skins: Skeuomorphic, Neumorphic, Terminal and HUD Sci-Fi\n" +
+                "#Improved\n" +
+                "· Delete removes all selected files at once\n" +
+                "· Removed the NetEase Red skin; saved settings fall back to Classic Blue\n",
             [Txt.Changelog456] = "4.5.6 · 2026-11-06",
             [Txt.ChangelogItems456] =
                 "#Improved\n" +

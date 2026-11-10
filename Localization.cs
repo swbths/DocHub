@@ -17,7 +17,7 @@ namespace DocHub
     public enum Txt
     {
         AppName, Tagline, LocalBadge,
-        Ok, Close, Cancel, Save, Reset, Browse, PreviewWord, Settings, About, RailMerge,
+        Ok, Close, Cancel, Yes, No, Save, Reset, Browse, PreviewWord, Settings, About, Skin, RailMerge,
 
         DocsTitle, DocCountFormat, ListHint,
         AddDocs, MoveUp, MoveDown, MoveTop, MoveBottom, Remove, Clear,
@@ -25,6 +25,7 @@ namespace DocHub
         NamePlaceholderFirst, NamePlaceholderPhrase, NamePlaceholderTime, NamePlaceholderCustom,
         EmptyTitle, EmptySubtitle, EmptyFormats,
         TipAdd, TipUp, TipDown, TipRemove, TipClear, TipBrowse, TipList, TipStart, TipSettings, TipAbout,
+        TipCancelBox,
         TrayOpen, TrayExit,
         DialogTitleAdd, FolderDesc, FilterSupport, FilterWord, FilterPdf, FilterImage, FilterAll,
         StatusAdded, StatusSkipped, StatusNothing,
@@ -43,9 +44,12 @@ namespace DocHub
         SkinSection, SkinHint, DoneSection, DoneNotify, DoneSound, DoneOpen,
         SoundSection, SoundWater, SoundDing, SoundQQ, SoundChime, SoundSoft, SoundOff, SoundHint,
         LanguageSection, LanguageHint,
+        QuoteSection, QuoteHint, QuoteToggle, QuoteAutoRefresh, QuoteRefreshInterval,
+        QuoteRefreshSeconds, QuoteRefreshHint, TipQuote,
         OutputSection, OutputHint, OutputFirst, OutputLast, OutputCustom, OutputCustomPlaceholder,
-        SkinBlueName, SkinBlueDesc, SkinRedName, SkinRedDesc,
+        SkinBlueName, SkinBlueDesc,
         SkinNightName, SkinNightDesc, SkinCloudName, SkinCloudDesc,
+        SkinSkeuoName, SkinSkeuoDesc, SkinNeumorphName, SkinNeumorphDesc,
         SettingsLiveHint,
 
         AboutTitle, VersionLine, AboutIntro, BrandDefinition,
@@ -134,9 +138,41 @@ namespace DocHub
         ImagePdfAdded, ImagePdfSkippedNonImage, ImagePdfNothingAdded, MsgImagePdfBusy,
         TipNavImagePdf, Feature6,
         Changelog451, ChangelogItems451,
+
+        // ---------- v4.5.18 Word 转 PDF ----------
+        WatermarkForWordPdf,
+        NavWordPdfTitle, NavWordPdfSubtitle,
+        WordPdfPageTitle, WordPdfPageSubtitle,
+        WordPdfFilesTitle, WordPdfCountFormat, WordPdfListHint, WordPdfAdd, WordPdfDialogTitle,
+        WordPdfEmptyTitle, WordPdfEmptySubtitle, WordPdfEmptyFormats,
+        WordPdfSettingsTitle, WordPdfMergeOption, WordPdfMergeHint,
+        WordPdfNameLabel, WordPdfNamePlaceholder, WordPdfSeparateHint,
+        WordPdfOutput, WordPdfNamePreview, WordPdfNamePreviewMulti,
+        WordPdfStart, WordPdfRunning, WordPdfCancel, WordPdfCancelling,
+        WordPdfReady, WordPdfReadyMerge, WordPdfEngineWord, WordPdfEngineLibre,
+        WordPdfProcessing, WordPdfMerging, WordPdfDone, WordPdfDoneFiles, WordPdfCancelled,
+        WordPdfFailStatus, WordPdfFailTitle,
+        WordPdfNoFiles, WordPdfNeedFolder, WordPdfNoEngine, WordPdfNonWord,
+        WordPdfWriteError, WordPdfFailGeneric,
+        WordPdfAdded, WordPdfSkippedNonWord, WordPdfNothingAdded, WordPdfOutputCount,
+        MsgWordPdfBusy, TipNavWordPdf, Feature7,
+        Changelog4518, ChangelogItems4518,
+        Changelog4520, ChangelogItems4520, Changelog4519, ChangelogItems4519,
+
         Changelog452, ChangelogItems452,
         Changelog453, ChangelogItems453,
         Changelog454, ChangelogItems454,
+        Changelog457, ChangelogItems457,
+        Changelog4517, ChangelogItems4517,
+        Changelog4516, ChangelogItems4516,
+        Changelog4515, ChangelogItems4515,
+        Changelog4514, ChangelogItems4514,
+        Changelog4513, ChangelogItems4513,
+        Changelog4512, ChangelogItems4512,
+        Changelog4511, ChangelogItems4511,
+        Changelog4510, ChangelogItems4510,
+        Changelog459, ChangelogItems459,
+        Changelog458, ChangelogItems458,
         Changelog456, ChangelogItems456,
         Changelog455, ChangelogItems455,
 
@@ -266,9 +302,10 @@ namespace DocHub
         {
             switch (skinId)
             {
-                case SkinPalette.NetEaseRedId: return T(Txt.SkinRedName);
                 case SkinPalette.NightId: return T(Txt.SkinNightName);
                 case SkinPalette.CloudWhiteId: return T(Txt.SkinCloudName);
+                case SkinPalette.SkeuoId: return T(Txt.SkinSkeuoName);
+                case SkinPalette.NeumorphId: return T(Txt.SkinNeumorphName);
                 default: return T(Txt.SkinBlueName);
             }
         }
@@ -277,9 +314,10 @@ namespace DocHub
         {
             switch (skinId)
             {
-                case SkinPalette.NetEaseRedId: return T(Txt.SkinRedDesc);
                 case SkinPalette.NightId: return T(Txt.SkinNightDesc);
                 case SkinPalette.CloudWhiteId: return T(Txt.SkinCloudDesc);
+                case SkinPalette.SkeuoId: return T(Txt.SkinSkeuoDesc);
+                case SkinPalette.NeumorphId: return T(Txt.SkinNeumorphDesc);
                 default: return T(Txt.SkinBlueDesc);
             }
         }

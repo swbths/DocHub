@@ -7,7 +7,7 @@ namespace DocHub
     /// <summary>
     /// 加密文件的密码输入框：合并前逐个询问，取消则放弃本次合并。
     /// </summary>
-    public sealed class PasswordPromptForm : Form
+    public sealed class PasswordPromptForm : ThemedDialogForm
     {
         private readonly RoundedInput _input;
         private readonly Label _error;
@@ -16,34 +16,21 @@ namespace DocHub
 
         public PasswordPromptForm(string fileName, string? errorText)
         {
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            StartPosition = FormStartPosition.CenterParent;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            ShowInTaskbar = false;
-            ClientSize = new Size(400, 212);
-            BackColor = Theme.Background;
+            ClientSize = new Size(400, 232);
+            DialogTitle = Loc.T(Txt.MergePasswordTitle);
             Font = Theme.BaseFont;
-            Text = Loc.T(Txt.AppName);
+            BackColor = Theme.Background;
             DoubleBuffered = true;
-            KeyPreview = true;
-
-            var title = new Label
-            {
-                Text = Loc.T(Txt.MergePasswordTitle),
-                Font = Theme.DialogTitleFont,
-                ForeColor = Theme.TextPrimary,
-                AutoSize = true,
-                Location = new Point(24, 20)
-            };
 
             var hint = new Label
             {
                 Text = Loc.T(Txt.MergePasswordHint),
                 Font = Theme.SmallFont,
                 ForeColor = Theme.TextMuted,
-                AutoSize = true,
-                Location = new Point(24, 52)
+                BackColor = Color.Transparent,
+                AutoSize = false,
+                AutoEllipsis = true,
+                Bounds = new Rectangle(24, 68, 352, 18)
             };
 
             var file = new Label
@@ -51,13 +38,14 @@ namespace DocHub
                 Text = fileName,
                 Font = Theme.ItemFont,
                 ForeColor = Theme.TextPrimary,
+                BackColor = Color.Transparent,
                 AutoEllipsis = true,
-                Bounds = new Rectangle(24, 76, 352, 22)
+                Bounds = new Rectangle(24, 92, 352, 22)
             };
 
             _input = new RoundedInput
             {
-                Bounds = new Rectangle(24, 104, 352, 34)
+                Bounds = new Rectangle(24, 118, 352, 34)
             };
             _input.Box.UseSystemPasswordChar = true;
             _input.Box.PlaceholderText = Loc.T(Txt.MergePasswordPlaceholder);
@@ -66,23 +54,24 @@ namespace DocHub
             {
                 Text = errorText ?? string.Empty,
                 Font = Theme.SmallFont,
-                ForeColor = Color.FromArgb(206, 76, 76),
-                AutoSize = true,
-                Location = new Point(24, 146)
+                ForeColor = Theme.IsDark ? Color.FromArgb(255, 122, 112) : Color.FromArgb(206, 76, 76),
+                BackColor = Color.Transparent,
+                AutoSize = false,
+                Bounds = new Rectangle(24, 156, 352, 28)
             };
 
             var cancel = new RoundedButton
             {
                 Text = Loc.T(Txt.Cancel),
                 Role = ButtonRole.Secondary,
-                Bounds = new Rectangle(184, 168, 90, 32),
+                Bounds = new Rectangle(172, 188, 100, 32),
                 Radius = 6
             };
             var ok = new RoundedButton
             {
                 Text = Loc.T(Txt.Ok),
                 Role = ButtonRole.Primary,
-                Bounds = new Rectangle(286, 168, 90, 32),
+                Bounds = new Rectangle(282, 188, 100, 32),
                 Radius = 6
             };
             cancel.ApplyTheme();
@@ -99,7 +88,8 @@ namespace DocHub
                 Close();
             };
 
-            Controls.AddRange(new Control[] { title, hint, file, _input, _error, cancel, ok });
+            Controls.AddRange(new Control[] { hint, file, _input, _error, cancel, ok });
+            AddCloseButton();
         }
     }
 }

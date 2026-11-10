@@ -24,6 +24,8 @@ namespace DocHub
         private readonly RoundedButton _addButton;
         private readonly IconButton _removeButton;
         private readonly IconButton _clearButton;
+        private readonly IconButton _cancelBoxButton;
+        private readonly ToolTip _toolTip = new();
         private readonly DocumentListBox _list;
         private readonly EmptyStatePanel _emptyPanel;
         private readonly ImagePreviewBox _preview;
@@ -104,13 +106,19 @@ namespace DocHub
 
             _removeButton = new IconButton { Icon = IconKind.Trash, Size = new Size(30, 30) };
             _clearButton = new IconButton { Icon = IconKind.Clear, Size = new Size(30, 30) };
+            _cancelBoxButton = new IconButton
+            {
+                Icon = IconKind.MarqueeOff,
+                Size = new Size(30, 30),
+                Enabled = false
+            };
 
             _list = new DocumentListBox
             {
                 ShowMoveActions = false,
                 ShowDragHandle = false,
                 ShowPageCount = true,
-                SelectionMode = SelectionMode.One,
+                SelectionMode = SelectionMode.MultiExtended,
                 AllowDrop = true
             };
 
@@ -191,7 +199,7 @@ namespace DocHub
             _listCard.Controls.AddRange(new Control[]
             {
                 _sectionLabel, _countLabel, _hintLabel, _addButton, _removeButton,
-                _clearButton, _list, _emptyPanel, _preview, _previewInfo, _namePreview
+                _clearButton, _cancelBoxButton, _list, _emptyPanel, _preview, _previewInfo, _namePreview
             });
             _sideCard.Controls.AddRange(new Control[]
             {
@@ -210,6 +218,7 @@ namespace DocHub
                 UpdateButtons();
                 SchedulePreview();
             };
+            _list.MarqueeStateChanged += (_, _) => UpdateButtons();
             _list.KeyDown += (_, e) =>
             {
                 if (e.KeyCode == Keys.Delete) RemoveSelected();
@@ -218,6 +227,11 @@ namespace DocHub
             _addButton.Click += (_, _) => ShowAddDialog();
             _removeButton.Click += (_, _) => RemoveSelected();
             _clearButton.Click += (_, _) => ClearAll();
+            _cancelBoxButton.Click += (_, _) =>
+            {
+                _list.CancelMarqueeSelection();
+                UpdateButtons();
+            };
             _browseButton.Click += (_, _) => BrowseFolder();
             _openFolderButton.Click += (_, _) => OpenFolder(_lastOutputFolder);
             _startButton.Click += (_, _) => StartOrCancel();
@@ -381,6 +395,7 @@ namespace DocHub
             _list.ApplyTheme();
             UpdateOutputInfo();
             RefreshList(_list.SelectedIndex);
+            ConfigureToolTips();
             LayoutCards();
         }
 
@@ -445,6 +460,8 @@ namespace DocHub
 
             const int gap = 4;
             int x = _addButton.Left - 14 - 30;
+            _cancelBoxButton.Bounds = new Rectangle(x, 14, 30, 30);
+            x -= 30 + gap;
             _clearButton.Bounds = new Rectangle(x, 14, 30, 30);
             x -= 30 + gap;
             _removeButton.Bounds = new Rectangle(x, 14, 30, 30);
@@ -783,18 +800,25 @@ namespace DocHub
         private void RemoveSelected()
         {
             if (_running) return;
-            int index = _list.SelectedIndex;
-            if (index < 0 || index >= _documents.Count) return;
+            var selected = new List<int>();
+            foreach (int i in _list.SelectedIndices) selected.Add(i);
+            if (selected.Count == 0) return;
+            selected.Sort();
 
-            _documents.RemoveAt(index);
-            RefreshList(Math.Min(index, _documents.Count - 1));
+            for (int k = selected.Count - 1; k >= 0; k--)
+            {
+                if (selected[k] >= 0 && selected[k] < _documents.Count)
+                    _documents.RemoveAt(selected[k]);
+            }
+
+            RefreshList(Math.Min(selected[0], _documents.Count - 1));
             SetStatus(Loc.T(Txt.ConvertReady));
         }
 
         private void ClearAll()
         {
             if (_running || _documents.Count == 0) return;
-            if (MessageBox.Show(this, Loc.T(Txt.MsgClearText), Loc.T(Txt.MsgClearTitle),
+            if (ThemedMessageBox.Show(this, Loc.T(Txt.MsgClearText), Loc.T(Txt.MsgClearTitle),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                     MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
@@ -834,12 +858,22 @@ namespace DocHub
             SchedulePreview();
         }
 
+        private void ConfigureToolTips()
+        {
+            _toolTip.SetToolTip(_removeButton, Loc.T(Txt.TipRemove));
+            _toolTip.SetToolTip(_clearButton, Loc.T(Txt.TipClear));
+            _toolTip.SetToolTip(_cancelBoxButton, Loc.T(Txt.TipCancelBox));
+            _toolTip.SetToolTip(_list, Loc.T(Txt.TipList));
+            _toolTip.SetToolTip(_browseButton, Loc.T(Txt.TipBrowse));
+        }
+
         private void UpdateButtons()
         {
             bool hasDocuments = _documents.Count > 0;
             _addButton.Enabled = !_running;
-            _removeButton.Enabled = !_running && _list.SelectedIndex >= 0;
+            _removeButton.Enabled = !_running && _list.SelectedIndices.Count > 0;
             _clearButton.Enabled = !_running && hasDocuments;
+            _cancelBoxButton.Enabled = !_running && _list.HasMarqueeSelection;
             _browseButton.Enabled = !_running;
             _folderInput.Enabled = !_running;
             _rangeControl.Enabled = !_running;
@@ -1051,7 +1085,7 @@ namespace DocHub
         {
             if (_documents.Count == 0)
             {
-                MessageBox.Show(this, Loc.T(Txt.ConvertNoFiles), Loc.T(Txt.ConvertFailTitle),
+                ThemedMessageBox.Show(this, Loc.T(Txt.ConvertNoFiles), Loc.T(Txt.ConvertFailTitle),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -1059,7 +1093,7 @@ namespace DocHub
             string folder = _folderInput.Text.Trim();
             if (folder.Length == 0)
             {
-                MessageBox.Show(this, Loc.T(Txt.ConvertNeedFolder), Loc.T(Txt.ConvertFailTitle),
+                ThemedMessageBox.Show(this, Loc.T(Txt.ConvertNeedFolder), Loc.T(Txt.ConvertFailTitle),
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -1070,14 +1104,14 @@ namespace DocHub
             {
                 if (range.Length == 0)
                 {
-                    MessageBox.Show(this, Loc.T(Txt.ConvertRangeNeeded), Loc.T(Txt.ConvertFailTitle),
+                    ThemedMessageBox.Show(this, Loc.T(Txt.ConvertRangeNeeded), Loc.T(Txt.ConvertFailTitle),
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 if (!PdfImageEngine.TryParsePageRange(range, int.MaxValue, out _, out _))
                 {
-                    MessageBox.Show(this, Loc.T(Txt.ConvertBadRange), Loc.T(Txt.ConvertFailTitle),
+                    ThemedMessageBox.Show(this, Loc.T(Txt.ConvertBadRange), Loc.T(Txt.ConvertFailTitle),
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -1086,7 +1120,7 @@ namespace DocHub
             int ppi = CurrentPpi;
             if (ppi < PdfImageEngine.MinPpi || ppi > PdfImageEngine.MaxPpi)
             {
-                MessageBox.Show(this, $"PPI {PdfImageEngine.MinPpi}–{PdfImageEngine.MaxPpi}",
+                ThemedMessageBox.Show(this, $"PPI {PdfImageEngine.MinPpi}–{PdfImageEngine.MaxPpi}",
                     Loc.T(Txt.ConvertFailTitle), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -1218,7 +1252,7 @@ namespace DocHub
                 {
                     string message = result.Files.FirstOrDefault(f => f.Error != null)?.Error
                         ?? Loc.T(Txt.ConvertFailStatus);
-                    MessageBox.Show(this, message, Loc.T(Txt.ConvertFailTitle),
+                    ThemedMessageBox.Show(this, message, Loc.T(Txt.ConvertFailTitle),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1276,7 +1310,7 @@ namespace DocHub
             string message = exception is PdfConvertException
                 ? exception.Message
                 : Loc.T(Txt.FailPrefix, exception.Message);
-            MessageBox.Show(this, message, Loc.T(Txt.ConvertFailTitle),
+            ThemedMessageBox.Show(this, message, Loc.T(Txt.ConvertFailTitle),
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 

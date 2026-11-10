@@ -80,7 +80,9 @@ namespace DocHub
 
     public sealed class AppSettings
     {
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
+        public const int MinQuoteRefreshSeconds = 5;
+        public const int MaxQuoteRefreshSeconds = 86400;
 
         /// <summary>设置结构版本；旧配置在读取时按新版默认值迁移一次。</summary>
         public int SchemaVersion { get; set; }
@@ -89,6 +91,15 @@ namespace DocHub
         public string CustomName { get; set; } = Loc.T(Txt.DefaultDocName);
         public string SkinId { get; set; } = SkinPalette.ClassicBlueId;
         public bool ShowNotification { get; set; } = true;
+
+        /// <summary>是否在合并页右侧显示与界面语言一致的名言/电影台词。</summary>
+        public bool ShowQuotes { get; set; } = true;
+
+        /// <summary>是否按设定间隔自动更换名言卡片上的句子。</summary>
+        public bool QuoteAutoRefresh { get; set; } = true;
+
+        /// <summary>名言自动更换间隔（秒），5~86400。</summary>
+        public int QuoteRefreshSeconds { get; set; } = 30;
         public bool PlaySound { get; set; } = false;
         public string SoundId { get; set; } = SoundLibrary.DingId;
         public Language Language { get; set; } = Loc.DetectSystem();
@@ -105,6 +116,9 @@ namespace DocHub
 
         /// <summary>是否为「图片转 PDF」的输出 PDF 添加水印。</summary>
         public bool WatermarkForImagePdf { get; set; } = false;
+
+        /// <summary>是否为「Word 转 PDF」的输出 PDF 添加水印。</summary>
+        public bool WatermarkForWordPdf { get; set; } = false;
         public int WatermarkPreset { get; set; } = 0;
         public string WatermarkCustomText { get; set; } = string.Empty;
         public WatermarkTint WatermarkTint { get; set; } = WatermarkTint.Gray;
@@ -151,6 +165,13 @@ namespace DocHub
         /// <summary>转换专用的上次保存位置，避免与合并互相覆盖。</summary>
         public string LastConvertFolder { get; set; } = string.Empty;
 
+        // ---------- Word 转 PDF ----------
+        /// <summary>是否把所有 Word 合并成一个 PDF；默认关闭，按原文件名逐份输出。</summary>
+        public bool WordPdfMergeIntoOne { get; set; }
+
+        /// <summary>Word 转 PDF 专用的上次保存位置。</summary>
+        public string LastWordPdfFolder { get; set; } = string.Empty;
+
         // ---------- 图片转 PDF ----------
         /// <summary>纸张大小；默认 A4，自适应时页面与图片同比例。</summary>
         public ImagePdfPageSize ImagePdfPageSize { get; set; } = ImagePdfPageSize.A4;
@@ -170,7 +191,7 @@ namespace DocHub
         /// <summary>三个水印目标中是否有任一开启；关闭时水印样式控件整体置灰。</summary>
         [JsonIgnore]
         public bool WatermarkAnyEnabled =>
-            WatermarkEnabled || WatermarkForPdfImage || WatermarkForImagePdf;
+            WatermarkEnabled || WatermarkForPdfImage || WatermarkForImagePdf || WatermarkForWordPdf;
 
         /// <summary>按当前水印样式生成参数；自定义文字为空时返回 null。</summary>
         public WatermarkSpec? CreateWatermarkSpec()
@@ -229,6 +250,24 @@ namespace DocHub
             Converters = { new JsonStringEnumConverter() }
         };
 
+        /// <summary>读取旧配置中的分钟间隔；不存在或无效时返回 0。</summary>
+        private static int ReadLegacyQuoteMinutes(string json)
+        {
+            try
+            {
+                using JsonDocument document = JsonDocument.Parse(json);
+                if (document.RootElement.TryGetProperty("QuoteRefreshMinutes", out JsonElement value) &&
+                    value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int minutes))
+                    return minutes;
+            }
+            catch
+            {
+                // 旧字段解析失败时按新默认值处理
+            }
+
+            return 0;
+        }
+
         public static AppSettings Load()
         {
             try
@@ -265,11 +304,13 @@ namespace DocHub
                 settings.ConvertJpegQuality = Math.Clamp(settings.ConvertJpegQuality, 1, 100);
                 settings.ConvertPageRange ??= string.Empty;
                 settings.LastConvertFolder ??= string.Empty;
+                settings.LastWordPdfFolder ??= string.Empty;
                 if (!Enum.IsDefined(settings.ImagePdfPageSize))
                     settings.ImagePdfPageSize = ImagePdfPageSize.A4;
                 if (!Enum.IsDefined(settings.ImagePdfOrientation))
                     settings.ImagePdfOrientation = ImagePdfOrientation.Auto;
                 settings.ImagePdfMarginMm = Math.Clamp(settings.ImagePdfMarginMm, 0, 30);
+                settings.QuoteRefreshSeconds = Math.Clamp(settings.QuoteRefreshSeconds, MinQuoteRefreshSeconds, MaxQuoteRefreshSeconds);
                 settings.ImagePdfCustomName ??= string.Empty;
                 if (settings.ImagePdfCustomName.Length > 80)
                     settings.ImagePdfCustomName = settings.ImagePdfCustomName[..80];
@@ -298,6 +339,16 @@ namespace DocHub
                     if (settings.ConvertPageMode == ConvertPageSelection.All &&
                         !string.IsNullOrWhiteSpace(settings.ConvertPageRange))
                         settings.ConvertPageMode = ConvertPageSelection.Custom;
+                }
+
+                // v4.5.20：换句间隔由分钟改为秒，默认 30 秒；旧默认 5 分钟迁移为新默认。
+                if (version < 3)
+                {
+                    int legacyMinutes = ReadLegacyQuoteMinutes(json);
+                    if (legacyMinutes > 0)
+                        settings.QuoteRefreshSeconds = legacyMinutes == 5
+                            ? 30
+                            : Math.Clamp(legacyMinutes * 60, MinQuoteRefreshSeconds, MaxQuoteRefreshSeconds);
                 }
 
                 if (version < CurrentSchemaVersion)
@@ -343,6 +394,9 @@ namespace DocHub
             CustomName = other.CustomName;
             SkinId = other.SkinId;
             ShowNotification = other.ShowNotification;
+            ShowQuotes = other.ShowQuotes;
+            QuoteAutoRefresh = other.QuoteAutoRefresh;
+            QuoteRefreshSeconds = other.QuoteRefreshSeconds;
             PlaySound = other.PlaySound;
             SoundId = other.SoundId;
             Language = other.Language;
@@ -353,6 +407,7 @@ namespace DocHub
             WatermarkEnabled = other.WatermarkEnabled;
             WatermarkForPdfImage = other.WatermarkForPdfImage;
             WatermarkForImagePdf = other.WatermarkForImagePdf;
+            WatermarkForWordPdf = other.WatermarkForWordPdf;
             WatermarkPreset = other.WatermarkPreset;
             WatermarkCustomText = other.WatermarkCustomText;
             WatermarkTint = other.WatermarkTint;
@@ -370,6 +425,8 @@ namespace DocHub
             ConvertPageMode = other.ConvertPageMode;
             ConvertPageRange = other.ConvertPageRange;
             LastConvertFolder = other.LastConvertFolder;
+            WordPdfMergeIntoOne = other.WordPdfMergeIntoOne;
+            LastWordPdfFolder = other.LastWordPdfFolder;
             ImagePdfPageSize = other.ImagePdfPageSize;
             ImagePdfOrientation = other.ImagePdfOrientation;
             ImagePdfMarginMm = other.ImagePdfMarginMm;
@@ -387,6 +444,9 @@ namespace DocHub
             CustomName = Loc.T(Language.ZhCn, Txt.DefaultDocName);
             SkinId = SkinPalette.ClassicBlueId;
             ShowNotification = true;
+            ShowQuotes = true;
+            QuoteAutoRefresh = true;
+            QuoteRefreshSeconds = 30;
             PlaySound = false;
             SoundId = SoundLibrary.DingId;
             OpenAfterMerge = false;
@@ -396,6 +456,7 @@ namespace DocHub
             WatermarkEnabled = false;
             WatermarkForPdfImage = false;
             WatermarkForImagePdf = false;
+            WatermarkForWordPdf = false;
             WatermarkPreset = 0;
             WatermarkCustomText = string.Empty;
             WatermarkTint = WatermarkTint.Gray;
@@ -413,6 +474,8 @@ namespace DocHub
             ConvertPageMode = ConvertPageSelection.All;
             ConvertPageRange = string.Empty;
             LastConvertFolder = string.Empty;
+            WordPdfMergeIntoOne = false;
+            LastWordPdfFolder = string.Empty;
             ImagePdfPageSize = ImagePdfPageSize.A4;
             ImagePdfOrientation = ImagePdfOrientation.Auto;
             ImagePdfMarginMm = 10;
@@ -473,19 +536,29 @@ namespace DocHub
         }
     }
 
+    /// <summary>皮肤的表面风格，决定壁纸与控件的绘制方式。</summary>
+    public enum SkinSurface
+    {
+        Glass = 0,
+        Skeuomorphic = 1,
+        Neumorphic = 2
+    }
+
     /// <summary>
-    /// 一套完整配色：经典蓝、网易红、夜间模式与云白。
+    /// 一套完整配色：经典蓝、夜间模式、云白，以及拟物、新拟态两种风格。
     /// </summary>
     public sealed class SkinPalette
     {
         public const string ClassicBlueId = "blue";
-        public const string NetEaseRedId = "netease";
         public const string NightId = "night";
         public const string CloudWhiteId = "cloud";
+        public const string SkeuoId = "skeuo";
+        public const string NeumorphId = "neumorph";
 
         public string Id { get; init; } = ClassicBlueId;
         public string Name { get; init; } = "经典蓝";
         public string Description { get; init; } = string.Empty;
+        public SkinSurface Surface { get; init; } = SkinSurface.Glass;
         public bool IsDark { get; init; }
         public bool HeaderOnLight { get; init; }
 
@@ -647,77 +720,153 @@ namespace DocHub
             RailFill = Color.FromArgb(120, 255, 255, 255)
         };
 
-        public static readonly SkinPalette NetEaseRed = new()
+        public static readonly SkinPalette Skeuomorphic = new()
         {
-            Id = NetEaseRedId,
-            Name = "网易红",
-            Description = "经典云音乐",
-            Background = Color.FromArgb(245, 245, 247),
-            Card = Color.White,
-            Border = Color.FromArgb(231, 231, 234),
-            TextPrimary = Color.FromArgb(31, 31, 35),
-            TextSecondary = Color.FromArgb(106, 106, 112),
-            TextMuted = Color.FromArgb(150, 150, 156),
-            Accent = Color.FromArgb(211, 58, 49),
-            AccentHover = Color.FromArgb(190, 47, 39),
-            AccentPressed = Color.FromArgb(165, 37, 30),
-            AccentLight = Color.FromArgb(253, 237, 236),
-            AccentText = Color.White,
-            InputFill = Color.White,
-            InputReadOnlyFill = Color.FromArgb(248, 248, 249),
-            ListHover = Color.FromArgb(255, 248, 247),
-            ListSelected = Color.FromArgb(253, 236, 234),
-            Separator = Color.FromArgb(243, 241, 241),
-            SecondaryFill = Color.White,
-            SecondaryHover = Color.FromArgb(251, 246, 245),
-            SecondaryPressed = Color.FromArgb(247, 237, 236),
-            SecondaryText = Color.FromArgb(61, 56, 54),
-            PrimaryDisabledFill = Color.FromArgb(237, 181, 177),
-            PrimaryDisabledText = Color.White,
-            SecondaryDisabledText = Color.FromArgb(189, 182, 180),
-            SecondaryDisabledBorder = Color.FromArgb(241, 235, 234),
-            HeaderStart = Color.FromArgb(201, 48, 42),
-            HeaderEnd = Color.FromArgb(140, 27, 22),
-            HeaderText = Color.White,
-            HeaderSubtitle = Color.FromArgb(246, 206, 202),
-            HeaderBadgeFill = Color.FromArgb(20, 255, 255, 255),
-            HeaderBadgeBorder = Color.FromArgb(56, 255, 255, 255),
-            HeaderBadgeText = Color.FromArgb(248, 221, 218),
-            HeaderButtonFill = Color.FromArgb(26, 255, 255, 255),
-            HeaderButtonHover = Color.FromArgb(48, 255, 255, 255),
-            HeaderButtonBorder = Color.FromArgb(46, 255, 255, 255),
-            LogoStart = Color.FromArgb(242, 92, 82),
-            LogoEnd = Color.FromArgb(193, 39, 45),
-            LogoText = Color.FromArgb(255, 243, 230),
-            ProgressTrack = Color.FromArgb(239, 237, 237),
-            ProgressStart = Color.FromArgb(231, 97, 88),
-            PdfBadgeFill = Color.FromArgb(253, 236, 235),
-            PdfBadgeText = Color.FromArgb(179, 38, 30),
-            WordBadgeFill = Color.FromArgb(253, 237, 236),
-            WordBadgeText = Color.FromArgb(201, 48, 42),
-            ImageBadgeFill = Color.FromArgb(232, 245, 236),
-            ImageBadgeText = Color.FromArgb(22, 130, 72),
-            NumberFill = Color.FromArgb(253, 236, 235),
-            NumberText = Color.FromArgb(179, 38, 30),
-            DragDots = Color.FromArgb(211, 203, 203),
-            EmptyBorder = Color.FromArgb(227, 225, 227),
-            EmptyIconBack = Color.FromArgb(251, 243, 242),
-            EmptyIconBorder = Color.FromArgb(234, 213, 211),
-            EmptyText = Color.FromArgb(175, 167, 165),
+            Id = SkeuoId,
+            Name = "拟物风",
+            Description = "皮革与纸张",
+            Surface = SkinSurface.Skeuomorphic,
+            Background = Color.FromArgb(242, 235, 224),
+            Card = Color.FromArgb(255, 251, 244),
+            Border = Color.FromArgb(224, 210, 190),
+            TextPrimary = Color.FromArgb(59, 44, 32),
+            TextSecondary = Color.FromArgb(122, 98, 78),
+            TextMuted = Color.FromArgb(160, 138, 116),
+            Accent = Color.FromArgb(140, 94, 34),
+            AccentHover = Color.FromArgb(166, 116, 46),
+            AccentPressed = Color.FromArgb(111, 73, 24),
+            AccentLight = Color.FromArgb(244, 232, 212),
+            AccentText = Color.FromArgb(255, 251, 243),
+            InputFill = Color.FromArgb(255, 253, 248),
+            InputReadOnlyFill = Color.FromArgb(246, 239, 228),
+            ListHover = Color.FromArgb(252, 246, 236),
+            ListSelected = Color.FromArgb(245, 232, 210),
+            Separator = Color.FromArgb(238, 229, 216),
+            SecondaryFill = Color.FromArgb(250, 244, 233),
+            SecondaryHover = Color.FromArgb(246, 237, 222),
+            SecondaryPressed = Color.FromArgb(240, 227, 207),
+            SecondaryText = Color.FromArgb(90, 68, 51),
+            PrimaryDisabledFill = Color.FromArgb(205, 181, 148),
+            PrimaryDisabledText = Color.FromArgb(250, 246, 238),
+            SecondaryDisabledText = Color.FromArgb(196, 181, 164),
+            SecondaryDisabledBorder = Color.FromArgb(234, 224, 211),
+            HeaderStart = Color.FromArgb(74, 52, 38),
+            HeaderEnd = Color.FromArgb(107, 74, 50),
+            HeaderText = Color.FromArgb(253, 246, 233),
+            HeaderSubtitle = Color.FromArgb(227, 205, 178),
+            HeaderBadgeFill = Color.FromArgb(30, 255, 246, 229),
+            HeaderBadgeBorder = Color.FromArgb(70, 255, 246, 229),
+            HeaderBadgeText = Color.FromArgb(236, 218, 194),
+            HeaderButtonFill = Color.FromArgb(24, 255, 246, 229),
+            HeaderButtonHover = Color.FromArgb(44, 255, 246, 229),
+            HeaderButtonBorder = Color.FromArgb(46, 255, 246, 229),
+            LogoStart = Color.FromArgb(201, 150, 72),
+            LogoEnd = Color.FromArgb(140, 94, 34),
+            LogoText = Color.FromArgb(255, 251, 243),
+            ProgressTrack = Color.FromArgb(235, 223, 205),
+            ProgressStart = Color.FromArgb(201, 150, 72),
+            PdfBadgeFill = Color.FromArgb(247, 226, 218),
+            PdfBadgeText = Color.FromArgb(160, 52, 38),
+            WordBadgeFill = Color.FromArgb(243, 232, 210),
+            WordBadgeText = Color.FromArgb(128, 82, 26),
+            ImageBadgeFill = Color.FromArgb(228, 238, 218),
+            ImageBadgeText = Color.FromArgb(72, 110, 44),
+            NumberFill = Color.FromArgb(244, 233, 214),
+            NumberText = Color.FromArgb(140, 94, 34),
+            DragDots = Color.FromArgb(206, 188, 166),
+            EmptyBorder = Color.FromArgb(224, 210, 190),
+            EmptyIconBack = Color.FromArgb(248, 240, 228),
+            EmptyIconBorder = Color.FromArgb(218, 196, 166),
+            EmptyText = Color.FromArgb(176, 156, 134),
 
-            WallpaperStart = Color.FromArgb(252, 245, 244),
-            WallpaperEnd = Color.FromArgb(243, 227, 225),
-            WallpaperGlowA = Color.FromArgb(66, 211, 58, 49),
-            WallpaperGlowB = Color.FromArgb(46, 230, 140, 90),
-            WallpaperGlowC = Color.FromArgb(38, 120, 90, 250),
-            GlassFill = Color.FromArgb(150, 255, 255, 255),
-            GlassStrong = Color.FromArgb(206, 255, 252, 251),
-            GlassBorder = Color.FromArgb(58, 70, 40, 36),
-            GlassEdge = Color.FromArgb(196, 255, 255, 255),
-            GlassTint = Color.FromArgb(10, 255, 244, 242),
-            GlassHover = Color.FromArgb(24, 70, 40, 36),
-            GlassInput = Color.FromArgb(255, 255, 252, 251),
-            RailFill = Color.FromArgb(122, 255, 250, 249)
+            WallpaperStart = Color.FromArgb(245, 238, 227),
+            WallpaperEnd = Color.FromArgb(231, 217, 198),
+            WallpaperGlowA = Color.FromArgb(60, 140, 94, 34),
+            WallpaperGlowB = Color.FromArgb(40, 220, 180, 120),
+            WallpaperGlowC = Color.FromArgb(28, 90, 60, 40),
+            GlassFill = Color.FromArgb(210, 255, 250, 241),
+            GlassStrong = Color.FromArgb(236, 252, 244, 231),
+            GlassBorder = Color.FromArgb(70, 90, 70, 50),
+            GlassEdge = Color.FromArgb(200, 255, 255, 250),
+            GlassTint = Color.FromArgb(8, 255, 246, 230),
+            GlassHover = Color.FromArgb(26, 90, 70, 50),
+            GlassInput = Color.FromArgb(255, 253, 248),
+            RailFill = Color.FromArgb(150, 250, 241, 228)
+        };
+
+        public static readonly SkinPalette Neumorphic = new()
+        {
+            Id = NeumorphId,
+            Name = "新拟态",
+            Description = "柔和立体",
+            Surface = SkinSurface.Neumorphic,
+            HeaderOnLight = true,
+            Background = Color.FromArgb(231, 236, 243),
+            Card = Color.FromArgb(237, 241, 247),
+            Border = Color.FromArgb(216, 224, 234),
+            TextPrimary = Color.FromArgb(47, 59, 76),
+            TextSecondary = Color.FromArgb(92, 106, 132),
+            TextMuted = Color.FromArgb(136, 150, 171),
+            Accent = Color.FromArgb(82, 100, 205),
+            AccentHover = Color.FromArgb(70, 88, 190),
+            AccentPressed = Color.FromArgb(58, 74, 168),
+            AccentLight = Color.FromArgb(224, 229, 248),
+            AccentText = Color.White,
+            InputFill = Color.FromArgb(233, 238, 245),
+            InputReadOnlyFill = Color.FromArgb(226, 232, 240),
+            ListHover = Color.FromArgb(230, 235, 243),
+            ListSelected = Color.FromArgb(222, 228, 245),
+            Separator = Color.FromArgb(221, 227, 236),
+            SecondaryFill = Color.FromArgb(234, 239, 246),
+            SecondaryHover = Color.FromArgb(240, 244, 250),
+            SecondaryPressed = Color.FromArgb(225, 231, 240),
+            SecondaryText = Color.FromArgb(76, 88, 108),
+            PrimaryDisabledFill = Color.FromArgb(183, 192, 220),
+            PrimaryDisabledText = Color.FromArgb(250, 250, 252),
+            SecondaryDisabledText = Color.FromArgb(166, 176, 192),
+            SecondaryDisabledBorder = Color.FromArgb(222, 228, 236),
+            HeaderStart = Color.FromArgb(227, 233, 241),
+            HeaderEnd = Color.FromArgb(210, 219, 231),
+            HeaderText = Color.FromArgb(38, 50, 66),
+            HeaderSubtitle = Color.FromArgb(86, 101, 122),
+            HeaderBadgeFill = Color.FromArgb(90, 255, 255, 255),
+            HeaderBadgeBorder = Color.FromArgb(140, 255, 255, 255),
+            HeaderBadgeText = Color.FromArgb(73, 88, 108),
+            HeaderButtonFill = Color.FromArgb(120, 255, 255, 255),
+            HeaderButtonHover = Color.FromArgb(180, 255, 255, 255),
+            HeaderButtonBorder = Color.FromArgb(150, 255, 255, 255),
+            LogoStart = Color.FromArgb(126, 146, 236),
+            LogoEnd = Color.FromArgb(82, 100, 205),
+            LogoText = Color.White,
+            ProgressTrack = Color.FromArgb(215, 222, 232),
+            ProgressStart = Color.FromArgb(126, 146, 236),
+            PdfBadgeFill = Color.FromArgb(245, 226, 228),
+            PdfBadgeText = Color.FromArgb(172, 52, 62),
+            WordBadgeFill = Color.FromArgb(226, 231, 248),
+            WordBadgeText = Color.FromArgb(70, 88, 190),
+            ImageBadgeFill = Color.FromArgb(222, 240, 230),
+            ImageBadgeText = Color.FromArgb(44, 124, 84),
+            NumberFill = Color.FromArgb(224, 230, 241),
+            NumberText = Color.FromArgb(82, 100, 190),
+            DragDots = Color.FromArgb(190, 199, 213),
+            EmptyBorder = Color.FromArgb(214, 222, 232),
+            EmptyIconBack = Color.FromArgb(235, 240, 247),
+            EmptyIconBorder = Color.FromArgb(208, 218, 231),
+            EmptyText = Color.FromArgb(156, 168, 186),
+
+            WallpaperStart = Color.FromArgb(233, 238, 245),
+            WallpaperEnd = Color.FromArgb(224, 230, 239),
+            WallpaperGlowA = Color.FromArgb(40, 255, 255, 255),
+            WallpaperGlowB = Color.FromArgb(28, 180, 200, 240),
+            WallpaperGlowC = Color.FromArgb(22, 255, 255, 255),
+            GlassFill = Color.FromArgb(205, 242, 246, 252),
+            GlassStrong = Color.FromArgb(235, 238, 242, 249),
+            GlassBorder = Color.FromArgb(120, 198, 208, 222),
+            GlassEdge = Color.FromArgb(220, 255, 255, 255),
+            GlassTint = Color.FromArgb(0, 255, 255, 255),
+            GlassHover = Color.FromArgb(90, 210, 220, 236),
+            GlassInput = Color.FromArgb(235, 240, 247),
+            RailFill = Color.FromArgb(170, 238, 242, 249)
         };
 
         public static readonly SkinPalette Night = new()
@@ -870,7 +1019,7 @@ namespace DocHub
 
         public static readonly IReadOnlyList<SkinPalette> All = new[]
         {
-            ClassicBlue, NetEaseRed, Night, CloudWhite
+            ClassicBlue, Night, CloudWhite, Skeuomorphic, Neumorphic
         };
 
         public static bool Exists(string? id)
