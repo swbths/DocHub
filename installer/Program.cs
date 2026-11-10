@@ -18,7 +18,7 @@ namespace DocHubSetup
     {
         internal const string AppName = "文枢";
         internal const string AppPublisher = "AI";
-        internal const string AppVersion = "4.5.22";
+        internal const string AppVersion = "4.5.23";
         internal const string UninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\DocHub";
 
         /// <summary>旧版（合了么 / HeLeMe）的卸载登记项，安装时顺带清理。</summary>
@@ -1351,7 +1351,7 @@ namespace DocHubSetup
 
             var subtitle = new Label
             {
-                Text = "Word / PDF / 图片 无损合并工具 · v" + Program.AppVersion,
+                Text = "Word / WPS / PDF / 图片 无损合并工具 · v" + Program.AppVersion,
                 Font = new Font("Microsoft YaHei UI", 9f),
                 ForeColor = Color.FromArgb(130, 138, 150),
                 AutoSize = true,

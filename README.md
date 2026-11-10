@@ -6,7 +6,7 @@
 
 全程本地处理，文件不上传、不外传。
 
-- 当前版本：`4.5.22`（2026-11-10）
+- 当前版本：`4.5.23`（2026-11-10）
 - 运行平台：Windows 10 2004（10.0.19041）及以上 / x64
 - 技术栈：.NET 10 + WinForms + [PDFsharp](https://github.com/empira/PDFsharp) 6.2.4
 
@@ -124,7 +124,7 @@
 
 ### 安装版（推荐）
 
-运行 `文枢_安装程序_v4.5.22.exe`：
+运行 `文枢_安装程序_v4.5.23.exe`：
 
 - 默认安装到 `%LOCALAPPDATA%\Programs\DocHub`（当前用户目录），**不需要管理员权限**，也不写 `C:\Program Files`，不会触发 UAC，可自定义目录：输入或浏览选择的任意位置都会原样生效（若选到 `C:\Program Files` 下，界面会提示普通用户通常没有写入权限，建议改到用户目录或其它磁盘）
 - 创建开始菜单「文枢」及桌面快捷方式，开始菜单内附「卸载 文枢」
@@ -137,13 +137,13 @@
 
 ```bat
 :: 完整静默安装（当前用户，默认目录 %LOCALAPPDATA%\Programs\DocHub）
-文枢_安装程序_v4.5.22.exe --silent
+文枢_安装程序_v4.5.23.exe --silent
 
 :: 指定安装目录（位于 Program Files 下时同样会自动改回当前用户目录）
-文枢_安装程序_v4.5.22.exe --silent --dir D:\Apps\DocHub
+文枢_安装程序_v4.5.23.exe --silent --dir D:\Apps\DocHub
 
 :: 仅解压载荷：不写注册表、不建快捷方式，可用于核对安装内容
-文枢_安装程序_v4.5.22.exe --extract D:\temp\dochub_payload
+文枢_安装程序_v4.5.23.exe --extract D:\temp\dochub_payload
 
 :: 静默卸载
 "%LOCALAPPDATA%\Programs\DocHub\app\DocHub.exe" --uninstall --yes
@@ -153,14 +153,14 @@
 
 ### 绿色版
 
-解压 `文枢_绿色版_v4.5.22.zip` 后运行根目录的 `DocHub.exe` 即可，不写注册表、不创建快捷方式。程序为自包含发布，**无需安装 .NET 运行时**。
+解压 `文枢_绿色版_v4.5.23.zip` 后运行根目录的 `DocHub.exe` 即可，不写注册表、不创建快捷方式。程序为自包含发布，**无需安装 .NET 运行时**。
 
 ---
 
 ## 使用说明
 
 1. 左侧选择「文档合并」
-2. 拖入或添加需要合并的 Word / PDF / 图片
+2. 拖入或添加需要合并的 Word / WPS / PDF / 图片
 3. 在列表里调整顺序（可拖拽，也可右键置顶/置底）
 4. 若文件带密码，按提示输入打开密码
 5. 如需水印，在设置「水印」页勾选文档合并并调整透明度、大小、方向、位置
@@ -204,8 +204,8 @@ powershell -ExecutionPolicy Bypass -File tools\package.ps1
 
 产物输出到 `dist\`：
 
-- `文枢_安装程序_v4.5.22.exe`
-- `文枢_绿色版_v4.5.22.zip`
+- `文枢_安装程序_v4.5.23.exe`
+- `文枢_绿色版_v4.5.23.zip`
 
 只编译主程序：
 

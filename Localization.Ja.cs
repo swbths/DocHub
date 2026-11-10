@@ -44,11 +44,11 @@ namespace DocHub
             [Txt.NamePlaceholderPhrase] = "先頭ファイル名 + 任意の語句",
             [Txt.NamePlaceholderTime] = "結合日時（自動生成）",
             [Txt.NamePlaceholderCustom] = "ファイル名を入力",
-            [Txt.EmptyTitle] = "Word / PDF / 画像ファイルをここにドロップ",
+            [Txt.EmptyTitle] = "Word / WPS / PDF / 画像ファイルをここにドロップ",
             [Txt.EmptySubtitle] = "または右上の「ファイルを追加」からまとめて選択",
-            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .pdf · .jpg · .png · .bmp · .tiff",
+            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .wps · .wpt · .pdf · .jpg · .png · .bmp · .tiff",
 
-            [Txt.TipAdd] = "結合する Word / PDF / 画像ファイルをまとめて選択",
+            [Txt.TipAdd] = "結合する Word / WPS / PDF / 画像ファイルをまとめて選択",
             [Txt.TipUp] = "選択したファイルを 1 つ上へ移動",
             [Txt.TipDown] = "選択したファイルを 1 つ下へ移動",
             [Txt.TipRemove] = "リストから削除します。元のファイルは残ります",
@@ -65,7 +65,7 @@ namespace DocHub
             [Txt.DialogTitleAdd] = "結合する文書を選択",
             [Txt.FolderDesc] = "結合後の PDF の保存先を選択",
             [Txt.FilterSupport] = "対応ファイル",
-            [Txt.FilterWord] = "Word 文書",
+            [Txt.FilterWord] = "Word / WPS 文書",
             [Txt.FilterPdf] = "PDF ファイル",
             [Txt.FilterImage] = "画像ファイル",
             [Txt.FilterAll] = "すべてのファイル",
@@ -163,10 +163,10 @@ namespace DocHub
             [Txt.SettingsLiveHint] = "すべての変更は即時反映されます",
 
             [Txt.AboutTitle] = "バージョン情報",
-            [Txt.VersionLine] = "{0} · Word / PDF / 画像の結合・変換ツール",
+            [Txt.VersionLine] = "{0} · Word / WPS / PDF / 画像の結合・変換ツール",
             [Txt.AboutIntro] = "すべての処理はこの端末内で完結し、ファイルは外部に送信されません",
             [Txt.BrandDefinition] = "DocHub：文書のハブ — 結合も変換もワンクリック",
-            [Txt.Feature1] = "Word の全形式、PDF、画像をまとめて結合、サイズ制限なし",
+            [Txt.Feature1] = "Word / WPS の全形式、PDF、画像をまとめて結合、サイズ制限なし",
             [Txt.Feature2] = "元のレイアウト、ページ番号、画像サイズ、向きをそのまま保持",
             [Txt.Feature3] = "ドラッグで並べ替え、進捗をリアルタイム表示、出力順を完全に制御",
             [Txt.Feature4] = "完全オフライン。ファイルがサーバーに送信されることはありません",
@@ -238,8 +238,8 @@ namespace DocHub
             [Txt.EulaIntro] = "DocHub をご利用になる前に、以下の規約をお読みください。",
             [Txt.EulaBody] =
                 "1. 用途\n" +
-                "DocHub は、Word / PDF / 画像をローカルで結合・変換するデスクトップツールです。本機にインストールされた " +
-                "Microsoft Word を使って Word 文書を PDF に書き出し、画像は元のサイズでページに配置し、" +
+                "DocHub は、Word / WPS / PDF / 画像をローカルで結合・変換するデスクトップツールです。本機にインストールされた " +
+                "Microsoft Word、WPS Office、LibreOffice を使って Word / WPS 文書を PDF に書き出し、画像は元のサイズでページに配置し、" +
                 "指定した順序でページを結合します。\n\n" +
                 "2. ファイルについて\n" +
                 "すべての処理は本機内で行われます。文書のアップロード、送信、バックアップは行わず、個人情報や" +
@@ -261,7 +261,7 @@ namespace DocHub
             [Txt.MergeNoDocs] = "先に結合する文書を追加してください。",
             [Txt.MergeFileMissing] = "ファイルが存在しないか、移動されています：\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、Word 文書を変換できません。\n\n" +
+                "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、Word / WPS 文書を変換できません。\n\n" +
                 "いずれかをインストールしてください。PDF と画像のみの結合には影響しません。",
             [Txt.MergeWordStartFail] = "Word / WPS 変換エンジンを起動できません。該当ソフトが正しくインストールされ、正常に開けることを確認してください。",
             [Txt.MergeWordNotInstalled] = "Microsoft Word、WPS Office、LibreOffice のいずれも見つかりません。インストールしてから再試行してください。",
@@ -291,11 +291,11 @@ namespace DocHub
                 "画像「{0}」を読み込めません。\n\n" +
                 "画像が破損していないこと、JPG・PNG・BMP・TIFF などの一般的な形式であることを確認してください。\n\n技術情報：{1}",
 
-            [Txt.MsgSkipWordTitle] = "Word ファイルを変換できません",
+            [Txt.MsgSkipWordTitle] = "Word / WPS ファイルを変換できません",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、{0} 個の Word ファイルを変換できません。\n\n" +
-                "これらの Word ファイルを飛ばして、残りの PDF と画像の結合を続行しますか？",
-            [Txt.StatusSkippedWord] = "{0} 個の Word ファイルをスキップしました（Word / WPS / LibreOffice 未導入）",
+                "Microsoft Word、WPS Office、LibreOffice のいずれも見つからないため、{0} 個の Word / WPS ファイルを変換できません。\n\n" +
+                "これらの Word / WPS ファイルを飛ばして、残りの PDF と画像の結合を続行しますか？",
+            [Txt.StatusSkippedWord] = "{0} 個の Word / WPS ファイルをスキップしました（Word / WPS / LibreOffice 未導入）",
 
             [Txt.ViewResult] = "結合結果を表示",
             [Txt.PdfViewerTitle] = "PDF ビューアー",
@@ -416,7 +416,7 @@ namespace DocHub
             [Txt.NavConvertTitle] = "PDF→画像",
             [Txt.NavConvertSubtitle] = "ページごとに画像へ",
             [Txt.MergePageTitle] = "文書結合",
-            [Txt.MergePageSubtitle] = "リスト順に Word / PDF / 画像を 1 つの PDF に結合",
+            [Txt.MergePageSubtitle] = "リスト順に Word / WPS / PDF / 画像を 1 つの PDF に結合",
             [Txt.ConvertPageTitle] = "PDF→画像",
             [Txt.ConvertPageSubtitle] = "PDF の各ページを画像に書き出し · 元ファイルは読み取り専用で変更しません",
             [Txt.ConvertFilesTitle] = "PDF ファイル",
@@ -617,6 +617,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word を変換中です。完了するまでウィンドウを閉じないでください。",
             [Txt.TipNavWordPdf] = "Word / WPS → PDF：個別に出力、または 1 つのファイルに結合",
             [Txt.Feature7] = "Word / WPS を一括で PDF に変換。既定では元のファイル名で個別出力し、1 ファイルへの結合や出力への透かしも可能",
+            [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
+            [Txt.ChangelogItems4523] =
+                "#追加\n" +
+                "· 文書結合が WPS 文書形式（.wps、.wpt）に対応。Word、PDF、画像と混在して結合可能\n" +
+                "· 結合・変換ページに WPS を明記し、WPS のみのバッチでは利用可能なエンジンを自動選択\n",
             [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
             [Txt.ChangelogItems4522] =
                 "#追加\n" +

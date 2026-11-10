@@ -44,11 +44,11 @@ namespace DocHub
             [Txt.NamePlaceholderPhrase] = "First file name + custom phrase",
             [Txt.NamePlaceholderTime] = "Merge time (auto-generated)",
             [Txt.NamePlaceholderCustom] = "Enter a custom file name",
-            [Txt.EmptyTitle] = "Drop Word / PDF / image files here",
+            [Txt.EmptyTitle] = "Drop Word / WPS / PDF / image files here",
             [Txt.EmptySubtitle] = "or click “Add files” at the top right",
-            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .pdf · .jpg · .png · .bmp · .tiff",
+            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .wps · .wpt · .pdf · .jpg · .png · .bmp · .tiff",
 
-            [Txt.TipAdd] = "Select Word / PDF / image files to merge",
+            [Txt.TipAdd] = "Select Word / WPS / PDF / image files to merge",
             [Txt.TipUp] = "Move the selected file one step up",
             [Txt.TipDown] = "Move the selected file one step down",
             [Txt.TipRemove] = "Remove from the list; the source file is kept",
@@ -65,7 +65,7 @@ namespace DocHub
             [Txt.DialogTitleAdd] = "Choose documents to merge",
             [Txt.FolderDesc] = "Choose where to save the merged PDF",
             [Txt.FilterSupport] = "Supported files",
-            [Txt.FilterWord] = "Word documents",
+            [Txt.FilterWord] = "Word / WPS documents",
             [Txt.FilterPdf] = "PDF files",
             [Txt.FilterImage] = "Image files",
             [Txt.FilterAll] = "All files",
@@ -163,10 +163,10 @@ namespace DocHub
             [Txt.SettingsLiveHint] = "All changes apply immediately",
 
             [Txt.AboutTitle] = "About",
-            [Txt.VersionLine] = "{0} · Merge and convert Word, PDF and images",
+            [Txt.VersionLine] = "{0} · Merge and convert Word, WPS, PDF and images",
             [Txt.AboutIntro] = "Everything runs locally. Files are never uploaded.",
             [Txt.BrandDefinition] = "DocHub: the document hub — merge and convert in one click",
-            [Txt.Feature1] = "Merge any Word format, PDF and images in one batch, no size limit",
+            [Txt.Feature1] = "Merge any Word / WPS format, PDF and images in one batch, no size limit",
             [Txt.Feature2] = "Keeps original layout, page numbers, image size and orientation",
             [Txt.Feature3] = "Drag to reorder, live progress, full control over output order",
             [Txt.Feature4] = "Fully offline; files never leave this device",
@@ -238,8 +238,8 @@ namespace DocHub
             [Txt.EulaIntro] = "Please read the following terms before using DocHub.",
             [Txt.EulaBody] =
                 "1. Scope\n" +
-                "DocHub is a local desktop tool for merging and converting Word, PDF and image files. It converts Word files " +
-                "to PDF using the Microsoft Word installed on your computer, lays out images at their original " +
+                "DocHub is a local desktop tool for merging and converting Word, WPS, PDF and image files. It converts Word / WPS files " +
+                "to PDF using the Microsoft Word, WPS Office or LibreOffice installed on your computer, lays out images at their original " +
                 "size, then combines the pages in the order you choose.\n\n" +
                 "2. Your files\n" +
                 "All processing happens on this device. The app does not upload, transmit or back up any " +
@@ -261,7 +261,7 @@ namespace DocHub
             [Txt.MergeNoDocs] = "Please add documents to merge first.",
             [Txt.MergeFileMissing] = "File missing or moved:\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word, WPS Office or LibreOffice was not found, so Word documents cannot be converted.\n\n" +
+                "Microsoft Word, WPS Office or LibreOffice was not found, so Word / WPS documents cannot be converted.\n\n" +
                 "Install one of them first; PDF and image merges are unaffected.",
             [Txt.MergeWordStartFail] =
                 "Could not start the Word / WPS conversion engine. Make sure it is installed and opens normally.",
@@ -298,11 +298,11 @@ namespace DocHub
                 "HEIC / HEIF / AVIF need the matching decoder extension installed in Windows.\n\n" +
                 "Technical details: {1}",
 
-            [Txt.MsgSkipWordTitle] = "Word files cannot be converted",
+            [Txt.MsgSkipWordTitle] = "Word / WPS files cannot be converted",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word, WPS Office or LibreOffice was not found, so {0} Word file(s) cannot be converted.\n\n" +
-                "Skip these Word files and merge the remaining PDF and image files?",
-            [Txt.StatusSkippedWord] = "Skipped {0} Word file(s) — Word / WPS / LibreOffice not installed",
+                "Microsoft Word, WPS Office or LibreOffice was not found, so {0} Word / WPS file(s) cannot be converted.\n\n" +
+                "Skip these Word / WPS files and merge the remaining PDF and image files?",
+            [Txt.StatusSkippedWord] = "Skipped {0} Word / WPS file(s) — Word / WPS / LibreOffice not installed",
 
             [Txt.ViewResult] = "View merged PDF",
             [Txt.PdfViewerTitle] = "PDF viewer",
@@ -423,7 +423,7 @@ namespace DocHub
             [Txt.NavConvertTitle] = "PDF to Images",
             [Txt.NavConvertSubtitle] = "Export pages as images",
             [Txt.MergePageTitle] = "Document merge",
-            [Txt.MergePageSubtitle] = "Combine Word / PDF / images into one PDF in list order",
+            [Txt.MergePageSubtitle] = "Combine Word / WPS / PDF / images into one PDF in list order",
             [Txt.ConvertPageTitle] = "PDF to Images",
             [Txt.ConvertPageSubtitle] = "Export every PDF page as an image · source is read-only and never edited",
             [Txt.ConvertFilesTitle] = "PDF files",
@@ -624,6 +624,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word conversion is running. Please wait before closing the window.",
             [Txt.TipNavWordPdf] = "Word / WPS to PDF: save each file separately or merge into one",
             [Txt.Feature7] = "Batch Word / WPS to PDF with original file names by default, optional single-file merge and output watermark",
+            [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
+            [Txt.ChangelogItems4523] =
+                "# Added\n" +
+                "· Document merge now supports WPS Writer formats (.wps, .wpt), mixable with Word, PDF and images\n" +
+                "· Merge and convert pages now mention WPS; WPS-only batches automatically pick an available engine\n",
             [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
             [Txt.ChangelogItems4522] =
                 "# Added\n" +

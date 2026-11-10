@@ -44,11 +44,11 @@ namespace DocHub
             [Txt.NamePlaceholderPhrase] = "첫 파일 이름 + 사용자 문구",
             [Txt.NamePlaceholderTime] = "병합 시간 (자동 생성)",
             [Txt.NamePlaceholderCustom] = "파일 이름 입력",
-            [Txt.EmptyTitle] = "Word / PDF / 이미지 파일을 여기에 끌어다 놓으세요",
+            [Txt.EmptyTitle] = "Word / WPS / PDF / 이미지 파일을 여기에 끌어다 놓으세요",
             [Txt.EmptySubtitle] = "또는 오른쪽 위의 「파일 추가」를 클릭하여 한 번에 선택하세요",
-            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .pdf · .jpg · .png · .bmp · .tiff",
+            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .wps · .wpt · .pdf · .jpg · .png · .bmp · .tiff",
 
-            [Txt.TipAdd] = "병합할 Word / PDF / 이미지 파일을 한 번에 선택",
+            [Txt.TipAdd] = "병합할 Word / WPS / PDF / 이미지 파일을 한 번에 선택",
             [Txt.TipUp] = "선택한 파일을 한 단계 위로 이동",
             [Txt.TipDown] = "선택한 파일을 한 단계 아래로 이동",
             [Txt.TipRemove] = "목록에서 제거하며 원본 파일은 삭제되지 않습니다",
@@ -65,7 +65,7 @@ namespace DocHub
             [Txt.DialogTitleAdd] = "병합할 파일 선택",
             [Txt.FolderDesc] = "병합된 PDF의 저장 위치 선택",
             [Txt.FilterSupport] = "지원 파일",
-            [Txt.FilterWord] = "Word 문서",
+            [Txt.FilterWord] = "Word / WPS 문서",
             [Txt.FilterPdf] = "PDF 파일",
             [Txt.FilterImage] = "이미지 파일",
             [Txt.FilterAll] = "모든 파일",
@@ -163,10 +163,10 @@ namespace DocHub
             [Txt.SettingsLiveHint] = "모든 변경 사항이 즉시 적용됩니다",
 
             [Txt.AboutTitle] = "정보",
-            [Txt.VersionLine] = "{0} · Word / PDF / 이미지 병합·변환 도구",
+            [Txt.VersionLine] = "{0} · Word / WPS / PDF / 이미지 병합·변환 도구",
             [Txt.AboutIntro] = "모든 처리는 이 PC에서 완료되며 파일은 외부로 전송되지 않습니다",
             [Txt.BrandDefinition] = "DocHub: 문서 허브 — 병합과 변환을 한 번에",
-            [Txt.Feature1] = "Word 모든 형식, PDF, 이미지를 한 번에 병합, 크기 제한 없음",
+            [Txt.Feature1] = "Word / WPS 모든 형식, PDF, 이미지를 한 번에 병합, 크기 제한 없음",
             [Txt.Feature2] = "원본 레이아웃, 페이지 번호, 이미지 크기와 방향 그대로 유지",
             [Txt.Feature3] = "끌어서 순서 변경, 실시간 진행률, 출력 순서 완전 제어",
             [Txt.Feature4] = "완전 오프라인 처리, 파일은 어떤 서버에도 업로드되지 않습니다",
@@ -238,8 +238,8 @@ namespace DocHub
             [Txt.EulaIntro] = "DocHub를 사용하기 전에 아래 약관을 읽어 주세요.",
             [Txt.EulaBody] =
                 "1. 용도\n" +
-                "DocHub는 Word / PDF / 이미지 파일을 로컬에서 병합·변환하는 데스크톱 도구입니다. PC에 설치된 Microsoft Word 또는 LibreOffice를 " +
-                "사용하여 Word 문서를 PDF로 내보내고, 이미지는 원본 크기로 페이지에 배치한 뒤 지정한 순서대로 병합합니다.\n\n" +
+                "DocHub는 Word / WPS / PDF / 이미지 파일을 로컬에서 병합·변환하는 데스크톱 도구입니다. PC에 설치된 Microsoft Word, WPS Office 또는 LibreOffice를 " +
+                "사용하여 Word / WPS 문서를 PDF로 내보내고, 이미지는 원본 크기로 페이지에 배치한 뒤 지정한 순서대로 병합합니다.\n\n" +
                 "2. 파일\n" +
                 "모든 처리는 이 PC에서 이루어집니다. 문서를 업로드, 전송, 백업하지 않으며 개인정보나 문서 내용을 " +
                 "수집하지 않습니다.\n\n" +
@@ -260,7 +260,7 @@ namespace DocHub
             [Txt.MergeNoDocs] = "먼저 병합할 문서를 추가하세요.",
             [Txt.MergeFileMissing] = "파일이 없거나 이동되었습니다:\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없어 Word 문서를 변환할 수 없습니다.\n\n" +
+                "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없어 Word / WPS 문서를 변환할 수 없습니다.\n\n" +
                 "이 중 하나를 설치하세요. PDF와 이미지만 병합하는 것은 영향이 없습니다.",
             [Txt.MergeWordStartFail] = "Word / WPS 변환 엔진을 시작할 수 없습니다. 해당 소프트웨어가 올바르게 설치되어 정상적으로 열리는지 확인하세요.",
             [Txt.MergeWordNotInstalled] = "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없습니다. 설치한 후 다시 시도하세요.",
@@ -290,11 +290,11 @@ namespace DocHub
                 "이미지「{0}」을 읽을 수 없습니다.\n\n" +
                 "이미지가 손상되지 않았고 JPG, PNG, BMP, TIFF 등 일반적인 형식인지 확인하세요.\n\n기술 정보: {1}",
 
-            [Txt.MsgSkipWordTitle] = "Word 파일을 변환할 수 없습니다",
+            [Txt.MsgSkipWordTitle] = "Word / WPS 파일을 변환할 수 없습니다",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없어 {0}개의 Word 파일을 변환할 수 없습니다.\n\n" +
-                "이 Word 파일을 건너뛰고 나머지 PDF와 이미지 병합을 계속하시겠습니까?",
-            [Txt.StatusSkippedWord] = "Word 파일 {0}개를 건너뛰었습니다 (Word / WPS / LibreOffice 미설치)",
+                "Microsoft Word, WPS Office 또는 LibreOffice를 찾을 수 없어 {0}개의 Word / WPS 파일을 변환할 수 없습니다.\n\n" +
+                "이 Word / WPS 파일을 건너뛰고 나머지 PDF와 이미지 병합을 계속하시겠습니까?",
+            [Txt.StatusSkippedWord] = "Word / WPS 파일 {0}개를 건너뛰었습니다 (Word / WPS / LibreOffice 미설치)",
 
             [Txt.ViewResult] = "병합 결과 보기",
             [Txt.PdfViewerTitle] = "PDF 뷰어",
@@ -415,7 +415,7 @@ namespace DocHub
             [Txt.NavConvertTitle] = "PDF → 이미지",
             [Txt.NavConvertSubtitle] = "페이지별 이미지로 저장",
             [Txt.MergePageTitle] = "문서 병합",
-            [Txt.MergePageSubtitle] = "목록 순서대로 Word / PDF / 이미지를 하나의 PDF로 병합",
+            [Txt.MergePageSubtitle] = "목록 순서대로 Word / WPS / PDF / 이미지를 하나의 PDF로 병합",
             [Txt.ConvertPageTitle] = "PDF → 이미지",
             [Txt.ConvertPageSubtitle] = "PDF의 모든 페이지를 이미지로 내보내기 · 원본 PDF는 읽기 전용",
             [Txt.ConvertFilesTitle] = "PDF 파일",
@@ -616,6 +616,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word 변환 중입니다. 완료될 때까지 창을 닫지 마세요.",
             [Txt.TipNavWordPdf] = "Word / WPS → PDF: 개별 출력 또는 하나의 파일로 병합",
             [Txt.Feature7] = "Word / WPS 일괄 PDF 변환: 기본적으로 원본 파일 이름으로 개별 출력, 하나의 파일 병합과 출력 워터마크 지원",
+            [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
+            [Txt.ChangelogItems4523] =
+                "#추가\n" +
+                "· 문서 병합이 WPS 문서 형식(.wps, .wpt)을 지원하며 Word, PDF, 이미지와 함께 병합 가능\n" +
+                "· 병합·변환 페이지에 WPS를 표시하고, WPS만 포함한 배치에서는 사용 가능한 엔진을 자동 선택\n",
             [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
             [Txt.ChangelogItems4522] =
                 "#추가\n" +

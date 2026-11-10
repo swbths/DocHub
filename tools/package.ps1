@@ -9,7 +9,7 @@
 $ErrorActionPreference = 'Stop'
 
 $root = Split-Path -Parent $PSScriptRoot
-$version = '4.5.22'
+$version = '4.5.23'
 
 # Product names are built from Unicode code points to stay ASCII-safe.
 $appName = [string]([char]0x6587) + [char]0x67A2

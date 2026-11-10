@@ -44,11 +44,11 @@ namespace DocHub
             [Txt.NamePlaceholderPhrase] = "Имя первого файла + фраза",
             [Txt.NamePlaceholderTime] = "Время объединения (автоматически)",
             [Txt.NamePlaceholderCustom] = "Введите имя файла",
-            [Txt.EmptyTitle] = "Перетащите файлы Word / PDF / изображения сюда",
+            [Txt.EmptyTitle] = "Перетащите файлы Word / WPS / PDF / изображения сюда",
             [Txt.EmptySubtitle] = "или нажмите «Добавить файлы» в правом верхнем углу",
-            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .pdf · .jpg · .png · .bmp · .tiff",
+            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .wps · .wpt · .pdf · .jpg · .png · .bmp · .tiff",
 
-            [Txt.TipAdd] = "Выбрать файлы Word / PDF / изображения для объединения",
+            [Txt.TipAdd] = "Выбрать файлы Word / WPS / PDF / изображения для объединения",
             [Txt.TipUp] = "Переместить выбранный файл на одну позицию вверх",
             [Txt.TipDown] = "Переместить выбранный файл на одну позицию вниз",
             [Txt.TipRemove] = "Удалить из списка; исходный файл останется",
@@ -65,7 +65,7 @@ namespace DocHub
             [Txt.DialogTitleAdd] = "Выберите документы для объединения",
             [Txt.FolderDesc] = "Выберите папку для сохранения итогового PDF",
             [Txt.FilterSupport] = "Поддерживаемые файлы",
-            [Txt.FilterWord] = "Документы Word",
+            [Txt.FilterWord] = "Документы Word / WPS",
             [Txt.FilterPdf] = "Файлы PDF",
             [Txt.FilterImage] = "Файлы изображений",
             [Txt.FilterAll] = "Все файлы",
@@ -163,10 +163,10 @@ namespace DocHub
             [Txt.SettingsLiveHint] = "Все изменения применяются сразу",
 
             [Txt.AboutTitle] = "О программе",
-            [Txt.VersionLine] = "{0} · Объединение и конвертация Word / PDF / изображений",
+            [Txt.VersionLine] = "{0} · Объединение и конвертация Word / WPS / PDF / изображений",
             [Txt.AboutIntro] = "Вся обработка выполняется локально. Файлы никуда не отправляются",
             [Txt.BrandDefinition] = "DocHub: центр документов — объединение и конвертация в один клик",
-            [Txt.Feature1] = "Объединение любых форматов Word, PDF и изображений, без ограничения размера",
+            [Txt.Feature1] = "Объединение любых форматов Word / WPS, PDF и изображений, без ограничения размера",
             [Txt.Feature2] = "Сохраняет исходный макет, нумерацию, размер и ориентацию изображений",
             [Txt.Feature3] = "Изменение порядка перетаскиванием, прогресс в реальном времени",
             [Txt.Feature4] = "Полностью офлайн; файлы не покидают устройство",
@@ -238,8 +238,8 @@ namespace DocHub
             [Txt.EulaIntro] = "Перед использованием DocHub ознакомьтесь с условиями ниже.",
             [Txt.EulaBody] =
                 "1. Назначение\n" +
-                "DocHub — локальный настольный инструмент для объединения и конвертации документов Word, PDF и изображений. Программа экспортирует " +
-                "документы Word в PDF с помощью Microsoft Word или LibreOffice, установленных на вашем компьютере, размещает изображения " +
+                "DocHub — локальный настольный инструмент для объединения и конвертации документов Word, WPS, PDF и изображений. Программа экспортирует " +
+                "документы Word / WPS в PDF с помощью Microsoft Word, WPS Office или LibreOffice, установленных на вашем компьютере, размещает изображения " +
                 "в исходном размере и объединяет страницы в выбранном вами порядке.\n\n" +
                 "2. Ваши файлы\n" +
                 "Вся обработка выполняется на этом устройстве. Программа не загружает, не передаёт и не резервирует " +
@@ -262,7 +262,7 @@ namespace DocHub
             [Txt.MergeNoDocs] = "Сначала добавьте документы для объединения.",
             [Txt.MergeFileMissing] = "Файл отсутствует или перемещён:\n{0}",
             [Txt.MergeWordMissing] =
-                "Microsoft Word, WPS Office или LibreOffice не найден, поэтому документы Word нельзя преобразовать.\n\n" +
+                "Microsoft Word, WPS Office или LibreOffice не найден, поэтому документы Word / WPS нельзя преобразовать.\n\n" +
                 "Установите одну из программ; объединение PDF и изображений не затрагивается.",
             [Txt.MergeWordStartFail] = "Не удалось запустить движок преобразования Word / WPS. Убедитесь, что программа установлена и открывается.",
             [Txt.MergeWordNotInstalled] = "Microsoft Word, WPS Office или LibreOffice не найден. Установите одну из программ и повторите попытку.",
@@ -292,11 +292,11 @@ namespace DocHub
                 "Не удалось прочитать изображение «{0}».\n\n" +
                 "Убедитесь, что файл не повреждён и имеет распространённый формат: JPG, PNG, BMP или TIFF.\n\nТехническая информация: {1}",
 
-            [Txt.MsgSkipWordTitle] = "Не удаётся преобразовать файлы Word",
+            [Txt.MsgSkipWordTitle] = "Не удаётся преобразовать файлы Word / WPS",
             [Txt.MsgSkipWordText] =
-                "Microsoft Word, WPS Office или LibreOffice не найден, {0} файл(ов) Word нельзя преобразовать.\n\n" +
-                "Пропустить эти файлы Word и продолжить объединение остальных PDF и изображений?",
-            [Txt.StatusSkippedWord] = "Пропущено файлов Word: {0} (Word / WPS / LibreOffice не установлены)",
+                "Microsoft Word, WPS Office или LibreOffice не найден, {0} файл(ов) Word / WPS нельзя преобразовать.\n\n" +
+                "Пропустить эти файлы Word / WPS и продолжить объединение остальных PDF и изображений?",
+            [Txt.StatusSkippedWord] = "Пропущено файлов Word / WPS: {0} (Word / WPS / LibreOffice не установлены)",
 
             [Txt.ViewResult] = "Открыть результат",
             [Txt.PdfViewerTitle] = "Просмотр PDF",
@@ -417,7 +417,7 @@ namespace DocHub
             [Txt.NavConvertTitle] = "PDF в изображения",
             [Txt.NavConvertSubtitle] = "Экспорт страниц",
             [Txt.MergePageTitle] = "Объединение документов",
-            [Txt.MergePageSubtitle] = "Объединить Word / PDF / изображения в один PDF по порядку списка",
+            [Txt.MergePageSubtitle] = "Объединить Word / WPS / PDF / изображения в один PDF по порядку списка",
             [Txt.ConvertPageTitle] = "PDF в изображения",
             [Txt.ConvertPageSubtitle] = "Каждая страница PDF экспортируется в изображение · исходный PDF только читается",
             [Txt.ConvertFilesTitle] = "Файлы PDF",
@@ -618,6 +618,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Идёт конвертация Word. Дождитесь завершения, прежде чем закрывать окно.",
             [Txt.TipNavWordPdf] = "Word / WPS в PDF: каждый файл отдельно или объединение в один",
             [Txt.Feature7] = "Пакетная конвертация Word / WPS в PDF: по умолчанию с исходными именами, можно объединить в один файл и добавить водяной знак",
+            [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
+            [Txt.ChangelogItems4523] =
+                "# Добавлено\n" +
+                "· Объединение документов теперь поддерживает форматы WPS (.wps, .wpt) и может смешивать их с Word, PDF и изображениями\n" +
+                "· На страницах объединения и конвертации указан WPS; для пакетов только из WPS автоматически выбирается доступный движок\n",
             [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
             [Txt.ChangelogItems4522] =
                 "#Добавлено\n" +

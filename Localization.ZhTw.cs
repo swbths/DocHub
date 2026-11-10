@@ -7,7 +7,7 @@ namespace DocHub
         public static readonly Dictionary<Txt, string> Table = new()
         {
             [Txt.AppName] = "文樞",
-            [Txt.Tagline] = "文件中樞，一鍵合轉 · Word / PDF / 圖片 合併與轉換",
+            [Txt.Tagline] = "文件中樞，一鍵合轉 · Word / WPS / PDF / 圖片 合併與轉換",
             [Txt.LocalBadge] = "本機處理 · 檔案不外傳",
 
             [Txt.Ok] = "確定",
@@ -26,7 +26,7 @@ namespace DocHub
 
             [Txt.DocsTitle] = "檔案清單",
             [Txt.DocCountFormat] = "{0} 個檔案",
-            [Txt.ListHint] = "拖曳排序 · 空白處拖出選框可多選 · 支援批次拖入 Word / PDF / 圖片",
+            [Txt.ListHint] = "拖曳排序 · 空白處拖出選框可多選 · 支援批次拖入 Word / WPS / PDF / 圖片",
             [Txt.AddDocs] = "加入檔案",
             [Txt.MoveUp] = "上移",
             [Txt.MoveDown] = "下移",
@@ -44,11 +44,11 @@ namespace DocHub
             [Txt.NamePlaceholderPhrase] = "第一個文件名 + 自訂語句",
             [Txt.NamePlaceholderTime] = "合併時間（自動產生）",
             [Txt.NamePlaceholderCustom] = "輸入自訂文件名",
-            [Txt.EmptyTitle] = "拖曳 Word / PDF / 圖片檔案到這裡",
+            [Txt.EmptyTitle] = "拖曳 Word / WPS / PDF / 圖片檔案到這裡",
             [Txt.EmptySubtitle] = "或點擊右上角「加入檔案」批次選擇",
-            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .pdf · .jpg · .png · .bmp · .tiff",
+            [Txt.EmptyFormats] = ".doc · .docx · .rtf · .wps · .wpt · .pdf · .jpg · .png · .bmp · .tiff",
 
-            [Txt.TipAdd] = "批次選擇要合併的 Word / PDF / 圖片檔案",
+            [Txt.TipAdd] = "批次選擇要合併的 Word / WPS / PDF / 圖片檔案",
             [Txt.TipUp] = "將選取的檔案上移一位",
             [Txt.TipDown] = "將選取的檔案下移一位",
             [Txt.TipRemove] = "從清單移除，不會刪除來源檔案",
@@ -65,7 +65,7 @@ namespace DocHub
             [Txt.DialogTitleAdd] = "選擇要合併的文件",
             [Txt.FolderDesc] = "選擇合併後 PDF 的儲存位置",
             [Txt.FilterSupport] = "支援的檔案",
-            [Txt.FilterWord] = "Word 文件",
+            [Txt.FilterWord] = "Word / WPS 文件",
             [Txt.FilterPdf] = "PDF 檔案",
             [Txt.FilterImage] = "圖片檔案",
             [Txt.FilterAll] = "所有檔案",
@@ -163,10 +163,10 @@ namespace DocHub
             [Txt.SettingsLiveHint] = "所有修改即時生效",
 
             [Txt.AboutTitle] = "關於",
-            [Txt.VersionLine] = "{0} · Word / PDF / 圖片 合併與轉換工具",
+            [Txt.VersionLine] = "{0} · Word / WPS / PDF / 圖片 合併與轉換工具",
             [Txt.AboutIntro] = "所有處理均在本機完成，檔案不外傳",
             [Txt.BrandDefinition] = "文樞：文件中樞，一鍵合轉",
-            [Txt.Feature1] = "Word 全格式、PDF 與圖片混搭合併，批次匯入無大小限制",
+            [Txt.Feature1] = "Word / WPS 全格式、PDF 與圖片混搭合併，批次匯入無大小限制",
             [Txt.Feature2] = "保留原排版、頁碼、圖片尺寸與方向，不做二次排版",
             [Txt.Feature3] = "拖曳排序、即時進度，輸出順序完全可控",
             [Txt.Feature4] = "本機離線處理，檔案不會上傳到任何伺服器",
@@ -238,8 +238,8 @@ namespace DocHub
             [Txt.EulaIntro] = "使用「文樞」前，請閱讀以下條款。",
             [Txt.EulaBody] =
                 "一、用途說明\n" +
-                "「文樞」是一款在本機執行的 Word / PDF / 圖片 合併與轉換工具。軟體呼叫本機安裝的 Microsoft Word " +
-                "將 Word 文件匯出為 PDF，圖片依原始尺寸排成頁面，再依您指定的順序逐頁合併。\n\n" +
+                "「文樞」是一款在本機執行的 Word / WPS / PDF / 圖片 合併與轉換工具。軟體呼叫本機安裝的 Microsoft Word、WPS Office 或 LibreOffice " +
+                "將 Word / WPS 文件匯出為 PDF，圖片依原始尺寸排成頁面，再依您指定的順序逐頁合併。\n\n" +
                 "二、您的檔案\n" +
                 "所有處理均在本機完成。軟體不會上傳、傳輸或備份任何文件，也不會蒐集您的個人資訊或文件內容。\n\n" +
                 "三、使用責任\n" +
@@ -256,8 +256,8 @@ namespace DocHub
             [Txt.MergeNoDocs] = "請先加入要合併的文件。",
             [Txt.MergeFileMissing] = "檔案不存在或已被移動：\n{0}",
             [Txt.MergeWordMissing] =
-                "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，無法轉換 Word 文件。\n\n" +
-                "請安裝 Microsoft Word、WPS Office 或 LibreOffice 後再合併 Word 檔案；純 PDF 與圖片可直接合併。",
+                "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，無法轉換 Word / WPS 文件。\n\n" +
+                "請安裝 Microsoft Word、WPS Office 或 LibreOffice 後再合併 Word / WPS 檔案；純 PDF 與圖片可直接合併。",
             [Txt.MergeWordStartFail] = "無法啟動 Word / WPS 轉換引擎。請確認對應軟體已正確安裝並可正常開啟。",
             [Txt.MergeWordNotInstalled] = "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，請安裝後再試。",
             [Txt.MergeProcessing] = "正在處理（{0}/{1}）：{2}",
@@ -287,11 +287,11 @@ namespace DocHub
                 "請確認圖片沒有損壞。JPG / PNG / BMP / TIFF / GIF / WebP 可直接合併；" +
                 "HEIC / HEIF / AVIF 需要系統已安裝對應的解碼擴充。\n\n技術資訊：{1}",
 
-            [Txt.MsgSkipWordTitle] = "Word 檔案無法轉換",
+            [Txt.MsgSkipWordTitle] = "Word / WPS 檔案無法轉換",
             [Txt.MsgSkipWordText] =
-                "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，{0} 個 Word 檔案無法轉換。\n\n" +
-                "是否跳過這些 Word 檔案，繼續合併其餘 PDF 與圖片？",
-            [Txt.StatusSkippedWord] = "已跳過 {0} 個 Word 檔案（未安裝 Word / WPS / LibreOffice）",
+                "未偵測到 Microsoft Word、WPS Office 或 LibreOffice，{0} 個 Word / WPS 檔案無法轉換。\n\n" +
+                "是否跳過這些 Word / WPS 檔案，繼續合併其餘 PDF 與圖片？",
+            [Txt.StatusSkippedWord] = "已跳過 {0} 個 Word / WPS 檔案（未安裝 Word / WPS / LibreOffice）",
 
             [Txt.ViewResult] = "檢視合併文件",
             [Txt.PdfViewerTitle] = "PDF 閱讀器",
@@ -414,7 +414,7 @@ namespace DocHub
             [Txt.NavConvertTitle] = "PDF 轉圖片",
             [Txt.NavConvertSubtitle] = "逐頁匯出圖片",
             [Txt.MergePageTitle] = "文件合併",
-            [Txt.MergePageSubtitle] = "依清單順序將 Word / PDF / 圖片合成一個 PDF",
+            [Txt.MergePageSubtitle] = "依清單順序將 Word / WPS / PDF / 圖片合成一個 PDF",
             [Txt.ConvertPageTitle] = "PDF 轉圖片",
             [Txt.ConvertPageSubtitle] = "將 PDF 的每一頁匯出為圖片 · 唯讀來源檔，不修改原文",
             [Txt.ConvertFilesTitle] = "PDF 檔案",
@@ -615,6 +615,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "正在轉換 Word，請等待完成後再關閉視窗。",
             [Txt.TipNavWordPdf] = "Word / WPS 轉 PDF：每份單獨輸出，或合併為一個檔案",
             [Txt.Feature7] = "Word / WPS 批次轉 PDF：預設依原檔名逐份輸出，可合併為一個檔案，並可為輸出加上浮水印",
+            [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
+            [Txt.ChangelogItems4523] =
+                "#新增\n" +
+                "· 文件合併新增支援 WPS 文字格式（.wps、.wpt），可與 Word、PDF、圖片混排合併\n" +
+                "· 合併與轉換頁同步標註 WPS，僅含 WPS 檔案的批次自動選用可用引擎\n",
             [Txt.Changelog4522] = "4.5.22 · 2026-11-10",
             [Txt.ChangelogItems4522] =
                 "#新增\n" +

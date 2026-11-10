@@ -535,7 +535,7 @@ namespace DocHub
             if (added > 0)
             {
                 RefreshList(_documents.Count - 1);
-                if (!WordPdfEngine.IsAvailable)
+                if (!HasUsableEngine())
                 {
                     SetStatus(Loc.T(Txt.WordPdfNoEngine));
                     return;
@@ -676,7 +676,7 @@ namespace DocHub
             _mergeBox.Enabled = !_running;
             _nameInput.Enabled = !_running && _settings.WordPdfMergeIntoOne;
             _list.Enabled = !_running;
-            _startButton.Enabled = _running || (hasDocuments && WordPdfEngine.IsAvailable);
+            _startButton.Enabled = _running || (hasDocuments && HasUsableEngine());
             _openFolderButton.Enabled = !_running && _openFolderButton.Visible;
         }
 
@@ -760,6 +760,11 @@ namespace DocHub
             UpdateButtons();
         }
 
+        private bool HasUsableEngine() =>
+            (_documents.Count > 0
+                ? MergeEngine.SelectConverter(_documents.Select(d => d.Path))
+                : MergeEngine.DetectedConverter) != WordConverter.None;
+
         private string ReadyText()
         {
             WordConverter converter = _documents.Count > 0
@@ -810,7 +815,7 @@ namespace DocHub
                 return;
             }
 
-            if (!WordPdfEngine.IsAvailable)
+            if (!HasUsableEngine())
             {
                 ThemedMessageBox.Show(this, Loc.T(Txt.WordPdfNoEngine), Loc.T(Txt.WordPdfFailTitle),
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -973,7 +978,7 @@ namespace DocHub
             _startButton.Text = Loc.T(Txt.WordPdfStart);
             _startButton.Icon = IconKind.WordPdf;
             _startButton.ApplyTheme();
-            _startButton.Enabled = _documents.Count > 0 && WordPdfEngine.IsAvailable;
+            _startButton.Enabled = _documents.Count > 0 && HasUsableEngine();
         }
 
         private void ShowCompletion(string message, string detail, Action onClick)

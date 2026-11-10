@@ -1742,9 +1742,10 @@ namespace DocHub
                 return;
             }
 
-            int wordFiles = _documents.Count(d => d.IsWord);
+            string[] wordPaths = _documents.Where(d => d.IsWord).Select(d => d.Path).ToArray();
+            int wordFiles = wordPaths.Length;
             bool skipWord = false;
-            if (wordFiles > 0 && !MergeEngine.IsWordAvailable)
+            if (wordFiles > 0 && MergeEngine.SelectConverter(wordPaths) == WordConverter.None)
             {
                 if (wordFiles == _documents.Count)
                 {

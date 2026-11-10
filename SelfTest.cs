@@ -247,10 +247,15 @@ namespace DocHub
             WordConverter wpsConverter = MergeEngine.SelectConverter(new[] { "示例.wps" });
             bool wpsRouteOk = wpsConverter != WordConverter.MicrosoftWord &&
                               (!MergeEngine.HasWpsCom() || wpsConverter == WordConverter.WpsOffice);
+            WordConverter mixedConverter = MergeEngine.SelectConverter(new[] { "报告.docx", "示例.wps" });
+            bool mixedRouteOk = mixedConverter == wpsConverter &&
+                                mixedConverter != WordConverter.MicrosoftWord;
             report.AppendLine(
                 $"  [{(wpsOk ? "OK" : "FAIL")}] WPS 格式识别：.wps/.wpt 纳入 Word 支持且不误判 Word 文档");
             report.AppendLine(
                 $"  [{(wpsRouteOk ? "OK" : "FAIL")}] WPS 文件转换引擎：{wpsConverter}（WPS COM={MergeEngine.HasWpsCom()}）");
+            report.AppendLine(
+                $"  [{(mixedRouteOk ? "OK" : "FAIL")}] 含 WPS 的混合批次转换引擎：{mixedConverter}（不交给 Microsoft Word）");
 
             bool quotesOk = defaults.ShowQuotes && defaults.Clone().ShowQuotes;
             report.AppendLine(
@@ -267,6 +272,7 @@ namespace DocHub
 
             return (convertOk ? 0 : 1) + (soundOk ? 0 : 1) + (watermarkOk ? 0 : 1) +
                    (wordPdfOk ? 0 : 1) + (wordNameOk ? 0 : 1) +
+                   (wpsOk ? 0 : 1) + (wpsRouteOk ? 0 : 1) + (mixedRouteOk ? 0 : 1) +
                    (quotesOk ? 0 : 1) + (quoteRefreshOk ? 0 : 1);
         }
 
