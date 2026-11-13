@@ -331,6 +331,7 @@ namespace DocHub
             [Txt.WatermarkTintGray] = "グレー",
             [Txt.WatermarkTintRed] = "赤",
             [Txt.WatermarkTintBlue] = "青",
+            [Txt.WatermarkFont] = "フォント",
             [Txt.WatermarkPosition] = "位置",
             [Txt.WatermarkPosTile] = "タイル",
             [Txt.WatermarkPosTopLeft] = "左上",
@@ -617,6 +618,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word を変換中です。完了するまでウィンドウを閉じないでください。",
             [Txt.TipNavWordPdf] = "Word / WPS → PDF：個別に出力、または 1 つのファイルに結合",
             [Txt.Feature7] = "Word / WPS を一括で PDF に変換。既定では元のファイル名で個別出力し、1 ファイルへの結合や出力への透かしも可能",
+            [Txt.Changelog4524] = "4.5.24 · 2026-11-13",
+            [Txt.ChangelogItems4524] =
+                "#追加\n" +
+                "· 透かしのフォントを選択可能に（Microsoft YaHei、等線、宋体、黒体、楷体、仿宋、欧文フォントなど）\n" +
+                "· フォント変更は設定画面のプレビューと結合・変換の出力に即時反映\n",
             [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
             [Txt.ChangelogItems4523] =
                 "#追加\n" +

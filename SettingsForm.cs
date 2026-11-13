@@ -77,6 +77,7 @@ namespace DocHub
         private RoundedButton _closeSaveButton = null!;
         private GlyphCloseButton _closeButton = null!;
         private WatermarkPreviewPanel _watermarkPreview = null!;
+        private SkinDropDown _watermarkFont = null!;
         private readonly System.Windows.Forms.Timer _applyTimer = new();
         private bool _applyPending;
         private bool _loading = true;
@@ -569,7 +570,13 @@ namespace DocHub
             };
             pageMark.Controls.Add(previewHint);
 
-            PageLabel(pageMark, Loc.T(Txt.WatermarkPreview), Theme.BaseFont, "secondary", 336, 64);
+            PageLabel(pageMark, Loc.T(Txt.WatermarkFont), Theme.BaseFont, "secondary", 336, 63);
+            _watermarkFont = new SkinDropDown
+            {
+                Bounds = new Rectangle(400, 54, 218, 30)
+            };
+            pageMark.Controls.Add(_watermarkFont);
+
             _watermarkPreview = new WatermarkPreviewPanel
             {
                 // 内页留白 14px 后接近 A4 比例，预览与合并后的纸张观感一致
@@ -924,6 +931,14 @@ namespace DocHub
                 NotifyApplied();
             };
 
+            _watermarkFont.SelectedItemChanged += value =>
+            {
+                if (_loading) return;
+                _working.WatermarkFont = value;
+                UpdateWatermarkPreview();
+                NotifyApplied();
+            };
+
             for (int i = 0; i < _anchorRadios.Length; i++)
             {
                 int index = i;
@@ -1052,6 +1067,8 @@ namespace DocHub
             for (int i = 0; i < _presetRadios.Length; i++)
                 _presetRadios[i].Checked = _working.WatermarkPreset == i;
             _watermarkInput.Text = _working.WatermarkCustomText ?? string.Empty;
+            _watermarkFont.SetItems(WatermarkPainter.AvailableFontChoices(_working.WatermarkFont));
+            _watermarkFont.SelectedItem = WatermarkPainter.NormalizeFontFamily(_working.WatermarkFont);
             for (int i = 0; i < _anchorRadios.Length; i++)
                 _anchorRadios[i].Checked = (int)_working.WatermarkAnchor == i;
             for (int i = 0; i < _tintRadios.Length; i++)
@@ -1101,6 +1118,8 @@ namespace DocHub
             bool customText = _working.WatermarkPreset == 4 && watermarkOn;
             _watermarkInput.Enabled = customText;
             _watermarkInput.ApplyTheme();
+            _watermarkFont.Enabled = watermarkOn;
+            _watermarkFont.Invalidate();
 
             foreach (var radio in _presetRadios)
             {
@@ -1190,7 +1209,8 @@ namespace DocHub
                 _working.WatermarkRotation,
                 _working.WatermarkOffsetX,
                 _working.WatermarkOffsetY,
-                _working.WatermarkAnchor);
+                _working.WatermarkAnchor,
+                _working.WatermarkFont);
             _watermarkPreview.EnabledMark = _working.WatermarkAnyEnabled;
             _watermarkPreview.Invalidate();
         }

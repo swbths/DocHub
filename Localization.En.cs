@@ -338,6 +338,7 @@ namespace DocHub
             [Txt.WatermarkTintGray] = "Gray",
             [Txt.WatermarkTintRed] = "Red",
             [Txt.WatermarkTintBlue] = "Blue",
+            [Txt.WatermarkFont] = "Font",
             [Txt.WatermarkPosition] = "Position",
             [Txt.WatermarkPosTile] = "Tiled",
             [Txt.WatermarkPosTopLeft] = "Top left",
@@ -624,6 +625,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word conversion is running. Please wait before closing the window.",
             [Txt.TipNavWordPdf] = "Word / WPS to PDF: save each file separately or merge into one",
             [Txt.Feature7] = "Batch Word / WPS to PDF with original file names by default, optional single-file merge and output watermark",
+            [Txt.Changelog4524] = "4.5.24 · 2026-11-13",
+            [Txt.ChangelogItems4524] =
+                "# Added\n" +
+                "· Watermark font is now selectable: Microsoft YaHei, DengXian, SimSun, SimHei, KaiTi, FangSong and common Latin fonts\n" +
+                "· Changing the font updates the settings preview and every merge or convert output\n",
             [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
             [Txt.ChangelogItems4523] =
                 "# Added\n" +

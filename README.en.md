@@ -6,7 +6,7 @@ A Windows desktop tool that merges **Word, PDF and image** files into a **single
 
 Everything runs locally — no uploads, no telemetry.
 
-- Version: `4.5.23` (2026-11-10)
+- Version: `4.5.24` (2026-11-13)
 - Platform: Windows 10 2004 (10.0.19041) or later, x64
 - Stack: .NET 10 + WinForms + [PDFsharp](https://github.com/empira/PDFsharp) 6.2.4
 
@@ -93,6 +93,7 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 
 - Targets: enable **Document merge**, **PDF to images**, **Images to PDF** and **Word to PDF** separately; all four switches default to off and share one style
 - Text: 4 presets (Original / Copy / Confidential / Top Secret) plus any custom text
+- Font: Microsoft YaHei, DengXian, SimSun, SimHei, KaiTi, FangSong and common Latin fonts; only installed families are listed and the preview plus outputs update instantly
 - Look: diagonal tiling, or pinned to top left / top right / centre / bottom left / bottom right; in grey, red or blue
 - Controls: **opacity 0–100%**, **size 10–400%**, **rotation −180° to 180°**, **horizontal/vertical offset ±100%** — drag the slider or type a value directly
 - Interactive preview: drag to move, scroll to resize, right-drag to rotate, double-click to reset; the watermark is generated as a transparent layer scaled to the page, so it stays readable and adds no compression noise
@@ -124,7 +125,7 @@ Image conversion runs in parallel across CPU cores, and merge progress is shown 
 
 ### Installer (recommended)
 
-Run `文枢_安装程序_v4.5.23.exe`:
+Run `文枢_安装程序_v4.5.24.exe`:
 
 - Installs to `%LOCALAPPDATA%\Programs\DocHub` (per-user) by default — **no administrator rights needed**, nothing written to `C:\Program Files`, no UAC prompt; the folder can be changed and the path you enter is used as-is (picking a path under `C:\Program Files` shows a warning that normal users usually cannot write there)
 - Creates Start-menu and desktop shortcuts, plus an **Uninstall DocHub** entry in the Start-menu folder
@@ -137,13 +138,13 @@ Silent mode (deployment and automated tests; the installer is built in this repo
 
 ```bat
 :: Full silent install (per-user, default folder %LOCALAPPDATA%\Programs\DocHub)
-文枢_安装程序_v4.5.23.exe --silent
+文枢_安装程序_v4.5.24.exe --silent
 
 :: Custom folder (a path under Program Files falls back to the per-user folder)
-文枢_安装程序_v4.5.23.exe --silent --dir D:\Apps\DocHub
+文枢_安装程序_v4.5.24.exe --silent --dir D:\Apps\DocHub
 
 :: Extract the payload only: no registry, no shortcuts — handy for verifying contents
-文枢_安装程序_v4.5.23.exe --extract D:\temp\dochub_payload
+文枢_安装程序_v4.5.24.exe --extract D:\temp\dochub_payload
 
 :: Silent uninstall
 "%LOCALAPPDATA%\Programs\DocHub\app\DocHub.exe" --uninstall --yes
@@ -153,7 +154,7 @@ Exit codes: `0` success, `1` failure, `2` bad arguments, `3` some files could no
 
 ### Portable
 
-Extract `文枢_绿色版_v4.5.23.zip` and run `DocHub.exe` from its root. Nothing is written to the registry and no shortcuts are created. The build is self-contained — **no .NET runtime is required**.
+Extract `文枢_绿色版_v4.5.24.zip` and run `DocHub.exe` from its root. Nothing is written to the registry and no shortcuts are created. The build is self-contained — **no .NET runtime is required**.
 
 ---
 
@@ -163,7 +164,7 @@ Extract `文枢_绿色版_v4.5.23.zip` and run `DocHub.exe` from its root. Nothi
 2. Add or drop the Word / WPS / PDF / image files you want to merge
 3. Arrange the order (drag, or right-click move to top/bottom)
 4. Enter passwords if prompted for encrypted files
-5. To add a watermark, tick Document merge on the Watermark settings page and tune opacity, size, rotation and position
+5. To add a watermark, tick Document merge on the Watermark settings page and tune the font, opacity, size, rotation and position
 6. Choose naming and output location in Settings
 7. Click **Start merge**, then **View result** when it finishes
 
@@ -204,8 +205,8 @@ powershell -ExecutionPolicy Bypass -File tools\package.ps1
 
 Outputs in `dist\`:
 
-- `文枢_安装程序_v4.5.23.exe`
-- `文枢_绿色版_v4.5.23.zip`
+- `文枢_安装程序_v4.5.24.exe`
+- `文枢_绿色版_v4.5.24.zip`
 
 Build the app only:
 

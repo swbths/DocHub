@@ -126,6 +126,9 @@ namespace DocHub
         /// <summary>水印位置：默认平铺整页，可改为左上/右上/正中/左下/右下。</summary>
         public WatermarkAnchor WatermarkAnchor { get; set; } = WatermarkAnchor.Tile;
 
+        /// <summary>水印字体（系统字体族名）；旧设置没有该字段时使用默认字体。</summary>
+        public string WatermarkFont { get; set; } = WatermarkPainter.DefaultFontFamily;
+
         /// <summary>水印不透明度，0~100（百分比）。</summary>
         public int WatermarkOpacity { get; set; } = 35;
 
@@ -205,7 +208,8 @@ namespace DocHub
                 WatermarkRotation,
                 WatermarkOffsetX,
                 WatermarkOffsetY,
-                WatermarkAnchor);
+                WatermarkAnchor,
+                WatermarkPainter.NormalizeFontFamily(WatermarkFont));
         }
 
         private string ResolveWatermarkText()
@@ -289,6 +293,7 @@ namespace DocHub
                     settings.WatermarkTint = WatermarkTint.Gray;
                 if (!Enum.IsDefined(settings.WatermarkAnchor))
                     settings.WatermarkAnchor = WatermarkAnchor.Tile;
+                settings.WatermarkFont = WatermarkPainter.NormalizeFontFamily(settings.WatermarkFont);
                 if (settings.WatermarkPreset < 0 || settings.WatermarkPreset > 4)
                     settings.WatermarkPreset = 0;
                 settings.WatermarkOpacity = Math.Clamp(settings.WatermarkOpacity, 0, 100);
@@ -412,6 +417,7 @@ namespace DocHub
             WatermarkCustomText = other.WatermarkCustomText;
             WatermarkTint = other.WatermarkTint;
             WatermarkAnchor = other.WatermarkAnchor;
+            WatermarkFont = other.WatermarkFont;
             WatermarkOpacity = other.WatermarkOpacity;
             WatermarkScale = other.WatermarkScale;
             WatermarkRotation = other.WatermarkRotation;
@@ -461,6 +467,7 @@ namespace DocHub
             WatermarkCustomText = string.Empty;
             WatermarkTint = WatermarkTint.Gray;
             WatermarkAnchor = WatermarkAnchor.Tile;
+            WatermarkFont = WatermarkPainter.DefaultFontFamily;
             WatermarkOpacity = 35;
             WatermarkScale = 100;
             WatermarkRotation = 30;

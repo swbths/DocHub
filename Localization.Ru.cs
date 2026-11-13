@@ -332,6 +332,7 @@ namespace DocHub
             [Txt.WatermarkTintGray] = "Серый",
             [Txt.WatermarkTintRed] = "Красный",
             [Txt.WatermarkTintBlue] = "Синий",
+            [Txt.WatermarkFont] = "Шрифт",
             [Txt.WatermarkPosition] = "Положение",
             [Txt.WatermarkPosTile] = "Мозаика",
             [Txt.WatermarkPosTopLeft] = "Слева сверху",
@@ -618,6 +619,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Идёт конвертация Word. Дождитесь завершения, прежде чем закрывать окно.",
             [Txt.TipNavWordPdf] = "Word / WPS в PDF: каждый файл отдельно или объединение в один",
             [Txt.Feature7] = "Пакетная конвертация Word / WPS в PDF: по умолчанию с исходными именами, можно объединить в один файл и добавить водяной знак",
+            [Txt.Changelog4524] = "4.5.24 · 2026-11-13",
+            [Txt.ChangelogItems4524] =
+                "# Добавлено\n" +
+                "· Для водяного знака можно выбрать шрифт: Microsoft YaHei, DengXian, SimSun, SimHei, KaiTi, FangSong и распространённые латинские шрифты\n" +
+                "· Смена шрифта сразу отражается в предпросмотре и во всех результатах объединения и преобразования\n",
             [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
             [Txt.ChangelogItems4523] =
                 "# Добавлено\n" +

@@ -652,6 +652,183 @@ namespace DocHub
         }
     }
 
+    /// <summary>跟随皮肤的轻量下拉选择：点击后在控件下方弹出主题化菜单，文字按所选字体预览。</summary>
+    public class SkinDropDown : Control
+    {
+        private string[] _items = Array.Empty<string>();
+        private string _selected = string.Empty;
+        private bool _open;
+
+        public SkinDropDown()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw |
+                     ControlStyles.SupportsTransparentBackColor | ControlStyles.Selectable, true);
+            BackColor = Color.Transparent;
+            TabStop = true;
+            Font = Theme.BaseFont;
+            Cursor = Cursors.Hand;
+        }
+
+        public void SetItems(IEnumerable<string> items)
+        {
+            var list = new List<string>();
+            foreach (string item in items)
+            {
+                if (!string.IsNullOrWhiteSpace(item) && !list.Contains(item))
+                    list.Add(item);
+            }
+
+            _items = list.ToArray();
+            if (_items.Length > 0 && Array.IndexOf(_items, _selected) < 0)
+                _selected = _items[0];
+            Invalidate();
+        }
+
+        public string SelectedItem
+        {
+            get => _selected;
+            set
+            {
+                _selected = value ?? string.Empty;
+                Invalidate();
+            }
+        }
+
+        /// <summary>用户从菜单里选中新值后触发；程序化设置 SelectedItem 不会触发。</summary>
+        public event Action<string>? SelectedItemChanged;
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            Cursor = Enabled ? Cursors.Hand : Cursors.Default;
+            base.OnEnabledChanged(e);
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            if (Enabled) ShowMenu();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter ||
+                e.KeyCode == Keys.Down || e.KeyCode == Keys.F4)
+            {
+                if (Enabled) ShowMenu();
+                e.Handled = true;
+            }
+        }
+
+        private void ShowMenu()
+        {
+            Focus();
+            _open = true;
+            Invalidate();
+
+            var menu = new ContextMenuStrip
+            {
+                Renderer = new SkinMenuRenderer(),
+                Font = Theme.BaseFont,
+                ShowImageMargin = false,
+                ShowCheckMargin = false,
+                Padding = new Padding(2, 3, 2, 3),
+                BackColor = Theme.Card,
+                ForeColor = Theme.TextPrimary
+            };
+            var previewFonts = new List<Font>();
+            menu.Closed += (_, _) =>
+            {
+                _open = false;
+                Invalidate();
+
+                // 菜单关闭后异步释放：点击项时 Closed 可能先于 Click 回调，
+                // 同步 Dispose 会在菜单项自身的回调仍未结束时销毁对象
+                void Release()
+                {
+                    foreach (Font font in previewFonts)
+                        font.Dispose();
+                    menu.Dispose();
+                }
+
+                try { BeginInvoke(new Action(Release)); }
+                catch (InvalidOperationException) { Release(); }
+            };
+
+            foreach (string name in _items)
+            {
+                bool selected = string.Equals(name, _selected, StringComparison.Ordinal);
+                var item = new ToolStripMenuItem((selected ? "\u2713  " : "    ") + name)
+                {
+                    ForeColor = Theme.TextPrimary,
+                    AutoSize = true
+                };
+                try
+                {
+                    var preview = new Font(name, 9.5f);
+                    item.Font = preview;
+                    previewFonts.Add(preview);
+                }
+                catch (ArgumentException) { }
+
+                string chosen = name;
+                item.Click += (_, _) => Choose(chosen);
+                menu.Items.Add(item);
+            }
+
+            menu.Show(this, new Point(0, Height + 2));
+        }
+
+        private void Choose(string value)
+        {
+            if (string.Equals(value, _selected, StringComparison.Ordinal)) return;
+
+            _selected = value;
+            Invalidate();
+            SelectedItemChanged?.Invoke(value);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var rect = new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f);
+            using GraphicsPath path = Theme.RoundedRect(rect, Theme.ControlRadius(10));
+            using (var fill = new SolidBrush(Enabled ? Theme.GlassInput : Theme.InputReadOnlyFill))
+                g.FillPath(fill, path);
+
+            Color border = _open && Enabled ? Theme.Accent : Theme.Border;
+            bool drawBorder = Theme.Surface != SkinSurface.Neumorphic || (_open && Enabled);
+            if (drawBorder)
+            {
+                using var pen = new Pen(border, _open ? 1.4f : 1f);
+                g.DrawPath(pen, path);
+            }
+
+            const int arrowArea = 26;
+            var textRect = new Rectangle(12, 0, Math.Max(10, Width - 12 - arrowArea), Height);
+            TextRenderer.DrawText(g, _selected, Font, textRect,
+                Enabled ? Theme.TextPrimary : Theme.TextMuted,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+
+            float cx = Width - 16f;
+            float cy = Height / 2f;
+            using var arrowPen = new Pen(Enabled ? Theme.TextSecondary : Theme.TextMuted, 1.6f)
+            {
+                StartCap = LineCap.Round,
+                EndCap = LineCap.Round
+            };
+            g.DrawLines(arrowPen, new[]
+            {
+                new PointF(cx - 4f, cy - 2.5f),
+                new PointF(cx, cy + 1.5f),
+                new PointF(cx + 4f, cy - 2.5f)
+            });
+        }
+    }
+
     /// <summary>跟随主题配色的细进度条，右侧实时显示合并百分比。</summary>
     public class SlimProgressBar : Control
     {

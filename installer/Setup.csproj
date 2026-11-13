@@ -13,7 +13,7 @@
     <Copyright>© 2026 AI</Copyright>
     <RepositoryUrl>https://github.com/swbths/DocHub</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>4.5.23</Version>
+    <Version>4.5.24</Version>
     <ApplicationIcon>..\app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- 安装程序也自包含：目标电脑未安装 .NET 时可正常运行 -->

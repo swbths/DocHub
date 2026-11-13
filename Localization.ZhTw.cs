@@ -327,6 +327,7 @@ namespace DocHub
             [Txt.WatermarkTintGray] = "灰",
             [Txt.WatermarkTintRed] = "紅",
             [Txt.WatermarkTintBlue] = "藍",
+            [Txt.WatermarkFont] = "字型",
             [Txt.WatermarkPosition] = "位置",
             [Txt.WatermarkPosTile] = "平鋪",
             [Txt.WatermarkPosTopLeft] = "左上",
@@ -615,6 +616,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "正在轉換 Word，請等待完成後再關閉視窗。",
             [Txt.TipNavWordPdf] = "Word / WPS 轉 PDF：每份單獨輸出，或合併為一個檔案",
             [Txt.Feature7] = "Word / WPS 批次轉 PDF：預設依原檔名逐份輸出，可合併為一個檔案，並可為輸出加上浮水印",
+            [Txt.Changelog4524] = "4.5.24 · 2026-11-13",
+            [Txt.ChangelogItems4524] =
+                "#新增\n" +
+                "· 水印支援選擇字型，可在微軟雅黑、等線、宋體、黑體、楷體、仿宋與常見西文字型間切換\n" +
+                "· 切換字型後設定頁預覽與合併、轉換輸出同步更新\n",
             [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
             [Txt.ChangelogItems4523] =
                 "#新增\n" +

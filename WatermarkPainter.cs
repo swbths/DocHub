@@ -11,7 +11,7 @@ using PdfSharp.Pdf;
 namespace DocHub
 {
     /// <summary>
-    /// 水印参数。除文字、颜色与位置外，还支持任意不透明度、大小、位置微调与倾斜方向；
+    /// 水印参数。除文字、字体、颜色与位置外，还支持任意不透明度、大小、位置微调与倾斜方向；
     /// 所有数值都可以直接键入，也可以在预览框里拖动/滚轮调整。
     /// </summary>
     public sealed record WatermarkSpec(
@@ -22,10 +22,21 @@ namespace DocHub
         int RotationDegrees = 30,
         int OffsetXPercent = 0,
         int OffsetYPercent = 0,
-        WatermarkAnchor Anchor = WatermarkAnchor.Tile);
+        WatermarkAnchor Anchor = WatermarkAnchor.Tile,
+        string FontFamily = WatermarkPainter.DefaultFontFamily);
 
     public static class WatermarkPainter
     {
+        /// <summary>默认水印字体；旧版本设置文件没有字体字段时沿用它。</summary>
+        public const string DefaultFontFamily = "Microsoft YaHei UI";
+
+        /// <summary>设置页提供的字体候选；只列出系统已安装的项，缺失时自动跳过。</summary>
+        private static readonly string[] FontChoices =
+        {
+            "Microsoft YaHei UI", "Microsoft YaHei", "DengXian", "SimSun", "SimHei", "KaiTi", "FangSong",
+            "Arial", "Times New Roman", "Georgia", "Segoe UI", "Calibri"
+        };
+
         private const float FontPixelSize = 72f;
 
         /// <summary>水印图片宽度占页面宽度的基准比例，再叠乘用户设置的大小倍率。</summary>
@@ -34,15 +45,79 @@ namespace DocHub
         /// <summary>固定在角/正中时，水印到页面边缘的留白比例。</summary>
         private const double EdgeMarginRatio = 0.06;
 
-        /// <summary>预览绘制时复用的度量字体，避免每帧新建 72px 字体造成卡顿。</summary>
-        private static readonly Font ReferenceFont =
-            new("Microsoft YaHei UI", FontPixelSize, FontStyle.Bold, GraphicsUnit.Pixel);
-
+        /// <summary>预览绘制时复用的度量字体（按字体族缓存），避免每帧新建 72px 字体造成卡顿。</summary>
+        private static readonly Dictionary<string, Font> ReferenceFonts = new(StringComparer.Ordinal);
         private static readonly Dictionary<string, float> ReferenceWidthCache = new(StringComparer.Ordinal);
         private static readonly object CacheLock = new();
 
         private static Font? _previewFont;
         private static string _previewFontKey = string.Empty;
+
+        /// <summary>已安装字体族：语言名与英文名都映射到实际可用的族名。</summary>
+        private static Dictionary<string, string>? _installedFonts;
+
+        private static Dictionary<string, string> InstalledFontMap()
+        {
+            lock (CacheLock)
+            {
+                if (_installedFonts != null) return _installedFonts;
+            }
+
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            using (var collection = new InstalledFontCollection())
+            {
+                foreach (FontFamily family in collection.Families)
+                {
+                    string name = family.Name;
+                    map[name] = name;
+                    try { map[family.GetName(0x0409)] = name; }
+                    catch (ArgumentException) { }
+                }
+            }
+
+            lock (CacheLock) { _installedFonts = map; }
+            return map;
+        }
+
+        /// <summary>把设置里的字体名解析成系统实际可用的族名；缺失或无效时回退默认字体。</summary>
+        public static string NormalizeFontFamily(string? name)
+        {
+            Dictionary<string, string> installed = InstalledFontMap();
+            string trimmed = (name ?? string.Empty).Trim();
+            if (trimmed.Length > 0 && installed.TryGetValue(trimmed, out string? actual))
+                return actual;
+            if (installed.TryGetValue(DefaultFontFamily, out string? fallback))
+                return fallback;
+            return DefaultFontFamily;
+        }
+
+        /// <summary>设置页字体下拉的候选：默认字体在前，其后是已安装的常用字体与当前值。</summary>
+        public static IReadOnlyList<string> AvailableFontChoices(string? current)
+        {
+            Dictionary<string, string> installed = InstalledFontMap();
+            var result = new List<string>();
+
+            void Add(string name)
+            {
+                if (installed.TryGetValue(name, out string? actual) && !result.Contains(actual))
+                    result.Add(actual);
+            }
+
+            Add(DefaultFontFamily);
+            foreach (string name in FontChoices)
+                Add(name);
+            Add(current ?? string.Empty);
+
+            if (result.Count == 0)
+                result.Add(DefaultFontFamily);
+            return result;
+        }
+
+        private static Font CreateFont(string? family, float size)
+        {
+            return new Font(NormalizeFontFamily(family), size, FontStyle.Bold, GraphicsUnit.Pixel);
+        }
+
 
         private static Color TintColor(WatermarkTint tint, int opacityPercent)
         {
@@ -136,7 +211,7 @@ namespace DocHub
                 return;
 
             string imagePath = CreateTextImage(
-                spec.Text, TintColor(spec.Tint, spec.OpacityPercent), tempDir);
+                spec.Text, TintColor(spec.Tint, spec.OpacityPercent), tempDir, spec.FontFamily);
             using XImage image = XImage.FromFile(imagePath);
 
             foreach (PdfPage page in document.Pages)
@@ -151,7 +226,7 @@ namespace DocHub
 
             double targetWidth = TargetWidth(bitmap.Width, spec);
             using Bitmap textImage = CreateTextBitmap(
-                spec.Text, TintColor(spec.Tint, spec.OpacityPercent), targetWidth);
+                spec.Text, TintColor(spec.Tint, spec.OpacityPercent), targetWidth, spec.FontFamily);
 
             double targetHeight = targetWidth * textImage.Height / textImage.Width;
             double rotation = RotationOf(spec);
@@ -206,15 +281,16 @@ namespace DocHub
         }
 
         /// <summary>按目标宽度生成高分辨率文字贴图，避免放大 72px 基准图造成模糊。</summary>
-        private static Bitmap CreateTextBitmap(string text, Color color, double targetWidth)
+        private static Bitmap CreateTextBitmap(string text, Color color, double targetWidth, string? fontFamily)
         {
+            string family = NormalizeFontFamily(fontFamily);
             using var probe = new Bitmap(4, 4);
             using var measureGraphics = Graphics.FromImage(probe);
-            SizeF reference = measureGraphics.MeasureString(text, ReferenceFont);
+            SizeF reference = measureGraphics.MeasureString(text, ReferenceFontFor(family));
             double referenceWidth = Math.Max(1.0, reference.Width + 32.0);
 
             float fontSize = (float)Math.Max(2.0, FontPixelSize * targetWidth / referenceWidth);
-            using var font = new Font("Microsoft YaHei UI", fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
+            using var font = CreateFont(fontFamily, fontSize);
             SizeF textSize = measureGraphics.MeasureString(text, font);
 
             float ratio = fontSize / FontPixelSize;
@@ -236,11 +312,11 @@ namespace DocHub
             return bitmap;
         }
 
-        private static string CreateTextImage(string text, Color color, string tempDir)
+        private static string CreateTextImage(string text, Color color, string tempDir, string? fontFamily)
         {
             Directory.CreateDirectory(tempDir);
 
-            using var font = new Font("Microsoft YaHei UI", FontPixelSize, FontStyle.Bold, GraphicsUnit.Pixel);
+            using var font = CreateFont(fontFamily, FontPixelSize);
             using var probe = new Bitmap(4, 4);
             using var measureGraphics = Graphics.FromImage(probe);
             SizeF textSize = measureGraphics.MeasureString(text, font);
@@ -328,10 +404,11 @@ namespace DocHub
             string text = string.IsNullOrWhiteSpace(spec.Text) ? " " : spec.Text;
 
             // 按与 PDF 输出相同的「图片宽度占比 × 大小倍率」换算字号
-            float referenceWidth = ReferenceWidth(text);
+            string family = NormalizeFontFamily(spec.FontFamily);
+            float referenceWidth = ReferenceWidth(text, family);
             float targetWidth = (float)TargetWidth(bounds.Width, spec);
             float fontSize = Math.Max(6f, FontPixelSize * targetWidth / Math.Max(1f, referenceWidth));
-            Font font = PreviewFont(text, fontSize);
+            Font font = PreviewFont(family, text, fontSize);
 
             float rotation = (float)RotationOf(spec);
             float shiftX = (float)HorizontalShift(bounds.Width, spec);
@@ -376,7 +453,7 @@ namespace DocHub
             int imageWidth = Math.Max(8, (int)Math.Ceiling(textSize.Width) + 32);
             int imageHeight = Math.Max(8, (int)Math.Ceiling(textSize.Height) + 32);
 
-            TiledLayer layer = PreviewLayer(text, font, color,
+            TiledLayer layer = PreviewLayer(text, family, font, color,
                 imageWidth, imageHeight, rotation, bounds.Width, bounds.Height);
 
             int dx = Mod((int)Math.Round(bounds.Width / 2f + shiftX), layer.TileWidth);
@@ -411,7 +488,7 @@ namespace DocHub
         /// <summary>平铺图层缓存：文字、颜色、字号、角度与预览尺寸不变时直接复用。</summary>
         private static readonly Dictionary<string, TiledLayer> LayerCache = new(StringComparer.Ordinal);
 
-        private static TiledLayer PreviewLayer(string text, Font font, Color color,
+        private static TiledLayer PreviewLayer(string text, string family, Font font, Color color,
             int imageWidth, int imageHeight, float rotation, int width, int height)
         {
             if (width <= 0 || height <= 0) width = height = 1;
@@ -419,7 +496,7 @@ namespace DocHub
             int tileWidth = Math.Max(4, (int)Math.Ceiling(imageWidth * 1.35));
             int tileHeight = Math.Max(4, (int)Math.Ceiling(imageHeight * 1.7) * 2);
 
-            string key = string.Join("|", text, color.ToArgb().ToString(),
+            string key = string.Join("|", family, text, color.ToArgb().ToString(),
                 tileWidth.ToString(), tileHeight.ToString(),
                 width.ToString(), height.ToString(),
                 rotation.ToString("F1"));
@@ -430,7 +507,7 @@ namespace DocHub
                     return cached;
             }
 
-            Bitmap tile = PreviewTile(text, font, color, imageWidth, imageHeight, tileWidth, tileHeight);
+            Bitmap tile = PreviewTile(text, family, font, color, imageWidth, imageHeight, tileWidth, tileHeight);
 
             // 尺寸多留一个周期，保证任意相位平移后都能铺满预览区
             var layer = new TiledLayer
@@ -473,10 +550,10 @@ namespace DocHub
         /// <summary>预览平铺贴图缓存：文字、颜色、字号不变时直接复用上一次的贴图。</summary>
         private static readonly Dictionary<string, Bitmap> TileCache = new(StringComparer.Ordinal);
 
-        private static Bitmap PreviewTile(string text, Font font, Color color,
+        private static Bitmap PreviewTile(string text, string family, Font font, Color color,
             int imageWidth, int imageHeight, int tileWidth, int tileHeight)
         {
-            string key = string.Join("|", text, color.ToArgb().ToString(),
+            string key = string.Join("|", family, text, color.ToArgb().ToString(),
                 imageWidth.ToString(), imageHeight.ToString(),
                 tileWidth.ToString(), tileHeight.ToString());
 
@@ -522,38 +599,65 @@ namespace DocHub
         }
 
         /// <summary>同一段文字的基准宽度只量一次；拖动滑条时省掉重复 MeasureString。</summary>
-        private static float ReferenceWidth(string text)
+        private static float ReferenceWidth(string text, string family)
         {
+            string key = family + "|" + text;
             lock (CacheLock)
             {
-                if (ReferenceWidthCache.TryGetValue(text, out float cached))
+                if (ReferenceWidthCache.TryGetValue(key, out float cached))
                     return cached;
             }
 
             float width;
             using (var probe = new Bitmap(4, 4))
             using (Graphics g = Graphics.FromImage(probe))
-                width = g.MeasureString(text, ReferenceFont).Width + 32;
+                width = g.MeasureString(text, ReferenceFontFor(family)).Width + 32;
 
             lock (CacheLock)
             {
                 if (ReferenceWidthCache.Count > 24) ReferenceWidthCache.Clear();
-                ReferenceWidthCache[text] = width;
+                ReferenceWidthCache[key] = width;
             }
 
             return width;
         }
 
-        /// <summary>按字号复用字体对象：字号不变时不再新建 Font（预览重绘的主要开销之一）。</summary>
-        private static Font PreviewFont(string text, float fontSize)
+        /// <summary>按字体族缓存 72px 基准字体，用于测量文字基准宽度。</summary>
+        private static Font ReferenceFontFor(string family)
+        {
+            lock (CacheLock)
+            {
+                if (ReferenceFonts.TryGetValue(family, out Font? cached))
+                    return cached;
+            }
+
+            Font font = CreateFont(family, FontPixelSize);
+            lock (CacheLock)
+            {
+                if (ReferenceFonts.Count >= 8)
+                {
+                    var stale = new List<string>(ReferenceFonts.Keys);
+                    for (int i = 0; i < stale.Count - 4 && i < stale.Count; i++)
+                    {
+                        ReferenceFonts[stale[i]].Dispose();
+                        ReferenceFonts.Remove(stale[i]);
+                    }
+                }
+                ReferenceFonts[family] = font;
+            }
+            return font;
+        }
+
+        /// <summary>按字号复用字体对象：字号与字体族不变时不再新建 Font（预览重绘的主要开销之一）。</summary>
+        private static Font PreviewFont(string family, string text, float fontSize)
         {
             int keySize = (int)Math.Round(fontSize * 4);
-            string key = keySize + "|" + text.Length;
+            string key = family + "|" + keySize + "|" + text.Length;
             if (_previewFont != null && _previewFontKey == key)
                 return _previewFont;
 
             _previewFont?.Dispose();
-            _previewFont = new Font("Microsoft YaHei UI", keySize / 4f, FontStyle.Bold, GraphicsUnit.Pixel);
+            _previewFont = CreateFont(family, keySize / 4f);
             _previewFontKey = key;
             return _previewFont;
         }

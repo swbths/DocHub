@@ -330,6 +330,7 @@ namespace DocHub
             [Txt.WatermarkTintGray] = "회색",
             [Txt.WatermarkTintRed] = "빨강",
             [Txt.WatermarkTintBlue] = "파랑",
+            [Txt.WatermarkFont] = "글꼴",
             [Txt.WatermarkPosition] = "위치",
             [Txt.WatermarkPosTile] = "타일",
             [Txt.WatermarkPosTopLeft] = "왼쪽 위",
@@ -616,6 +617,11 @@ namespace DocHub
             [Txt.MsgWordPdfBusy] = "Word 변환 중입니다. 완료될 때까지 창을 닫지 마세요.",
             [Txt.TipNavWordPdf] = "Word / WPS → PDF: 개별 출력 또는 하나의 파일로 병합",
             [Txt.Feature7] = "Word / WPS 일괄 PDF 변환: 기본적으로 원본 파일 이름으로 개별 출력, 하나의 파일 병합과 출력 워터마크 지원",
+            [Txt.Changelog4524] = "4.5.24 · 2026-11-13",
+            [Txt.ChangelogItems4524] =
+                "#추가\n" +
+                "· 워터마크 글꼴을 선택할 수 있습니다: Microsoft YaHei, DengXian, SimSun, SimHei, KaiTi, FangSong 및 주요 라틴 글꼴\n" +
+                "· 글꼴을 바꾸면 설정 미리보기와 병합·변환 결과에 즉시 반영됩니다\n",
             [Txt.Changelog4523] = "4.5.23 · 2026-11-10",
             [Txt.ChangelogItems4523] =
                 "#추가\n" +

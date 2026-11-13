@@ -75,6 +75,7 @@ namespace DocHub
         WatermarkSection, WatermarkHint, WatermarkEnable, WatermarkPresets, WatermarkCustom,
         WatermarkForMerge, WatermarkForPdfImage, WatermarkForImagePdf,
         WatermarkPreset1, WatermarkPreset2, WatermarkPreset3, WatermarkPreset4, WatermarkPreview,
+        WatermarkFont,
         WatermarkCustomPlaceholder, WatermarkPreviewHint, WatermarkTint, WatermarkTintGray,
         WatermarkTintRed, WatermarkTintBlue,
         WatermarkPosition, WatermarkPosTile, WatermarkPosTopLeft, WatermarkPosTopRight,
@@ -157,6 +158,7 @@ namespace DocHub
         WordPdfAdded, WordPdfSkippedNonWord, WordPdfNothingAdded, WordPdfOutputCount,
         MsgWordPdfBusy, TipNavWordPdf, Feature7,
         Changelog4518, ChangelogItems4518,
+        Changelog4524, ChangelogItems4524,
         Changelog4523, ChangelogItems4523, Changelog4522, ChangelogItems4522, Changelog4521, ChangelogItems4521, Changelog4520, ChangelogItems4520, Changelog4519, ChangelogItems4519,
 
         Changelog452, ChangelogItems452,

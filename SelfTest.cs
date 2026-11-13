@@ -224,6 +224,22 @@ namespace DocHub
             report.AppendLine(
                 $"  [{(watermarkOk ? "OK" : "FAIL")}] 四个水印开关默认关闭：合并={defaults.WatermarkEnabled}, PDF转图片={defaults.WatermarkForPdfImage}, 图片转PDF={defaults.WatermarkForImagePdf}, Word转PDF={defaults.WatermarkForWordPdf}");
 
+            AppSettings watermarkClone = defaults.Clone();
+            string fallbackFont = WatermarkPainter.NormalizeFontFamily("No Such Font 123");
+            var fontSpec = new AppSettings
+            {
+                WatermarkPreset = 3,
+                WatermarkFont = fallbackFont
+            }.CreateWatermarkSpec();
+            bool watermarkFontOk =
+                defaults.WatermarkFont == WatermarkPainter.DefaultFontFamily &&
+                watermarkClone.WatermarkFont == WatermarkPainter.DefaultFontFamily &&
+                fallbackFont == WatermarkPainter.NormalizeFontFamily(WatermarkPainter.DefaultFontFamily) &&
+                fontSpec != null &&
+                fontSpec.FontFamily == fallbackFont;
+            report.AppendLine(
+                $"  [{(watermarkFontOk ? "OK" : "FAIL")}] 水印字体默认值、克隆与缺失字体回退：{defaults.WatermarkFont} → {fallbackFont}");
+
             AppSettings wordClone = defaults.Clone();
             bool wordPdfOk = !defaults.WordPdfMergeIntoOne &&
                              string.IsNullOrEmpty(defaults.LastWordPdfFolder) &&
@@ -271,6 +287,7 @@ namespace DocHub
                 $"AutoRefresh={defaults.QuoteAutoRefresh}, Seconds={defaults.QuoteRefreshSeconds}");
 
             return (convertOk ? 0 : 1) + (soundOk ? 0 : 1) + (watermarkOk ? 0 : 1) +
+                   (watermarkFontOk ? 0 : 1) +
                    (wordPdfOk ? 0 : 1) + (wordNameOk ? 0 : 1) +
                    (wpsOk ? 0 : 1) + (wpsRouteOk ? 0 : 1) + (mixedRouteOk ? 0 : 1) +
                    (quotesOk ? 0 : 1) + (quoteRefreshOk ? 0 : 1);
@@ -751,6 +768,39 @@ namespace DocHub
             {
                 failures++;
                 report.AppendLine("  [FAIL] 图片输出叠加水印: " + ex.Message);
+            }
+
+            try
+            {
+                string defaultFamily = WatermarkPainter.NormalizeFontFamily(WatermarkPainter.DefaultFontFamily);
+                string alternate = WatermarkPainter.AvailableFontChoices(defaultFamily)
+                    .FirstOrDefault(f => !string.Equals(f, defaultFamily, StringComparison.Ordinal))
+                    ?? defaultFamily;
+
+                using var canvas = new Bitmap(480, 320, PixelFormat.Format24bppRgb);
+                using (Graphics graphics = Graphics.FromImage(canvas))
+                    graphics.Clear(Color.White);
+                WatermarkPainter.ApplyToBitmap(canvas, spec with { FontFamily = alternate });
+
+                int changed = 0;
+                for (int y = 0; y < canvas.Height; y += 4)
+                {
+                    for (int x = 0; x < canvas.Width; x += 4)
+                    {
+                        Color pixel = canvas.GetPixel(x, y);
+                        if (pixel.R < 250 || pixel.G < 250 || pixel.B < 250) changed++;
+                    }
+                }
+
+                bool ok = changed > 10;
+                if (!ok) failures++;
+                report.AppendLine(
+                    $"  [{(ok ? "OK" : "FAIL")}] 自定义水印字体渲染：{alternate}（变化采样点 {changed}）");
+            }
+            catch (Exception ex)
+            {
+                failures++;
+                report.AppendLine("  [FAIL] 自定义水印字体渲染: " + ex.Message);
             }
 
             try

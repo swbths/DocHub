@@ -15,7 +15,7 @@
     <Description>文枢 DocHub · 文档中枢，一键合转（Word / WPS / PDF / 图片 合并与 PDF 转图片）</Description>
     <RepositoryUrl>https://github.com/swbths/DocHub</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>4.5.23</Version>
+    <Version>4.5.24</Version>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <!-- 自包含发布：安装包携带运行库，安装后的 DocHub.exe 仍是精简的启动器 -->
     <PublishSingleFile>false</PublishSingleFile>
