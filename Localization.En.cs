@@ -670,6 +670,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "Splitting is running. Wait for it to finish or cancel first.",
             [Txt.TipNavSplit] = "Split PDF: split one or more PDFs into multiple files by page",
             [Txt.Feature8] = "PDF split: one file per page or every N pages, with batch input",
+            [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
+            [Txt.ChangelogItems4528] =
+                "#Improved\n" +
+                "· About: the feature list and changelog no longer overlap; tighter row spacing\n",
             [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
             [Txt.ChangelogItems4527] =
                 "#Improved\n" +

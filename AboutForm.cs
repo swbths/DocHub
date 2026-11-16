@@ -87,16 +87,16 @@ namespace DocHub
             var intro = MakeLabel(Loc.T(Txt.AboutIntro), Theme.SmallFont, "muted", 110, 156);
             Controls.AddRange(new Control[] { appName, brandDefinition, version, intro });
 
-            var changelogTitle = MakeLabel(Loc.T(Txt.ChangelogTitle), Theme.SectionFont, "section", 28, 338);
+            var changelogTitle = MakeLabel(Loc.T(Txt.ChangelogTitle), Theme.SectionFont, "section", 28, 360);
 
             _changelogCard = new CardPanel
             {
-                Bounds = new Rectangle(28, 364, 584, 230),
+                Bounds = new Rectangle(28, 388, 584, 210),
                 Radius = 14
             };
             _changelog = new RichTextBox
             {
-                Bounds = new Rectangle(16, 12, 552, 206),
+                Bounds = new Rectangle(16, 12, 552, 186),
                 BorderStyle = BorderStyle.None,
                 ReadOnly = true,
                 ScrollBars = RichTextBoxScrollBars.Vertical,
@@ -192,6 +192,7 @@ namespace DocHub
             rtf.Append('}');
             rtf.Append(@"\viewkind4\uc1\pard\f0\fs").Append(HalfPoints(Theme.SmallFont)).Append(' ');
 
+            AppendEntry(rtf, Loc.T(Txt.Changelog4528), Loc.T(Txt.ChangelogItems4528));
             AppendEntry(rtf, Loc.T(Txt.Changelog4527), Loc.T(Txt.ChangelogItems4527));
             AppendEntry(rtf, Loc.T(Txt.Changelog4526), Loc.T(Txt.ChangelogItems4526));
             AppendEntry(rtf, Loc.T(Txt.Changelog4525), Loc.T(Txt.ChangelogItems4525));
@@ -357,7 +358,7 @@ namespace DocHub
             using (var divider = new Pen(Theme.Separator, 1f))
                 g.DrawLine(divider, 28, 180, Width - 28, 180);
 
-            float y = 192;
+            float y = 184;
             foreach (string feature in _features)
             {
                 using (var dot = new SolidBrush(Theme.Accent))
@@ -366,11 +367,11 @@ namespace DocHub
                     new Rectangle(44, (int)y, Width - 76, 20), Theme.TextSecondary,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter |
                     TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
-                y += 22;
+                y += 20;
             }
 
             using (var divider = new Pen(Theme.Separator, 1f))
-                g.DrawLine(divider, 28, 330, Width - 28, 330);
+                g.DrawLine(divider, 28, 352, Width - 28, 352);
 
             using (var pen = new Pen(Theme.Border, 1f))
                 g.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);

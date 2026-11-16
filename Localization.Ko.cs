@@ -662,6 +662,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "분할 중입니다. 완료되거나 취소될 때까지 기다려 주세요.",
             [Txt.TipNavSplit] = "PDF 분할: 하나 이상의 PDF를 페이지별로 여러 파일로 분할",
             [Txt.Feature8] = "PDF 분할: 페이지별 또는 N페이지마다 여러 PDF로 분할, 일괄 처리 지원",
+            [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
+            [Txt.ChangelogItems4528] =
+                "#개선\n" +
+                "· 정보: 기능 목록과 업데이트 내역이 겹치지 않도록 간격을 조정했습니다\n",
             [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
             [Txt.ChangelogItems4527] =
                 "#개선\n" +

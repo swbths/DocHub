@@ -661,6 +661,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "正在拆分，請等待完成或取消後再關閉視窗。",
             [Txt.TipNavSplit] = "PDF 拆分：將一個或多個 PDF 依頁拆成多個檔案",
             [Txt.Feature8] = "PDF 拆分：依頁或每 N 頁拆成多個 PDF，支援批次處理",
+            [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
+            [Txt.ChangelogItems4528] =
+                "#最佳化\n" +
+                "· 關於：功能清單與更新日誌不再重疊，項目間距更緊湊\n",
             [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
             [Txt.ChangelogItems4527] =
                 "#最佳化\n" +

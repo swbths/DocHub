@@ -173,6 +173,7 @@ namespace DocHub
         SplitAdded, SplitSkippedNonPdf, SplitNothingAdded,
         SplitUnreadable, SplitWriteError, SplitFailGeneric,
         MsgSplitBusy, TipNavSplit, Feature8,
+        Changelog4528, ChangelogItems4528,
         Changelog4527, ChangelogItems4527,
         Changelog4526, ChangelogItems4526,
         Changelog4525, ChangelogItems4525,

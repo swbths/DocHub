@@ -663,6 +663,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "分割中です。完了またはキャンセルまでお待ちください。",
             [Txt.TipNavSplit] = "PDF 分割：1 つまたは複数の PDF をページごとに複数ファイルへ",
             [Txt.Feature8] = "PDF 分割：ページ単位または N ページごとに複数の PDF へ。一括処理に対応",
+            [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
+            [Txt.ChangelogItems4528] =
+                "#改善\n" +
+                "· バージョン情報：機能一覧と更新履歴の重なりを解消し、行間を調整しました\n",
             [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
             [Txt.ChangelogItems4527] =
                 "#改善\n" +
