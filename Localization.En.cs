@@ -644,7 +644,7 @@ namespace DocHub
             [Txt.SplitPagesPerFile] = "Pages per file",
             [Txt.SplitPagesPerFileHint] = "If N exceeds the page count, one complete copy is written",
             [Txt.SplitOutput] = "Save to",
-            [Txt.SplitFolderHint] = "One subfolder per PDF",
+            [Txt.SplitFolderHint] = "New folder per run; -1 if taken",
             [Txt.SplitPreview] = "Will create {0} PDF files",
             [Txt.SplitPreviewUnknown] = "Add PDFs to see the estimated output count",
             [Txt.SplitReady] = "Ready",
@@ -670,6 +670,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "Splitting is running. Wait for it to finish or cancel first.",
             [Txt.TipNavSplit] = "Split PDF: split one or more PDFs into multiple files by page",
             [Txt.Feature8] = "PDF split: one file per page or every N pages, with batch input",
+            [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
+            [Txt.ChangelogItems4527] =
+                "#Improved\n" +
+                "· PDF split: every run now creates a fresh subfolder, named -1, -2 on name clashes\n",
             [Txt.Changelog4526] = "4.5.26 · 2026-11-16",
             [Txt.ChangelogItems4526] =
                 "#Improved\n" +

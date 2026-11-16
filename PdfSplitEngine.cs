@@ -183,13 +183,13 @@ namespace DocHub
         private static string BuildChunkName(string stem, int start, int end, int totalPages) =>
             $"{stem}_{PageLabel(start, end, totalPages)}";
 
-        /// <summary>每个源 PDF 的输出放入同名子文件夹；已有同名文件夹时直接复用。</summary>
+        /// <summary>每次拆分都新建独立子文件夹；重名时依次追加 -1、-2。</summary>
         private static string ResolveFileFolder(string root, string stem)
         {
             string candidate = Path.Combine(root, stem);
-            int index = 2;
-            while (File.Exists(candidate))
-                candidate = Path.Combine(root, $"{stem} ({index++})");
+            int index = 1;
+            while (Directory.Exists(candidate) || File.Exists(candidate))
+                candidate = Path.Combine(root, $"{stem}-{index++}");
             return candidate;
         }
 

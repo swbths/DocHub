@@ -774,13 +774,19 @@ namespace DocHub
                 bool reuseOk = reuseFirst.OutputCount == 3 && reuseSecond.OutputCount == 3 &&
                                reuseSecond.Files[0].Outputs.All(File.Exists) &&
                                reuseSecond.Files[0].Outputs.All(path =>
-                                   (Path.GetFileName(path) ?? string.Empty).Contains("(2)")) &&
+                                   !(Path.GetFileName(path) ?? string.Empty).Contains("(2)")) &&
                                string.Equals(
+                                   Path.GetFileName(Path.GetDirectoryName(reuseFirst.Files[0].Outputs[0])),
+                                   "split_short", StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(
+                                   Path.GetFileName(Path.GetDirectoryName(reuseSecond.Files[0].Outputs[0])),
+                                   "split_short-1", StringComparison.OrdinalIgnoreCase) &&
+                               !string.Equals(
                                    Path.GetDirectoryName(reuseFirst.Files[0].Outputs[0]),
                                    Path.GetDirectoryName(reuseSecond.Files[0].Outputs[0]),
                                    StringComparison.OrdinalIgnoreCase);
                 failures += reuseOk ? 0 : 1;
-                report.AppendLine($"  [{(reuseOk ? "OK" : "FAIL")}] 重复输出不覆盖已有文件");
+                report.AppendLine($"  [{(reuseOk ? "OK" : "FAIL")}] 再次拆分新建独立文件夹（-1）且不覆盖");
 
                 string cancelDir = Path.Combine(root, "split_cancel");
                 using var cts = new CancellationTokenSource();

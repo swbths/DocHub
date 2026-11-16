@@ -636,7 +636,7 @@ namespace DocHub
             [Txt.SplitPagesPerFile] = "파일당 페이지 수",
             [Txt.SplitPagesPerFileHint] = "전체 페이지 수보다 크면 전체 복사본 하나를 출력합니다",
             [Txt.SplitOutput] = "저장 위치",
-            [Txt.SplitFolderHint] = "PDF마다 같은 이름의 하위 폴더",
+            [Txt.SplitFolderHint] = "분할마다 새 폴더, 중복 시 -1",
             [Txt.SplitPreview] = "PDF 파일 {0}개 생성 예정",
             [Txt.SplitPreviewUnknown] = "PDF를 추가하면 예상 출력 수가 표시됩니다",
             [Txt.SplitReady] = "준비됨",
@@ -662,6 +662,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "분할 중입니다. 완료되거나 취소될 때까지 기다려 주세요.",
             [Txt.TipNavSplit] = "PDF 분할: 하나 이상의 PDF를 페이지별로 여러 파일로 분할",
             [Txt.Feature8] = "PDF 분할: 페이지별 또는 N페이지마다 여러 PDF로 분할, 일괄 처리 지원",
+            [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
+            [Txt.ChangelogItems4527] =
+                "#개선\n" +
+                "· PDF 분할: 분할할 때마다 새 하위 폴더를 만들고, 중복 시 -1, -2를 붙입니다\n",
             [Txt.Changelog4526] = "4.5.26 · 2026-11-16",
             [Txt.ChangelogItems4526] =
                 "#개선\n" +

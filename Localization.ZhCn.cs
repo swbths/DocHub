@@ -635,7 +635,7 @@ namespace DocHub
             [Txt.SplitPagesPerFile] = "每份页数",
             [Txt.SplitPagesPerFileHint] = "每份页数超过 PDF 总页数时，输出一份完整副本",
             [Txt.SplitOutput] = "保存到",
-            [Txt.SplitFolderHint] = "每个 PDF 单独放入同名子文件夹",
+            [Txt.SplitFolderHint] = "每次拆分新建子文件夹，重名自动加 -1",
             [Txt.SplitPreview] = "将生成 {0} 个 PDF 文件",
             [Txt.SplitPreviewUnknown] = "添加 PDF 后显示预计输出数量",
             [Txt.SplitReady] = "准备就绪",
@@ -661,6 +661,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "正在拆分，请等待完成或取消后再关闭窗口。",
             [Txt.TipNavSplit] = "PDF 拆分：把一个或多个 PDF 按页拆成多个文件",
             [Txt.Feature8] = "PDF 拆分：按页或每 N 页拆成多个 PDF，支持批量处理",
+            [Txt.Changelog4527] = "4.5.27 · 2026-11-16",
+            [Txt.ChangelogItems4527] =
+                "#优化\n" +
+                "· PDF 拆分：每次拆分都新建独立子文件夹，重名时依次命名为 -1、-2\n",
             [Txt.Changelog4526] = "4.5.26 · 2026-11-16",
             [Txt.ChangelogItems4526] =
                 "#优化\n" +
