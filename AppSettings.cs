@@ -191,6 +191,16 @@ namespace DocHub
         /// <summary>自定义输出文件名；为空时合并使用共享命名，逐张输出使用图片原名。</summary>
         public string ImagePdfCustomName { get; set; } = string.Empty;
 
+        // ---------- PDF 拆分 ----------
+        /// <summary>拆分方式：每页一个文件（默认），或每 N 页一个文件。</summary>
+        public PdfSplitMode SplitMode { get; set; } = PdfSplitMode.EveryPage;
+
+        /// <summary>每份页数，1~500；仅在 EveryNPages 模式下生效。</summary>
+        public int SplitPagesPerFile { get; set; } = 1;
+
+        /// <summary>PDF 拆分专用的上次保存位置。</summary>
+        public string LastSplitFolder { get; set; } = string.Empty;
+
         /// <summary>三个水印目标中是否有任一开启；关闭时水印样式控件整体置灰。</summary>
         [JsonIgnore]
         public bool WatermarkAnyEnabled =>
@@ -319,6 +329,11 @@ namespace DocHub
                 settings.ImagePdfCustomName ??= string.Empty;
                 if (settings.ImagePdfCustomName.Length > 80)
                     settings.ImagePdfCustomName = settings.ImagePdfCustomName[..80];
+                if (!Enum.IsDefined(settings.SplitMode))
+                    settings.SplitMode = PdfSplitMode.EveryPage;
+                settings.SplitPagesPerFile = Math.Clamp(
+                    settings.SplitPagesPerFile, PdfSplitEngine.MinPagesPerFile, PdfSplitEngine.MaxPagesPerFile);
+                settings.LastSplitFolder ??= string.Empty;
 
                 int version = settings.SchemaVersion;
 
@@ -438,6 +453,9 @@ namespace DocHub
             ImagePdfMarginMm = other.ImagePdfMarginMm;
             ImagePdfMergeIntoOne = other.ImagePdfMergeIntoOne;
             ImagePdfCustomName = other.ImagePdfCustomName;
+            SplitMode = other.SplitMode;
+            SplitPagesPerFile = other.SplitPagesPerFile;
+            LastSplitFolder = other.LastSplitFolder;
         }
 
         public void ResetToDefaults()
@@ -488,6 +506,9 @@ namespace DocHub
             ImagePdfMarginMm = 10;
             ImagePdfMergeIntoOne = false;
             ImagePdfCustomName = string.Empty;
+            SplitMode = PdfSplitMode.EveryPage;
+            SplitPagesPerFile = 1;
+            LastSplitFolder = string.Empty;
         }
 
         public string BuildNameStem(string? firstDocumentPath, DateTime now, bool forConversion = false)

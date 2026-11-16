@@ -42,6 +42,7 @@ namespace DocHub
                 failures += CheckImagePdfSeparate(report, root);
                 failures += CheckPdfSourceIntegrity(report, root);
                 failures += CheckPageSelection(report, root);
+                failures += CheckPdfSplit(report, root);
                 failures += CheckWatermarkOutputs(report, root);
                 failures += CheckIcons(report);
                 failures += CheckSettingsLanguageReload(report);
@@ -695,6 +696,122 @@ namespace DocHub
             }
 
             return failures;
+        }
+
+        private static int CheckPdfSplit(StringBuilder report, string root)
+        {
+            report.AppendLine();
+            report.AppendLine("[PDF 拆分] 逐页、每 N 页与批量");
+            int failures = 0;
+
+            try
+            {
+                string first = CreateSplitPdf(root, "split_multi.pdf", 5);
+                string second = CreateSplitPdf(root, "split_short.pdf", 3);
+
+                var everyPage = new PdfSplitOptions { Mode = PdfSplitMode.EveryPage };
+                var everyTwo = new PdfSplitOptions { Mode = PdfSplitMode.EveryNPages, PagesPerFile = 2 };
+
+                bool countOk = PdfSplitEngine.CountOutputs(5, everyPage) == 5 &&
+                               PdfSplitEngine.CountOutputs(5, everyTwo) == 3 &&
+                               PdfSplitEngine.CountOutputs(1, everyTwo) == 1 &&
+                               PdfSplitEngine.PageLabel(1, 1, 5) == "p001" &&
+                               PdfSplitEngine.PageLabel(1, 2, 5) == "p001-002";
+                failures += countOk ? 0 : 1;
+                report.AppendLine($"  [{(countOk ? "OK" : "FAIL")}] 输出数量与页码标签");
+
+                string pageDir = Path.Combine(root, "split_every_page");
+                PdfSplitResult pageResult = PdfSplitEngine.Run(
+                    new[] { first }, pageDir, everyPage, null, CancellationToken.None, null);
+                string[] pageNames = pageResult.Files[0].Outputs
+                    .Select(path => Path.GetFileName(path) ?? string.Empty).ToArray();
+                bool pageOk = pageResult.OutputCount == 5 && pageResult.FailedCount == 0 &&
+                              SameStrings(pageNames, "split_multi_p001.pdf", "split_multi_p002.pdf",
+                                  "split_multi_p003.pdf", "split_multi_p004.pdf", "split_multi_p005.pdf") &&
+                              pageResult.Files[0].Outputs.All(path => PageCountOf(path) == 1);
+                failures += pageOk ? 0 : 1;
+                report.AppendLine($"  [{(pageOk ? "OK" : "FAIL")}] 逐页拆分：{string.Join(", ", pageNames)}");
+
+                string chunkDir = Path.Combine(root, "split_every_two");
+                PdfSplitResult chunkResult = PdfSplitEngine.Run(
+                    new[] { first }, chunkDir, everyTwo, null, CancellationToken.None, null);
+                string[] chunkNames = chunkResult.Files[0].Outputs
+                    .Select(path => Path.GetFileName(path) ?? string.Empty).ToArray();
+                int[] chunkPages = chunkResult.Files[0].Outputs.Select(PageCountOf).ToArray();
+                bool chunkOk = chunkResult.OutputCount == 3 && chunkResult.FailedCount == 0 &&
+                               SameStrings(chunkNames, "split_multi_p001-002.pdf",
+                                   "split_multi_p003-004.pdf", "split_multi_p005.pdf") &&
+                               SamePages(chunkPages, 2, 2, 1);
+                failures += chunkOk ? 0 : 1;
+                report.AppendLine($"  [{(chunkOk ? "OK" : "FAIL")}] 每 2 页一份：{string.Join(", ", chunkNames)}");
+
+                string batchDir = Path.Combine(root, "split_batch");
+                PdfSplitResult batchResult = PdfSplitEngine.Run(
+                    new[] { first, second }, batchDir, everyPage, null, CancellationToken.None, null);
+                bool batchOk = batchResult.OutputCount == 8 && batchResult.FailedCount == 0 &&
+                               batchResult.SucceededCount == 2;
+                failures += batchOk ? 0 : 1;
+                report.AppendLine($"  [{(batchOk ? "OK" : "FAIL")}] 批量拆分：{batchResult.OutputCount} 个输出，失败 {batchResult.FailedCount}");
+
+                string reuseDir = Path.Combine(root, "split_reuse");
+                PdfSplitResult reuseFirst = PdfSplitEngine.Run(
+                    new[] { second }, reuseDir, everyPage, null, CancellationToken.None, null);
+                PdfSplitResult reuseSecond = PdfSplitEngine.Run(
+                    new[] { second }, reuseDir, everyPage, null, CancellationToken.None, null);
+                bool reuseOk = reuseFirst.OutputCount == 3 && reuseSecond.OutputCount == 3 &&
+                               reuseSecond.Files[0].Outputs.All(File.Exists) &&
+                               reuseSecond.Files[0].Outputs.All(path =>
+                                   (Path.GetFileName(path) ?? string.Empty).Contains("(2)"));
+                failures += reuseOk ? 0 : 1;
+                report.AppendLine($"  [{(reuseOk ? "OK" : "FAIL")}] 重复输出不覆盖已有文件");
+
+                string cancelDir = Path.Combine(root, "split_cancel");
+                using var cts = new CancellationTokenSource();
+                cts.Cancel();
+                PdfSplitResult cancelResult = PdfSplitEngine.Run(
+                    new[] { first }, cancelDir, everyPage, null, cts.Token, null);
+                bool cancelOk = cancelResult.Cancelled && cancelResult.OutputCount == 0;
+                failures += cancelOk ? 0 : 1;
+                report.AppendLine($"  [{(cancelOk ? "OK" : "FAIL")}] 取消任务：cancelled={cancelResult.Cancelled}, 输出={cancelResult.OutputCount}");
+
+                string missing = Path.Combine(root, "missing.pdf");
+                PdfSplitResult failResult = PdfSplitEngine.Run(
+                    new[] { missing }, Path.Combine(root, "split_missing"), everyPage,
+                    null, CancellationToken.None, null);
+                bool failOk = failResult.FailedCount == 1 && failResult.Files[0].Error != null;
+                failures += failOk ? 0 : 1;
+                report.AppendLine($"  [{(failOk ? "OK" : "FAIL")}] 缺失文件记录失败：{failResult.Files[0].Error}");
+            }
+            catch (Exception ex)
+            {
+                failures++;
+                report.AppendLine("  [FAIL] PDF 拆分: " + ex);
+            }
+
+            return failures;
+        }
+
+        private static int PageCountOf(string path)
+        {
+            using PdfDocument document = PdfReader.Open(path, PdfDocumentOpenMode.Import);
+            return document.PageCount;
+        }
+
+        private static string CreateSplitPdf(string root, string name, int pageCount)
+        {
+            string path = Path.Combine(root, name);
+            using var document = new PdfDocument();
+            for (int index = 1; index <= pageCount; index++)
+            {
+                PdfPage page = document.AddPage();
+                page.Width = XUnit.FromPoint(595);
+                page.Height = XUnit.FromPoint(842);
+                using XGraphics graphics = XGraphics.FromPdfPage(page);
+                graphics.DrawRectangle(XPens.DarkGreen, 40, 40, 400, 500);
+                graphics.DrawLine(XPens.OrangeRed, 40, 40 + index * 40, 440, 40 + index * 40);
+            }
+            document.Save(path);
+            return path;
         }
 
         private static string CreatePageSelectionPdf(string root, int pageCount)

@@ -22,6 +22,7 @@ namespace DocHub
         private readonly NavCard _navConvert;
         private readonly NavCard _navImagePdf;
         private readonly NavCard _navWordPdf;
+        private readonly NavCard _navSplit;
         private readonly SideLink _sideSkin;
         private readonly SideLink _sideSettings;
         private readonly SideLink _sideAbout;
@@ -32,6 +33,7 @@ namespace DocHub
         private readonly ConvertWorkspace _convertPage;
         private readonly ImagePdfWorkspace _imagePdfPage;
         private readonly WordPdfWorkspace _wordPdfPage;
+        private readonly SplitWorkspace _splitPage;
         private readonly GlassCard _listCard;
         private readonly GlassCard _outputCard;
         private readonly LogoBadge _logo;
@@ -184,6 +186,11 @@ namespace DocHub
                 Icon = IconKind.WordPdf,
                 Bounds = new Rectangle(16, 302, SidebarWidth - 32, 66)
             };
+            _navSplit = new NavCard
+            {
+                Icon = IconKind.Split,
+                Bounds = new Rectangle(16, 376, SidebarWidth - 32, 66)
+            };
 
             _sideDivider = new Panel
             {
@@ -204,6 +211,8 @@ namespace DocHub
             _navImagePdf.Subtitle = Loc.T(Txt.NavImagePdfSubtitle);
             _navWordPdf.Title = Loc.T(Txt.NavWordPdfTitle);
             _navWordPdf.Subtitle = Loc.T(Txt.NavWordPdfSubtitle);
+            _navSplit.Title = Loc.T(Txt.NavSplitTitle);
+            _navSplit.Subtitle = Loc.T(Txt.NavSplitSubtitle);
             _sideSkin.Text = Loc.T(Txt.Skin);
             _sideSettings.Text = Loc.T(Txt.Settings);
             _sideAbout.Text = Loc.T(Txt.About);
@@ -213,7 +222,7 @@ namespace DocHub
             _sidebar.Controls.AddRange(new Control[]
             {
                 _logo, _appTitle, _versionLabel, _brandDivider,
-                _navMerge, _navConvert, _navImagePdf, _navWordPdf, _sideDivider,
+                _navMerge, _navConvert, _navImagePdf, _navWordPdf, _navSplit, _sideDivider,
                 _sideWatermark, _sideDone, _sideSkin, _sideSettings, _sideAbout
             });
 
@@ -444,11 +453,19 @@ namespace DocHub
             };
             _wordPdfPage.BusyChanged += (_, _) => UpdateNavigationEnabled();
 
+            _splitPage = new SplitWorkspace(_settings)
+            {
+                Visible = false,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+            };
+            _splitPage.BusyChanged += (_, _) => UpdateNavigationEnabled();
+
             Controls.Add(_listCard);
             Controls.Add(_outputCard);
             Controls.Add(_convertPage);
             Controls.Add(_imagePdfPage);
             Controls.Add(_wordPdfPage);
+            Controls.Add(_splitPage);
 
             // 窗口缩放时按卡片实际宽度重新排布，避免状态行等内容压到按钮上
             _listCard.Resize += (_, _) => LayoutQueueCard();
@@ -523,6 +540,7 @@ namespace DocHub
             _navConvert.Bounds = new Rectangle(16, 154, SidebarWidth - 32, 66);
             _navImagePdf.Bounds = new Rectangle(16, 228, SidebarWidth - 32, 66);
             _navWordPdf.Bounds = new Rectangle(16, 302, SidebarWidth - 32, 66);
+            _navSplit.Bounds = new Rectangle(16, 376, SidebarWidth - 32, 66);
 
             const int linkHeight = 34;
             _sideAbout.Bounds = new Rectangle(16, height - 18 - linkHeight, SidebarWidth - 32, linkHeight);
@@ -550,6 +568,7 @@ namespace DocHub
                 Math.Max(120, ClientSize.Height - PageHeaderHeight));
             _imagePdfPage.Bounds = _convertPage.Bounds;
             _wordPdfPage.Bounds = _convertPage.Bounds;
+            _splitPage.Bounds = _convertPage.Bounds;
         }
 
         /// <summary>按当前语言的实际文字宽度排布，避免长语言下按钮被截断或标签互相重叠。</summary>
@@ -564,17 +583,20 @@ namespace DocHub
 
         private void SwitchPage(int page)
         {
-            if (_running || _convertPage.IsBusy || _imagePdfPage.IsBusy || _wordPdfPage.IsBusy) return;
+            if (_running || _convertPage.IsBusy || _imagePdfPage.IsBusy ||
+                _wordPdfPage.IsBusy || _splitPage.IsBusy) return;
 
-            _activePage = Math.Clamp(page, 0, 3);
+            _activePage = Math.Clamp(page, 0, 4);
             _navMerge.Selected = _activePage == 0;
             _navConvert.Selected = _activePage == 1;
             _navImagePdf.Selected = _activePage == 2;
             _navWordPdf.Selected = _activePage == 3;
+            _navSplit.Selected = _activePage == 4;
             _listCard.Visible = _outputCard.Visible = _activePage == 0;
             _convertPage.Visible = _activePage == 1;
             _imagePdfPage.Visible = _activePage == 2;
             _wordPdfPage.Visible = _activePage == 3;
+            _splitPage.Visible = _activePage == 4;
             UpdatePageHeader();
 
             if (_activePage == 1)
@@ -591,6 +613,11 @@ namespace DocHub
             {
                 _wordPdfPage.ApplySettings();
                 _wordPdfPage.Focus();
+            }
+            else if (_activePage == 4)
+            {
+                _splitPage.ApplySettings();
+                _splitPage.Focus();
             }
         }
 
@@ -610,6 +637,10 @@ namespace DocHub
                     _pageTitle.Text = Loc.T(Txt.WordPdfPageTitle);
                     _pageSubtitle.Text = Loc.T(Txt.WordPdfPageSubtitle);
                     break;
+                case 4:
+                    _pageTitle.Text = Loc.T(Txt.SplitPageTitle);
+                    _pageSubtitle.Text = Loc.T(Txt.SplitPageSubtitle);
+                    break;
                 default:
                     _pageTitle.Text = Loc.T(Txt.MergePageTitle);
                     _pageSubtitle.Text = Loc.T(Txt.MergePageSubtitle);
@@ -619,11 +650,13 @@ namespace DocHub
 
         private void UpdateNavigationEnabled()
         {
-            bool busy = _running || _convertPage.IsBusy || _imagePdfPage.IsBusy || _wordPdfPage.IsBusy;
+            bool busy = _running || _convertPage.IsBusy || _imagePdfPage.IsBusy ||
+                _wordPdfPage.IsBusy || _splitPage.IsBusy;
             _navMerge.Enabled = !busy;
             _navConvert.Enabled = !busy;
             _navImagePdf.Enabled = !busy;
             _navWordPdf.Enabled = !busy;
+            _navSplit.Enabled = !busy;
             _sideSkin.Enabled = !busy;
             _sideSettings.Enabled = !busy;
             _sideAbout.Enabled = !busy;
@@ -657,6 +690,12 @@ namespace DocHub
                 return true;
             }
 
+            if (keyData == (Keys.Control | Keys.D5) || keyData == (Keys.Control | Keys.NumPad5))
+            {
+                SwitchPage(4);
+                return true;
+            }
+
             if (keyData == (Keys.Control | Keys.O))
             {
                 if (_activePage == 0)
@@ -671,9 +710,13 @@ namespace DocHub
                 {
                     _imagePdfPage.PromptAddFiles();
                 }
-                else
+                else if (_activePage == 3)
                 {
                     _wordPdfPage.PromptAddFiles();
+                }
+                else
+                {
+                    _splitPage.PromptAddFiles();
                 }
                 return true;
             }
@@ -818,6 +861,7 @@ namespace DocHub
             _toolTip.SetToolTip(_navConvert, Loc.T(Txt.TipNavConvert));
             _toolTip.SetToolTip(_navImagePdf, Loc.T(Txt.TipNavImagePdf));
             _toolTip.SetToolTip(_navWordPdf, Loc.T(Txt.TipNavWordPdf));
+            _toolTip.SetToolTip(_navSplit, Loc.T(Txt.TipNavSplit));
             _toolTip.SetToolTip(_sideSkin, Loc.T(Txt.TipAppearance));
             _toolTip.SetToolTip(_sideSettings, Loc.T(Txt.TipSettings));
             _toolTip.SetToolTip(_sideAbout, Loc.T(Txt.TipAbout));
@@ -876,6 +920,7 @@ namespace DocHub
             _navConvert.Click += (_, _) => SwitchPage(1);
             _navImagePdf.Click += (_, _) => SwitchPage(2);
             _navWordPdf.Click += (_, _) => SwitchPage(3);
+            _navSplit.Click += (_, _) => SwitchPage(4);
             _sideSkin.Click += (_, _) => OpenSettings(0);
             _sideSettings.Click += (_, _) => OpenSettings(1);
             _sideAbout.Click += (_, _) => OpenAbout();
@@ -1005,6 +1050,15 @@ namespace DocHub
                     return;
                 }
 
+                if (_splitPage.IsBusy)
+                {
+                    e.Cancel = true;
+                    ThemedMessageBox.Show(this,
+                        Loc.T(Txt.MsgSplitBusy),
+                        Loc.T(Txt.AppName), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 _settings.Save();
             };
 
@@ -1076,6 +1130,7 @@ namespace DocHub
             if (convertDefaultsChanged) _convertPage.ApplyConvertDefaults();
             _imagePdfPage.ApplySettings();
             _wordPdfPage.ApplySettings();
+            _splitPage.ApplySettings();
             LayoutSideCard();
             UpdateQuoteTimer();
             UpdateButtons();
@@ -1102,6 +1157,8 @@ namespace DocHub
             _navImagePdf.Subtitle = Loc.T(Txt.NavImagePdfSubtitle);
             _navWordPdf.Title = Loc.T(Txt.NavWordPdfTitle);
             _navWordPdf.Subtitle = Loc.T(Txt.NavWordPdfSubtitle);
+            _navSplit.Title = Loc.T(Txt.NavSplitTitle);
+            _navSplit.Subtitle = Loc.T(Txt.NavSplitSubtitle);
             _sideSkin.Text = Loc.T(Txt.Skin);
             _sideSettings.Text = Loc.T(Txt.Settings);
             _sideAbout.Text = Loc.T(Txt.About);
@@ -1168,6 +1225,7 @@ namespace DocHub
             _convertPage.ApplyLanguage();
             _imagePdfPage.ApplyLanguage();
             _wordPdfPage.ApplyLanguage();
+            _splitPage.ApplyLanguage();
             LayoutLocalizedControls();
             UpdateNamePreview();
             RefreshList(_list.SelectedIndex);
@@ -1193,6 +1251,7 @@ namespace DocHub
             _navConvert.ApplyTheme();
             _navImagePdf.ApplyTheme();
             _navWordPdf.ApplyTheme();
+            _navSplit.ApplyTheme();
             _sideSkin.ApplyTheme();
             _sideSettings.ApplyTheme();
             _sideAbout.ApplyTheme();
@@ -1201,6 +1260,7 @@ namespace DocHub
             _convertPage.ApplyTheme();
             _imagePdfPage.ApplyTheme();
             _wordPdfPage.ApplyTheme();
+            _splitPage.ApplyTheme();
             _list.ApplyTheme();
             _emptyPanel.Invalidate();
             _progress.Invalidate();

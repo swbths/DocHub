@@ -37,7 +37,8 @@ namespace DocHub
                 Loc.T(Txt.Feature4),
                 Loc.T(Txt.Feature5),
                 Loc.T(Txt.Feature6),
-                Loc.T(Txt.Feature7)
+                Loc.T(Txt.Feature7),
+                Loc.T(Txt.Feature8)
             };
 
             _changelogHeaderFont = new Font(Theme.BaseFont.FontFamily, 9.5f, FontStyle.Bold);
@@ -191,6 +192,7 @@ namespace DocHub
             rtf.Append('}');
             rtf.Append(@"\viewkind4\uc1\pard\f0\fs").Append(HalfPoints(Theme.SmallFont)).Append(' ');
 
+            AppendEntry(rtf, Loc.T(Txt.Changelog4525), Loc.T(Txt.ChangelogItems4525));
             AppendEntry(rtf, Loc.T(Txt.Changelog4524), Loc.T(Txt.ChangelogItems4524));
             AppendEntry(rtf, Loc.T(Txt.Changelog4523), Loc.T(Txt.ChangelogItems4523));
             AppendEntry(rtf, Loc.T(Txt.Changelog4522), Loc.T(Txt.ChangelogItems4522));

@@ -1547,6 +1547,7 @@ namespace DocHub
         Convert,
         Image,
         WordPdf,
+        Split,
         Close,
         Refresh,
         Palette,
@@ -1875,6 +1876,29 @@ namespace DocHub
                         new PointF(12.2f, 12.4f), new PointF(14f, 17.2f),
                         new PointF(15.5f, 10.4f)
                     });
+                    break;
+                }
+                case IconKind.Split:
+                {
+                    // PDF 拆分：纸张 + 中间虚线裁切线
+                    using (GraphicsPath page = new GraphicsPath())
+                    {
+                        page.AddLine(5.6f, 2.8f, 13.6f, 2.8f);
+                        page.AddLine(13.6f, 2.8f, 17.4f, 6.6f);
+                        page.AddLine(17.4f, 6.6f, 17.4f, 21.2f);
+                        page.AddLine(17.4f, 21.2f, 5.6f, 21.2f);
+                        page.CloseFigure();
+                        g.FillPath(softBrush, page);
+                        g.DrawPath(pen, page);
+                    }
+                    g.DrawLine(pen, 13.6f, 2.8f, 13.6f, 6.6f);
+                    g.DrawLine(pen, 13.6f, 6.6f, 17.4f, 6.6f);
+                    using (var dashed = (Pen)pen.Clone())
+                    {
+                        dashed.DashStyle = DashStyle.Dash;
+                        dashed.DashPattern = new[] { 1.6f, 1.4f };
+                        g.DrawLine(dashed, 11.5f, 2f, 11.5f, 22f);
+                    }
                     break;
                 }
                 case IconKind.MarqueeOff:

@@ -158,6 +158,22 @@ namespace DocHub
         WordPdfAdded, WordPdfSkippedNonWord, WordPdfNothingAdded, WordPdfOutputCount,
         MsgWordPdfBusy, TipNavWordPdf, Feature7,
         Changelog4518, ChangelogItems4518,
+
+        // ---------- v4.5.25 PDF 拆分 ----------
+        NavSplitTitle, NavSplitSubtitle,
+        SplitPageTitle, SplitPageSubtitle,
+        SplitFilesTitle, SplitCountFormat, SplitListHint, SplitAdd, SplitDialogTitle,
+        SplitEmptyTitle, SplitEmptySubtitle, SplitEmptyFormats,
+        SplitSettingsTitle, SplitMode, SplitModeEveryPage, SplitModeEveryN,
+        SplitPagesPerFile, SplitPagesPerFileHint, SplitOutput,
+        SplitPreview, SplitPreviewUnknown, SplitReady,
+        SplitStart, SplitRunning, SplitCancel, SplitCancelling,
+        SplitProcessing, SplitDone, SplitDonePartial, SplitCancelled,
+        SplitFailStatus, SplitFailTitle, SplitNoFiles, SplitNeedFolder, SplitBadPages,
+        SplitAdded, SplitSkippedNonPdf, SplitNothingAdded,
+        SplitUnreadable, SplitWriteError, SplitFailGeneric,
+        MsgSplitBusy, TipNavSplit, Feature8,
+        Changelog4525, ChangelogItems4525,
         Changelog4524, ChangelogItems4524,
         Changelog4523, ChangelogItems4523, Changelog4522, ChangelogItems4522, Changelog4521, ChangelogItems4521, Changelog4520, ChangelogItems4520, Changelog4519, ChangelogItems4519,
 
