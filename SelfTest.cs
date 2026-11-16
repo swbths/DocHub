@@ -131,21 +131,25 @@ namespace DocHub
             if (!setOk) failures++;
             report.AppendLine($"  [{(setOk ? "OK" : "FAIL")}] 皮肤数量 {ids.Count}：{string.Join(" / ", ids)}");
 
+            bool firstOk = ids.Count > 0 && ids[0] == SkinPalette.CloudWhiteId;
+            if (!firstOk) failures++;
+            report.AppendLine($"  [{(firstOk ? "OK" : "FAIL")}] 云白位于皮肤选择首位");
+
             bool legacyOk = ids.All(id => !id.Contains("netease", StringComparison.OrdinalIgnoreCase)) &&
                             !SkinPalette.Exists("netease") &&
-                            SkinPalette.FromId("netease").Id == SkinPalette.ClassicBlueId;
+                            SkinPalette.FromId("netease").Id == SkinPalette.CloudWhiteId;
             if (!legacyOk) failures++;
-            report.AppendLine($"  [{(legacyOk ? "OK" : "FAIL")}] 网易云皮肤已移除，未知皮肤回退经典蓝");
+            report.AppendLine($"  [{(legacyOk ? "OK" : "FAIL")}] 网易云皮肤已移除，未知皮肤回退云白");
 
             bool hudOk = !SkinPalette.Exists("hud") &&
-                         SkinPalette.FromId("hud").Id == SkinPalette.ClassicBlueId;
+                         SkinPalette.FromId("hud").Id == SkinPalette.CloudWhiteId;
             if (!hudOk) failures++;
-            report.AppendLine($"  [{(hudOk ? "OK" : "FAIL")}] HUD 科幻皮肤已移除，旧配置回退经典蓝");
+            report.AppendLine($"  [{(hudOk ? "OK" : "FAIL")}] HUD 科幻皮肤已移除，旧配置回退云白");
 
             bool terminalOk = !SkinPalette.Exists("terminal") &&
-                              SkinPalette.FromId("terminal").Id == SkinPalette.ClassicBlueId;
+                              SkinPalette.FromId("terminal").Id == SkinPalette.CloudWhiteId;
             if (!terminalOk) failures++;
-            report.AppendLine($"  [{(terminalOk ? "OK" : "FAIL")}] 终端风皮肤已移除，旧配置回退经典蓝");
+            report.AppendLine($"  [{(terminalOk ? "OK" : "FAIL")}] 终端风皮肤已移除，旧配置回退云白");
 
             var surfaces = new Dictionary<string, SkinSurface>
             {
@@ -210,6 +214,21 @@ namespace DocHub
             report.AppendLine("[设置] 默认值");
 
             var defaults = new AppSettings();
+            bool skinOk = defaults.SkinId == SkinPalette.CloudWhiteId;
+            report.AppendLine(
+                $"  [{(skinOk ? "OK" : "FAIL")}] 默认皮肤为云白：{defaults.SkinId}");
+
+            AppSettings reset = defaults.Clone();
+            reset.SkinId = SkinPalette.ClassicBlueId;
+            reset.WatermarkEnabled = true;
+            reset.WatermarkForPdfImage = true;
+            reset.WatermarkForImagePdf = true;
+            reset.WatermarkForWordPdf = true;
+            reset.ResetToDefaults();
+            bool resetOk = reset.SkinId == SkinPalette.CloudWhiteId && !reset.WatermarkAnyEnabled;
+            report.AppendLine(
+                $"  [{(resetOk ? "OK" : "FAIL")}] 恢复默认：Skin={reset.SkinId}，水印全关={!reset.WatermarkAnyEnabled}");
+
             bool convertOk = defaults.ConvertFormat == ConvertImageFormat.Jpeg &&
                              defaults.ConvertPpi == 300 &&
                              defaults.ConvertJpegQuality == 100 &&
@@ -287,7 +306,8 @@ namespace DocHub
                 $"  [{(quoteRefreshOk ? "OK" : "FAIL")}] 名言自动换句默认开启、间隔 30 秒且可克隆：" +
                 $"AutoRefresh={defaults.QuoteAutoRefresh}, Seconds={defaults.QuoteRefreshSeconds}");
 
-            return (convertOk ? 0 : 1) + (soundOk ? 0 : 1) + (watermarkOk ? 0 : 1) +
+            return (skinOk ? 0 : 1) + (resetOk ? 0 : 1) +
+                   (convertOk ? 0 : 1) + (soundOk ? 0 : 1) + (watermarkOk ? 0 : 1) +
                    (watermarkFontOk ? 0 : 1) +
                    (wordPdfOk ? 0 : 1) + (wordNameOk ? 0 : 1) +
                    (wpsOk ? 0 : 1) + (wpsRouteOk ? 0 : 1) + (mixedRouteOk ? 0 : 1) +

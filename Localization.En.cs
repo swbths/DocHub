@@ -670,6 +670,11 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "Splitting is running. Wait for it to finish or cancel first.",
             [Txt.TipNavSplit] = "Split PDF: split one or more PDFs into multiple files by page",
             [Txt.Feature8] = "PDF split: one file per page or every N pages, with batch input",
+            [Txt.Changelog4529] = "4.5.29 · 2026-11-16",
+            [Txt.ChangelogItems4529] =
+                "#Changed\n" +
+                "· Default skin is now Cloud White, listed first in the skin picker\n" +
+                "· Watermarks are off by default for every feature; enable them in settings when needed\n",
             [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
             [Txt.ChangelogItems4528] =
                 "#Improved\n" +

@@ -662,6 +662,11 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "분할 중입니다. 완료되거나 취소될 때까지 기다려 주세요.",
             [Txt.TipNavSplit] = "PDF 분할: 하나 이상의 PDF를 페이지별로 여러 파일로 분할",
             [Txt.Feature8] = "PDF 분할: 페이지별 또는 N페이지마다 여러 PDF로 분할, 일괄 처리 지원",
+            [Txt.Changelog4529] = "4.5.29 · 2026-11-16",
+            [Txt.ChangelogItems4529] =
+                "#변경\n" +
+                "· 기본 스킨을 '클라우드 화이트'로 변경하고 스킨 선택 첫 번째에 배치\n" +
+                "· 모든 기능의 워터마크는 기본적으로 꺼져 있으며 필요 시 설정에서 켤 수 있습니다\n",
             [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
             [Txt.ChangelogItems4528] =
                 "#개선\n" +

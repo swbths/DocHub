@@ -89,7 +89,7 @@ namespace DocHub
         public NamingMode NamingMode { get; set; } = NamingMode.FirstDocument;
         public string NamePhrase { get; set; } = string.Empty;
         public string CustomName { get; set; } = Loc.T(Txt.DefaultDocName);
-        public string SkinId { get; set; } = SkinPalette.ClassicBlueId;
+        public string SkinId { get; set; } = SkinPalette.CloudWhiteId;
         public bool ShowNotification { get; set; } = true;
 
         /// <summary>是否在合并页右侧显示与界面语言一致的名言/电影台词。</summary>
@@ -292,7 +292,7 @@ namespace DocHub
                 var settings = JsonSerializer.Deserialize<AppSettings>(json, SerializerOptions);
                 if (settings == null) return new AppSettings();
                 if (!SkinPalette.Exists(settings.SkinId))
-                    settings.SkinId = SkinPalette.ClassicBlueId;
+                    settings.SkinId = SkinPalette.CloudWhiteId;
                 if (!SoundLibrary.Exists(settings.SoundId))
                     settings.SoundId = SoundLibrary.DingId;
                 if (!Enum.IsDefined(settings.Language))
@@ -466,7 +466,7 @@ namespace DocHub
             // 恢复默认时界面语言固定回到简体中文，默认输出名也同步为中文
             Language = Language.ZhCn;
             CustomName = Loc.T(Language.ZhCn, Txt.DefaultDocName);
-            SkinId = SkinPalette.ClassicBlueId;
+            SkinId = SkinPalette.CloudWhiteId;
             ShowNotification = true;
             ShowQuotes = true;
             QuoteAutoRefresh = true;
@@ -1047,7 +1047,7 @@ namespace DocHub
 
         public static readonly IReadOnlyList<SkinPalette> All = new[]
         {
-            ClassicBlue, Night, CloudWhite, Skeuomorphic, Neumorphic
+            CloudWhite, ClassicBlue, Night, Skeuomorphic, Neumorphic
         };
 
         public static bool Exists(string? id)
@@ -1058,7 +1058,7 @@ namespace DocHub
         public static SkinPalette FromId(string? id)
         {
             return All.FirstOrDefault(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase))
-                   ?? ClassicBlue;
+                   ?? CloudWhite;
         }
     }
 }

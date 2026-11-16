@@ -661,6 +661,11 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "正在拆分，請等待完成或取消後再關閉視窗。",
             [Txt.TipNavSplit] = "PDF 拆分：將一個或多個 PDF 依頁拆成多個檔案",
             [Txt.Feature8] = "PDF 拆分：依頁或每 N 頁拆成多個 PDF，支援批次處理",
+            [Txt.Changelog4529] = "4.5.29 · 2026-11-16",
+            [Txt.ChangelogItems4529] =
+                "#調整\n" +
+                "· 預設皮膚改為「雲白」，並置於皮膚選擇首位\n" +
+                "· 各功能預設不添加浮水印，需要時可在設定中開啟\n",
             [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
             [Txt.ChangelogItems4528] =
                 "#最佳化\n" +

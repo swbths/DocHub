@@ -663,6 +663,11 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "分割中です。完了またはキャンセルまでお待ちください。",
             [Txt.TipNavSplit] = "PDF 分割：1 つまたは複数の PDF をページごとに複数ファイルへ",
             [Txt.Feature8] = "PDF 分割：ページ単位または N ページごとに複数の PDF へ。一括処理に対応",
+            [Txt.Changelog4529] = "4.5.29 · 2026-11-16",
+            [Txt.ChangelogItems4529] =
+                "#変更\n" +
+                "· 既定のスキンを「クラウドホワイト」に変更し、スキン選択の先頭に配置\n" +
+                "· 各機能の透かしは既定でオフ。必要な場合は設定で有効化できます\n",
             [Txt.Changelog4528] = "4.5.28 · 2026-11-16",
             [Txt.ChangelogItems4528] =
                 "#改善\n" +
