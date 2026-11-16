@@ -638,6 +638,7 @@ namespace DocHub
             [Txt.SplitPagesPerFile] = "Страниц в файле",
             [Txt.SplitPagesPerFileHint] = "Если N больше общего числа страниц, будет создана одна полная копия",
             [Txt.SplitOutput] = "Сохранить в",
+            [Txt.SplitFolderHint] = "Каждый PDF — в своей подпапке",
             [Txt.SplitPreview] = "Будет создано файлов PDF: {0}",
             [Txt.SplitPreviewUnknown] = "После добавления PDF появится оценка количества",
             [Txt.SplitReady] = "Готово",
@@ -663,6 +664,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "Идёт разделение. Дождитесь завершения или отмените его.",
             [Txt.TipNavSplit] = "Разделение PDF: один или несколько PDF на несколько файлов по страницам",
             [Txt.Feature8] = "Разделение PDF: по страницам или каждые N страниц, пакетно",
+            [Txt.Changelog4526] = "4.5.26 · 2026-11-16",
+            [Txt.ChangelogItems4526] =
+                "#Улучшено\n" +
+                "· Разделение PDF: результаты каждого PDF сохраняются в отдельную подпапку с его именем, поэтому пакетная обработка не смешивается\n",
             [Txt.Changelog4525] = "4.5.25 · 2026-11-16",
             [Txt.ChangelogItems4525] =
                 "# Добавлено\n" +

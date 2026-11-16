@@ -39,6 +39,7 @@ namespace DocHub
         private readonly Label _pagesHint;
         private readonly Label _outputLabel;
         private readonly RoundedInput _folderInput;
+        private readonly Label _folderHint;
         private readonly RoundedButton _browseButton;
         private readonly Panel _divider;
         private readonly Label _statusLabel;
@@ -128,6 +129,7 @@ namespace DocHub
             _outputLabel = MakeLabel(string.Empty, Theme.BaseFont, "secondary", 16, 0);
             _folderInput = new RoundedInput { MaxLength = 260 };
             _folderInput.Box.PlaceholderText = Loc.T(Txt.ChooseFolder);
+            _folderHint = MakeLabel(string.Empty, Theme.SmallFont, "muted", 16, 0);
             _browseButton = new RoundedButton
             {
                 Role = ButtonRole.Secondary,
@@ -177,7 +179,7 @@ namespace DocHub
             _sideCard.Controls.AddRange(new Control[]
             {
                 _settingsTitle, _modeLabel, _modeControl, _pagesLabel, _pagesInput, _pagesHint,
-                _outputLabel, _folderInput, _browseButton, _divider,
+                _outputLabel, _folderInput, _folderHint, _browseButton, _divider,
                 _statusLabel, _progress, _openFolderButton, _startButton
             });
             Controls.Add(_listCard);
@@ -304,6 +306,8 @@ namespace DocHub
             _pagesHint.Font = Theme.SmallFont;
             _outputLabel.Text = Loc.T(Txt.SplitOutput);
             _outputLabel.Font = Theme.BaseFont;
+            _folderHint.Text = Loc.T(Txt.SplitFolderHint);
+            _folderHint.Font = Theme.SmallFont;
             _folderInput.Box.PlaceholderText = Loc.T(Txt.ChooseFolder);
             _openFolderButton.Text = Loc.T(Txt.ConvertOpenFolder);
             _openFolderButton.Font = Theme.ButtonFont;
@@ -438,6 +442,8 @@ namespace DocHub
             _browseButton.Bounds = new Rectangle(16 + inner - browseWidth, y, browseWidth, 36);
             _folderInput.Bounds = new Rectangle(16, y, Math.Max(60, inner - browseWidth - 8), 36);
             y += 44;
+            _folderHint.Bounds = new Rectangle(16, y, inner, 30);
+            y += 34;
 
             _divider.Bounds = new Rectangle(16, y, inner, 1);
             y += 12;

@@ -108,6 +108,8 @@ namespace DocHub
 
                     int chunkCount = (pageCount + pagesPerFile - 1) / pagesPerFile;
                     string stem = SafeStem(Path.GetFileNameWithoutExtension(file));
+                    string fileFolder = ResolveFileFolder(outputFolder, stem);
+                    Directory.CreateDirectory(fileFolder);
 
                     for (int chunk = 0; chunk < chunkCount; chunk++)
                     {
@@ -120,7 +122,7 @@ namespace DocHub
                         int start = chunk * pagesPerFile + 1;
                         int end = Math.Min(start + pagesPerFile - 1, pageCount);
                         string outputPath = BuildUniquePath(
-                            outputFolder, BuildChunkName(stem, start, end, pageCount), usedNames);
+                            fileFolder, BuildChunkName(stem, start, end, pageCount), usedNames);
 
                         using (var output = new PdfDocument())
                         {
@@ -180,6 +182,16 @@ namespace DocHub
 
         private static string BuildChunkName(string stem, int start, int end, int totalPages) =>
             $"{stem}_{PageLabel(start, end, totalPages)}";
+
+        /// <summary>每个源 PDF 的输出放入同名子文件夹；已有同名文件夹时直接复用。</summary>
+        private static string ResolveFileFolder(string root, string stem)
+        {
+            string candidate = Path.Combine(root, stem);
+            int index = 2;
+            while (File.Exists(candidate))
+                candidate = Path.Combine(root, $"{stem} ({index++})");
+            return candidate;
+        }
 
         private static string BuildUniquePath(
             string folder, string baseName, HashSet<string> usedNames)

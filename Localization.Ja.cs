@@ -637,6 +637,7 @@ namespace DocHub
             [Txt.SplitPagesPerFile] = "1 ファイルのページ数",
             [Txt.SplitPagesPerFileHint] = "総ページ数より多い場合は、完全なコピーを 1 つ出力します",
             [Txt.SplitOutput] = "保存先",
+            [Txt.SplitFolderHint] = "PDF ごとに同名フォルダーへ",
             [Txt.SplitPreview] = "{0} 個の PDF を生成します",
             [Txt.SplitPreviewUnknown] = "PDF を追加すると出力数の目安を表示します",
             [Txt.SplitReady] = "準備完了",
@@ -662,6 +663,10 @@ namespace DocHub
             [Txt.MsgSplitBusy] = "分割中です。完了またはキャンセルまでお待ちください。",
             [Txt.TipNavSplit] = "PDF 分割：1 つまたは複数の PDF をページごとに複数ファイルへ",
             [Txt.Feature8] = "PDF 分割：ページ単位または N ページごとに複数の PDF へ。一括処理に対応",
+            [Txt.Changelog4526] = "4.5.26 · 2026-11-16",
+            [Txt.ChangelogItems4526] =
+                "#改善\n" +
+                "· PDF 分割：各 PDF の出力を同名のサブフォルダーに保存し、一括分割でも混在しません\n",
             [Txt.Changelog4525] = "4.5.25 · 2026-11-16",
             [Txt.ChangelogItems4525] =
                 "#追加\n" +

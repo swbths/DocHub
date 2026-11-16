@@ -728,7 +728,10 @@ namespace DocHub
                 bool pageOk = pageResult.OutputCount == 5 && pageResult.FailedCount == 0 &&
                               SameStrings(pageNames, "split_multi_p001.pdf", "split_multi_p002.pdf",
                                   "split_multi_p003.pdf", "split_multi_p004.pdf", "split_multi_p005.pdf") &&
-                              pageResult.Files[0].Outputs.All(path => PageCountOf(path) == 1);
+                              pageResult.Files[0].Outputs.All(path => PageCountOf(path) == 1) &&
+                              pageResult.Files[0].Outputs.All(path =>
+                                  string.Equals(Path.GetFileName(Path.GetDirectoryName(path)),
+                                      "split_multi", StringComparison.OrdinalIgnoreCase));
                 failures += pageOk ? 0 : 1;
                 report.AppendLine($"  [{(pageOk ? "OK" : "FAIL")}] 逐页拆分：{string.Join(", ", pageNames)}");
 
@@ -749,9 +752,19 @@ namespace DocHub
                 PdfSplitResult batchResult = PdfSplitEngine.Run(
                     new[] { first, second }, batchDir, everyPage, null, CancellationToken.None, null);
                 bool batchOk = batchResult.OutputCount == 8 && batchResult.FailedCount == 0 &&
-                               batchResult.SucceededCount == 2;
+                               batchResult.SucceededCount == 2 &&
+                               batchResult.Files.All(file => file.Outputs.All(path =>
+                                   string.Equals(Path.GetFileName(Path.GetDirectoryName(path)),
+                                       Path.GetFileNameWithoutExtension(file.Source),
+                                       StringComparison.OrdinalIgnoreCase))) &&
+                               batchResult.Files[0].Outputs.Select(Path.GetDirectoryName).Distinct().Count() == 1 &&
+                               batchResult.Files[1].Outputs.Select(Path.GetDirectoryName).Distinct().Count() == 1 &&
+                               !string.Equals(
+                                   Path.GetDirectoryName(batchResult.Files[0].Outputs[0]),
+                                   Path.GetDirectoryName(batchResult.Files[1].Outputs[0]),
+                                   StringComparison.OrdinalIgnoreCase);
                 failures += batchOk ? 0 : 1;
-                report.AppendLine($"  [{(batchOk ? "OK" : "FAIL")}] 批量拆分：{batchResult.OutputCount} 个输出，失败 {batchResult.FailedCount}");
+                report.AppendLine($"  [{(batchOk ? "OK" : "FAIL")}] 批量拆分：{batchResult.OutputCount} 个输出，失败 {batchResult.FailedCount}，按源文件分文件夹");
 
                 string reuseDir = Path.Combine(root, "split_reuse");
                 PdfSplitResult reuseFirst = PdfSplitEngine.Run(
@@ -761,7 +774,11 @@ namespace DocHub
                 bool reuseOk = reuseFirst.OutputCount == 3 && reuseSecond.OutputCount == 3 &&
                                reuseSecond.Files[0].Outputs.All(File.Exists) &&
                                reuseSecond.Files[0].Outputs.All(path =>
-                                   (Path.GetFileName(path) ?? string.Empty).Contains("(2)"));
+                                   (Path.GetFileName(path) ?? string.Empty).Contains("(2)")) &&
+                               string.Equals(
+                                   Path.GetDirectoryName(reuseFirst.Files[0].Outputs[0]),
+                                   Path.GetDirectoryName(reuseSecond.Files[0].Outputs[0]),
+                                   StringComparison.OrdinalIgnoreCase);
                 failures += reuseOk ? 0 : 1;
                 report.AppendLine($"  [{(reuseOk ? "OK" : "FAIL")}] 重复输出不覆盖已有文件");
 
